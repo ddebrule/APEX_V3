@@ -1,0 +1,2 @@
+session_id,profile_id,vehicle_id,session_name,session_type,track_name,track_size,traction,surface_type,surface_condition,practice_rounds,qualifying_rounds,start_date,status
+sess-001,prof-001,veh-001,Thunder Alley Practice,Practice,Thunder Alley,Medium,Medium,Dry,Smooth,2,0,2025-12-28,active

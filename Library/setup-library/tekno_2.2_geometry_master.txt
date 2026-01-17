@@ -1,0 +1,5 @@
+TEKNO 2.2 PLATFORM GEOMETRY GUIDE:
+- CASTER: 18-degree blocks are for high-grip/carpet; 15-degree blocks are for loose/loamy outdoor tracks to increase "float."
+- REAR HUBS: Use the -1mm offset hub for high-bite blue groove tracks to lower the roll center. Use +1mm hubs for bumpy tracks to increase ground clearance and stop the car from "tripping."
+- ACKERMANN: The 2.2 platform responds heavily to Ackermann plates. +2mm (longer) plates smooth out steering exit; 0mm (shorter) plates provide aggressive turn-in.
+- DIFF HEIGHT: High diff position increases traction but reduces corner speed. Low diff position is preferred for high-traction "Blue Groove" conditions.

@@ -1,0 +1,202 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;600&family=Rajdhani:wght@500;700&display=swap');
+
+/* --- ROOT VARIABLES --- */
+:root {
+    --primary-red: #FF0033;
+    /* Using the user's requested Neon Red */
+    --primary-red-dim: #cc0029;
+    /* Darker shade for hovers */
+    --text-highlight: #FF4444;
+    /* Slightly lighter red for text */
+    --neon-cyan: #00f3ff;
+    --glass-bg: rgba(20, 20, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-dark: #0E1117;
+    /* Streamlit default dark match */
+    --card-radius: 12px;
+}
+
+/* --- GLOBAL RESETS --- */
+/* Hide Streamlit Default Elements */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}
+
+.stDeployButton {
+    display: none;
+}
+
+/* Global Font Settings */
+html,
+body,
+[class*="css"] {
+    font-family: 'Inter', sans-serif;
+    color: #e0e0e0;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-highlight) !important;
+}
+
+/* --- THE SIGNATURE RAINBOW LINE --- */
+/* We inject this via a custom div at the top */
+.rainbow-separator {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg,
+            #ff0000 0%,
+            #ff9a00 10%,
+            #d0de21 20%,
+            #4fdc4a 30%,
+            #3fdad8 40%,
+            #2fc9e2 50%,
+            #1c7fee 60%,
+            #5f15f2 70%,
+            #ba0cf8 80%,
+            #fb07d9 90%,
+            #ff0000 100%);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    margin-bottom: 2rem;
+    border-radius: 2px;
+}
+
+/* --- CHAT INTERFACE STYLING --- */
+/* User Bubble - subtle glass grey */
+.user-bubble {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px 12px 0 12px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    color: #e0e0e0;
+    max-width: 85%;
+    float: right;
+    clear: both;
+}
+
+/* AI Bubble - The "Red Voice" of APEX */
+.ai-bubble {
+    background: linear-gradient(135deg, rgba(50, 0, 0, 0.8), rgba(20, 0, 0, 0.9));
+    border: 1px solid var(--primary-red-dim);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.1);
+    border-radius: 12px 12px 12px 0;
+    padding: 12px 16px;
+    margin: 8px 0;
+    color: #fff;
+    max-width: 85%;
+    float: left;
+    clear: both;
+}
+
+/* --- METRIC UTILITIES --- */
+/* Allow specific overrides for Good/Bad stats */
+.metric-good {
+    color: #39FF14 !important;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+}
+
+.metric-bad {
+    color: #FF0033 !important;
+    text-shadow: 0 0 10px rgba(255, 0, 51, 0.4);
+}
+
+.metric-warn {
+    color: #FFAA00 !important;
+}
+
+/* --- GLASSMORPHISM CARDS --- */
+/* Target Streamlit's container/expander elements to look like glass cards */
+div[data-testid="stExpander"],
+div[data-testid="stForm"],
+div[data-testid="stChatMessage"] {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: var(--card-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* --- INPUT WIDGET STYLING --- */
+/* Make inputs look like "bubbles" from the user's reference */
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox,
+.stTextArea textarea {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    font-family: 'Inter', sans-serif;
+}
+
+.stTextInput input:focus,
+.stNumberInput input:focus,
+.stTextArea textarea:focus {
+    border-color: var(--primary-red) !important;
+    box-shadow: 0 0 5px rgba(255, 0, 51, 0.5) !important;
+}
+
+/* --- BUTTONS --- */
+/* Solid Red Buttons for primary actions */
+.stButton>button {
+    background: linear-gradient(45deg, var(--primary-red), var(--primary-red-dim)) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.stButton>button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 0, 51, 0.6);
+}
+
+/* Sidebar Styling */
+section[data-testid="stSidebar"] {
+    background-color: #050505;
+    /* Darker than main content to recede */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* TABS Styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px 4px 0 0;
+    border: none;
+    color: #888;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: rgba(255, 0, 51, 0.1) !important;
+    border-bottom: 2px solid var(--primary-red) !important;
+    color: var(--primary-red) !important;
+    font-weight: bold;
+}

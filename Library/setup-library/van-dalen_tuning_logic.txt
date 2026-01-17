@@ -1,0 +1,5 @@
+VAN DALEN NITRO TUNING PROTOCOL (REDS Racing):
+- LSN (Low Speed): If the engine idles high for 5 seconds then drops, the LSN is too lean. If it bogs and produces heavy smoke on takeoff, it is too rich.
+- HSN (High Speed): If the engine "cuts" or sounds like it's hit a rev-limiter at the end of the straight, rich the HSN immediately.
+- IDLE GAP: Target 0.6mm to 0.7mm. If the car "creeps" forward at idle, the gap is too large or the clutch springs are too soft.
+- ALTITUDE (Peak View RC 4500ft+): Drop venturi size by 0.5mm compared to sea-level settings to maintain air velocity.

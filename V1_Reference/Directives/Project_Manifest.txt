@@ -1,0 +1,219 @@
+Project Manifest: AGR APEX Advisor (v1.8.6)
+Last Updated: 2026-01-15
+Status: Phase 6 In Progress | Phase 5.1 Complete | Phase 4.1-4.3 Complete | Streamlit v1.39.0
+1. System Goal
+Increase the probability of sportsman and intermediate racers making the podium. 
+2. Racer Profile Architecture (Multi-Racer Capable)
+There needs to be a way for drivers to register multiple racer profiles (e.g., for themselves, teammates, or children) and switch between them. Each profile must include:
+Racer Name
+Email Address: To send chat histories, 
+Social Media Profiles: Facebook or Instagram.  This is used for automatic sharing of race reports.  Will need some functionality for the AI to draft a race report based on the relevant inputs from Tabs 1 – 4 below. Will also need functionality that will allow the racer to upload up to 3 photos. 
+Cars (can have multiple cars): Each vehicle entry must include Brand (e.g., Tekno, Associated, Xray) and Vehicle Model (e.g., NB48 2.2, RC10B74.2). This is critical for template-based setup sheet parsing.
+Transponder number attached to specific car available in their list
+List of current sponsor companies: This should be one of those tables where you can click the “+” sign to add a sponsor. Some racers of a lot of sponsors
+
+3. Mandatory Dashboard Architecture (The 6-Tab Flow)
+
+Tab 1: Mission Control (Pre-Event Strategy)
+Question: "Where are we going and are we ready?"
+Mindset: In the shop, planning logistics and baseline build.
+Key Actions:
+- Event Context: Select Session Name, Type, Date, Track, Traction, Surface.
+- Historical Recon: "Pull up notes from last year" (Institutional Memory).
+- Race Prep Plan: Generate PDF checklist/strategy.
+- Baseline Load: Load the "Shop Master" setup onto the car (Init Session).
+
+Tab 2: The Pit Lane (Race Day Context)
+Question: "What are the track conditions RIGHT NOW?"
+Mindset: At the track, just walked the surface.
+Key Actions:
+- Conditions: Log Air/Track Temp, Grip Level (Low/Med/High).
+- Track Walk Vision: Upload photos/video for AI analysis of ruts/groove.
+- Schedule Monitor: LiveRC integration ("Heat 4, Race 12").
+
+Tab 3: The Driver Stand (Debrief Input)
+Question: "What is the car doing wrong?"
+Mindset: Adrenaline dump immediately after a run.
+Key Actions:
+- Voice Note: "Record" (No wake word).
+- Quick Symptoms: Tap buttons for "Loose," "Push," "Bottoming."
+
+Tab 4: The Engineer (Diagnosis & Fix)
+Question: "How do I fix the problem?"
+Mindset: Back at the pit table.
+Key Actions:
+- The Prescription: "Thicken Front Shock Oil (35wt -> 40wt)."
+- The Rationale: "Because you said 'Bottoming' in Tab 3 + 'High Temp' in Tab 2."
+
+Tab 5: The Scoreboard (Validation)
+Question: "Did the last change work?"
+Mindset: The heat is over. Did I go faster?
+Key Actions:
+- LiveRC Data: Lap times and Consistency Score.
+- X-Factor Audit: Rate the change 1-5.
+- ORP Score: Did Optimal Race Pace improve?
+
+Tab 6: The Garage (Configuration)
+Question: "What is the exact reference setup?"
+Mindset: Reference check or library browse.
+Key Actions:
+- Digital Twin: Master record of current state (Drift Analysis).
+- Library: Browse and copy setups.
+
+4. Master Chassis Library (Phase 4.1)
+Purpose: Centralized repository of track-specific "Pro Baselines" to accelerate setup optimization.
+Setup Sheet Parsing: System must support uploading brand-specific setup templates (fillable PDFs or images) and automatically extract setup data using:
+- PDF Form Field Extraction: Direct reading of fillable PDF fields for 100% accuracy.
+- AI Vision Parsing: OCR and visual recognition for scanned/photographed setup sheets.
+Brand-Specific Templates: Each brand (Tekno, Associated, Xray, etc.) uses unique setup sheet layouts. System must maintain a mapping of Brand -> Template Parser to correctly identify field locations.
+Library Management: Dedicated UI (Tab 5: Setup Library) for browsing, importing, and promoting setups to the master library.
+Context Matching: When initializing a session in Tab 1, system should detect if a library baseline exists for the selected track/conditions and offer one-click import.
+
+5. Institutional Memory System (Phase 2.5) - CORE FEATURE
+Purpose: Transform the AI from a stateless advisor into a learning system that accumulates racing wisdom over time. This is the digital equivalent of a veteran racer's 30-year setup binder.
+
+5.1 Historical Context Engine
+The AI Setup Advisor must have access to:
+- Track History: All previous sessions at the current track, including setups used and lap times achieved.
+- Condition History: Sessions with similar conditions (traction level, surface type) regardless of track.
+- Successful Changes: Setup changes that were accepted AND resulted in improved lap times.
+- Failed Changes: Setup changes that were accepted but resulted in SLOWER lap times (with full setup context).
+
+5.2 Memory-Driven Recommendations
+When making recommendations, the AI must:
+- Reference Historical Precedent: "Last time at this track, changing to X improved lap times by 0.3s"
+- Provide Confidence Levels: Higher confidence for recommendations with proven track records.
+- Avoid Proven Failures: Do not recommend changes that previously made things worse in similar contexts.
+- Consider Setup Balance: Understand that a component change may fail due to overall balance, not the component itself.
+
+5.3 Intelligent Denial Handling
+Critical distinction between denials and failures:
+- DENIED ≠ BAD: Racers deny changes for many reasons (missing parts, time constraints, preference). Denials should NOT be treated as evidence the change is wrong.
+- Session Scope: A denial in the current session means skip it for now, but it remains valid for future sessions.
+- True Failures: Only changes that were ACCEPTED but resulted in slower lap times should be flagged as failures.
+
+5.4 Balance-Aware Reasoning
+The car is a connected system seeking balance between speed and control:
+- A change that failed in one setup context may succeed when paired with complementary adjustments.
+- When reporting failures, include the full setup state at the time of failure.
+- The AI should reason about the whole car, not just isolated components.
+
+5.5 Marketing Value Proposition
+- "Your AI pit crew chief that gets smarter with every race"
+- "Never forget what worked at a track"
+- "Eliminate repeat mistakes - the AI remembers what didn't work"
+- "30 years of setup wisdom, built from your own racing data"
+
+6. Race Prep Plan Generator (Phase 3.3)
+Purpose: Transform event registration into strategic race preparation. Most racers know their calendar weeks/months in advance - this feature leverages that lead time to prepare properly.
+
+6.1 Trigger Point
+After the racer enters event details in Tab 1 (Event Setup), the system should prompt:
+"Would you like a Race Prep Plan for this event?"
+
+6.2 Plan Contents (AI-Generated)
+The Race Prep Plan is a one-time PDF document containing:
+
+Strategic Overview:
+- Event goals and realistic expectations
+- Historical performance at this track (if available)
+- Key challenges based on expected conditions
+
+Track Intelligence:
+- What the AI knows from past sessions at this track
+- Relevant baselines from the Master Chassis Library
+- Known track characteristics (layout, surface tendencies)
+
+Recommended Starting Setup:
+- Best baseline for expected conditions
+- Informed by Institutional Memory (what worked before)
+- Rationale for each major setting
+
+Mechanical Checklist:
+- Pre-race maintenance items (shock rebuilds, diff service intervals)
+- Wear items to inspect
+- Critical systems to verify
+
+Parts & Consumables List:
+- Tire compounds recommended for conditions
+- Shock oils to bring
+- Spare parts based on track characteristics
+- Consumables (fuel, cleaners, etc.)
+
+Practice Session Strategy:
+- What to focus on in each practice run
+- Suggested progression (baseline verification → tuning → race pace)
+- Key observations to make
+
+Contingency Notes:
+- "If conditions are wetter than expected, pivot to X"
+- "If traction is higher than expected, consider Y"
+- Alternative strategies based on condition variables
+
+6.3 Output Format
+- PDF format only
+- Designed for printing (bring to the track)
+- Can be emailed to racer for mobile access
+
+6.4 Key Differentiator
+This feature makes A.P.E.X. proactive rather than reactive. Instead of only helping during the race, the system helps you WIN BEFORE YOU ARRIVE by ensuring proper preparation.
+
+Marketing: "Win the race before you arrive at the track"
+
+7. A.P.E.X. v1.7.0 Objectives (Architecture Layer)
+7.1 Optimized Scribe
+- Remove "Wake Word" requirement for voice logging.
+- Implement proactive signal detection (Keywords: Bottoming, Loose, Traction, etc.) for visual dashboard highlighting.
+
+7.2 Hybrid Parsing Engine
+- Stage 1: Absolute fidelity via AcroForm PDF extraction (Majority use case).
+- Stage 2: AI Vision fallback for photo-based setup sheets.
+
+7.3 Pro-Level Reporting Automation
+8. UI/UX Design Standards
+Purpose: Ensure efficiency, empathy, and consistency in the UI without stifling innovation.
+- **Directives/design_standards.md**: Living document covering visual hierarchy, component architecture, and voice & tone.
+- **Philosophy**: Efficiency & Empathy. High Signal-to-Noise. Native Clarity. "The Twin" Concept.
+- **Flexibility**: Visual references ("Make it look like this") are encouraged concepts for evolution.
+
+9. Immediate UX Corrections (v1.8.x)
+- **Racer Profile Friction**: The current sidebar implementation updates continuously, causing focus loss and data clearing bugs.
+- **Correction**: Refactor to a "Batch Save" model using Streamlit Forms. Users must be able to enter all data (Sponsors, Vehicles) without interruption and save once.
+
+10. Phase 6 - System Quality & Stability (v1.8.6)
+
+**6.1 Bug Remediation (COMPLETE)**
+- Phase 7.2: Fixed all 37 identified real code bugs
+  * Session state contract violations
+  * Data persistence edge cases
+  * Error handling improvements
+  * Import path corrections
+
+**6.2 Linting & Code Quality (COMPLETE)**
+- Phase 7.1: Auto-fixed 665 total linting issues
+  * 546 low-risk issues (ruff --unsafe-fixes)
+  * 119 additional low-priority issues
+  * No functional changes - pure code quality improvement
+
+**6.3 Streamlit Compatibility (COMPLETE - Phase 4.1 Fix)**
+- Upgraded Streamlit 1.32.0 → 1.39.0
+- Fixes TypeError in Tab 5 image upload (st.image with use_container_width)
+- Risk assessment: Low - verified API compatibility with all Streamlit components
+- Ready for production deployment
+
+**6.4 Code Cleanup (COMPLETE)**
+- Removed dead code (dashboard_BACKUP_original_2043_lines.py)
+- Improved vehicle selection robustness
+- Ready for modularization phase
+
+**6.5 Modularization (IN PROGRESS)**
+- Planning refactor of monolithic dashboard.py into discrete tab modules
+- No user-facing changes during refactoring
+- Infrastructure: Execution/tabs/ module structure
+- Testing: Strict regression testing for 1:1 parity
+
+11. Multi-Racer Profile Management (Phase 4.4)
+- **Profile Switching**: Instant context switching between different racers.
+- **Default Profile**: User capability to designate a primary profile for auto-load.
+- **Team Management**: "Add Racer" workflow for growing teams/families.
+

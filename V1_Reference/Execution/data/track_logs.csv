@@ -1,0 +1,6 @@
+Date,Event,Notes,Vehicle,Lap_Time
+2025-12-26 08:24,Mock Test Nationals,"SESSION_START: EVENT: Mock Test Nationals (Practice) | CLASSES: Nitro Buggy | TRACK: Thunder Alley (Large/Medium/Dry/Smooth) | Car: NB48 2.2 Buggy | Setup: {'DF': 7000, 'DC': 7000, 'DR': 5000}",NB48 2.2 Buggy,
+2025-12-26 08:44,Mock Test Nationals,Driver observation: Car feels slightly loose on corner exit.,NB48 2.2 Buggy,32.5
+2025-12-26 08:54,Mock Test Nationals,DIGITAL_TWIN_UPDATE: DR -> 7000,NB48 2.2 Buggy,
+2025-12-26 09:24,Mock Test Nationals,Driver observation: Rear is more planted now. Pushing harder.,NB48 2.2 Buggy,31.8
+2025-12-26 09:54,Mock Test Nationals,LIVERC_SYNC: 12 Laps / 6:05.2 | Fastest: 31.2 | Consistency: 92%,NB48 2.2 Buggy,31.2

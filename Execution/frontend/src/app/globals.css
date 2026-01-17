@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0a0a0b;
+  color: #ffffff;
+}
+
+/* Glass effect for cards */
+.glass {
+  background: rgba(20, 20, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* Data font */
+.data-mono {
+  @apply font-mono text-sm font-semibold;
+}
+
+/* Uppercase headers */
+.header-uppercase {
+  @apply font-inter font-bold uppercase tracking-tight;
+}
+
+/* Status indicators */
+.status-good {
+  color: #00e676;
+}
+
+.status-warning {
+  color: #ffc400;
+}
+
+.status-danger {
+  color: #ff5252;
+}
+
+.status-neutral {
+  color: #bdbdbd;
+}
+
+/* Ticker animation */
+@keyframes pulse-ticker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.ticker {
+  animation: pulse-ticker 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
