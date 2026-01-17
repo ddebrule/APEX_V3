@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import GlassCard from '@/components/common/GlassCard';
-import DataDisplay from '@/components/common/DataDisplay';
+import SessionLockSlider from '@/components/common/SessionLockSlider';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import { createSession } from '@/lib/queries';
 import type { TrackContext, SessionType } from '@/types/database';
@@ -23,7 +23,6 @@ export default function BaselineInitialization() {
 
   const handleInitializeSession = async () => {
     if (!isReadyToLock() || !selectedRacer || !selectedVehicle || !eventName || !trackName) {
-      alert('Please fill in all required fields');
       return;
     }
 
@@ -53,7 +52,6 @@ export default function BaselineInitialization() {
       }
     } catch (error) {
       console.error('Failed to initialize session:', error);
-      alert('Failed to initialize session');
     } finally {
       setIsInitiating(false);
     }
@@ -61,46 +59,55 @@ export default function BaselineInitialization() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* Configuration */}
+      {/* Baseline Configuration */}
       <GlassCard>
-        <h2 className="header-uppercase text-lg mb-4 border-b border-apex-border pb-3">
-          Baseline Configuration
-        </h2>
-        <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4 border-b border-apex-border/40 pb-3">
+          <span className="text-amber-400 font-mono text-xs">◆</span>
+          <h2 className="header-uppercase text-sm font-bold tracking-widest text-amber-400">
+            Baseline Configuration
+          </h2>
+        </div>
+        <div className="space-y-3">
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400 block mb-2">
-              Event Name
+            <label className="text-[9px] uppercase tracking-widest text-gray-500 block mb-1.5 font-mono">
+              › EVENT NAME
             </label>
             <input
               type="text"
               value={eventName}
               onChange={(e) => setEventName(e.target.value)}
-              placeholder="e.g., SDRC Fall Brawl"
-              className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue"
+              placeholder="SDRC Fall Brawl"
+              className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 font-mono transition-all"
             />
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400 block mb-2">
-              Track Name
+            <label className="text-[9px] uppercase tracking-widest text-gray-500 block mb-1.5 font-mono">
+              › TRACK NAME
             </label>
             <input
               type="text"
               value={trackName}
               onChange={(e) => setTrackName(e.target.value)}
-              placeholder="e.g., SDRC Raceway"
-              className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue"
+              placeholder="SDRC Raceway"
+              className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 font-mono transition-all"
             />
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400 block mb-2">
-              Session Type
+            <label className="text-[9px] uppercase tracking-widest text-gray-500 block mb-1.5 font-mono">
+              › SESSION TYPE
             </label>
             <select
               value={sessionType}
               onChange={(e) => setSessionType(e.target.value as SessionType)}
-              className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue"
+              className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-amber-400/50 focus:ring-1 focus:ring-amber-400/20 font-mono transition-all appearance-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fbbf24' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 8px center',
+                paddingRight: '24px',
+              }}
             >
               <option value="practice">Practice</option>
               <option value="qualifier">Qualifier</option>
@@ -109,33 +116,57 @@ export default function BaselineInitialization() {
           </div>
 
           {selectedVehicle && (
-            <DataDisplay label="Shop Master Ready" value="YES" mono />
+            <div className="pt-2 border-t border-apex-border/20">
+              <div className="flex justify-between items-center">
+                <span className="text-[9px] uppercase tracking-widest text-gray-600 font-mono">Ready:</span>
+                <span className="text-[9px] text-apex-green font-mono">✓ YES</span>
+              </div>
+            </div>
           )}
         </div>
       </GlassCard>
 
-      {/* Actions */}
+      {/* Session Control */}
       <GlassCard>
-        <h2 className="header-uppercase text-lg mb-4 border-b border-apex-border pb-3">
-          Session Control
-        </h2>
-        <div className="space-y-3">
+        <div className="flex items-center gap-2 mb-4 border-b border-apex-border/40 pb-3">
+          <span className="text-apex-green font-mono text-xs">◆</span>
+          <h2 className="header-uppercase text-sm font-bold tracking-widest text-apex-green">
+            Session Control
+          </h2>
+        </div>
+        <div className="space-y-4">
+          {/* Slider */}
+          <SessionLockSlider
+            onDeploy={handleInitializeSession}
+            disabled={!isReadyToLock()}
+            isLoading={isInitiating}
+          />
+
+          {/* Prep PDF Button */}
           <button
-            onClick={handleInitializeSession}
-            disabled={!isReadyToLock() || isInitiating}
-            className="w-full py-3 bg-apex-blue hover:bg-blue-600 disabled:bg-gray-700 disabled:opacity-50 text-white font-bold uppercase tracking-wide rounded transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full py-2 border border-apex-blue/50 hover:border-apex-blue text-apex-blue hover:bg-apex-blue/5 text-xs font-bold uppercase tracking-widest rounded transition-all duration-200 font-mono"
           >
-            {isInitiating ? '⟳ INITIALIZING...' : '⊳ INIT RACING SESSION'}
+            [ ] Prep PDF Checklist
           </button>
 
-          <button
-            className="w-full py-2 border border-apex-green hover:bg-apex-green/10 text-apex-green font-bold uppercase tracking-wide text-sm rounded transition-all duration-200"
-          >
-            📋 PREP PDF CHECKLIST
-          </button>
-
-          <div className="text-xs text-gray-500 mt-4 pt-4 border-t border-apex-border">
-            <p>Status: {isReadyToLock() ? '✓ READY TO LOCK' : '○ AWAITING CONFIG'}</p>
+          {/* Status */}
+          <div className="pt-2 border-t border-apex-border/20">
+            <div className="flex justify-between items-center">
+              <span className="text-[9px] uppercase tracking-widest text-gray-600 font-mono">STATUS:</span>
+              <span
+                className={`text-[9px] font-mono font-bold ${
+                  isReadyToLock() ? 'text-apex-green' : 'text-gray-500'
+                }`}
+              >
+                {isReadyToLock() ? '◆ READY' : '◯ CONFIG PENDING'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mt-1">
+              <span className="text-[9px] uppercase tracking-widest text-gray-600 font-mono">LOCK:</span>
+              <span className={`text-[9px] font-mono ${isInitiating ? 'text-amber-400' : 'text-gray-500'}`}>
+                {isInitiating ? '⟳ INITIALIZING' : '◯ STANDBY'}
+              </span>
+            </div>
           </div>
         </div>
       </GlassCard>

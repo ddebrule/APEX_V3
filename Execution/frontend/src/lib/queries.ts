@@ -45,6 +45,37 @@ export async function getDefaultRacer(): Promise<RacerProfile | null> {
   return data || null;
 }
 
+export async function createRacerProfile(racer: Omit<RacerProfile, 'id' | 'created_at' | 'updated_at'>): Promise<RacerProfile> {
+  const { data, error } = await supabase
+    .from('racer_profiles')
+    .insert([racer])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating racer profile:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function updateRacerProfile(id: string, updates: Partial<RacerProfile>): Promise<RacerProfile> {
+  const { data, error } = await supabase
+    .from('racer_profiles')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating racer profile:', error);
+    throw error;
+  }
+
+  return data;
+}
+
 // ========== VEHICLES ==========
 
 export async function getVehiclesByProfileId(profileId: string): Promise<Vehicle[]> {
@@ -74,6 +105,37 @@ export async function getVehicleById(id: string): Promise<Vehicle | null> {
   }
 
   return data || null;
+}
+
+export async function createVehicle(vehicle: Omit<Vehicle, 'id' | 'created_at' | 'updated_at'>): Promise<Vehicle> {
+  const { data, error } = await supabase
+    .from('vehicles')
+    .insert([vehicle])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating vehicle:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function updateVehicle(id: string, updates: Partial<Vehicle>): Promise<Vehicle> {
+  const { data, error } = await supabase
+    .from('vehicles')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating vehicle:', error);
+    throw error;
+  }
+
+  return data;
 }
 
 // ========== SESSIONS ==========
