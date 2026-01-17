@@ -1,9 +1,9 @@
-import MissionControl from '@/components/tabs/MissionControl';
+import TabNav from '@/components/common/TabNav';
 
 export default function Home() {
   return (
     <main className="w-full h-screen bg-apex-dark">
-      <MissionControl />
+      <TabNav />
     </main>
   );
 }
