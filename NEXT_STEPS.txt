@@ -2,13 +2,15 @@
 A.P.E.X. V3.1 - IMMEDIATE NEXT STEPS
 ================================================================================
 
-STATUS: Backend migration files are ready and committed to GitHub.
+STATUS: Database is empty. Need to create initial schema in Supabase.
 
-CRITICAL NEXT ACTION: Apply the migration to your Supabase database.
+CRITICAL NEXT ACTION: Run Master_Schema.sql to create all database tables.
 
 ================================================================================
-STEP 1: Apply Database Migration (5 minutes)
+STEP 1: Create Initial Database Schema (5 minutes)
 ================================================================================
+
+⚠️  CORRECTION: Your database is empty, so run the FULL schema, not the migration.
 
 1. Open your browser and go to:
    https://app.supabase.com/
@@ -20,7 +22,7 @@ STEP 1: Apply Database Migration (5 minutes)
 4. Click "New Query" button
 
 5. Open this file in your project:
-   Directives/Migration_1_1_0.sql
+   Directives/Master_Schema.sql  ← (NOT Migration_1_1_0.sql)
 
 6. Copy ALL the content
 
@@ -28,33 +30,40 @@ STEP 1: Apply Database Migration (5 minutes)
 
 8. Click the "Run" button (or press Ctrl+Enter)
 
-9. You should see this message:
-   ✓ Migration 1.1.0 completed successfully
+9. You should see:
+   ✓ Success. No rows returned
 
 10. Close the query window
 
+WHAT THIS DOES:
+- Creates all tables (racer_profiles, classes, vehicles, sessions, etc.)
+- Creates indexes for performance
+- Sets up row-level security policies
+- Includes V3.1 features (sponsors field, classes table, class_id FK)
+
 ================================================================================
-STEP 2: Verify Migration (2 minutes - Optional but recommended)
+STEP 2: Verify Schema Creation (2 minutes - Optional but recommended)
 ================================================================================
 
 Create a new SQL query in Supabase and paste this:
 
 ---
--- Verify sponsors column exists
-SELECT column_name FROM information_schema.columns
-WHERE table_name = 'racer_profiles' AND column_name = 'sponsors';
-
--- Verify classes table exists
+-- List all tables that were created
 SELECT table_name FROM information_schema.tables
-WHERE table_name = 'classes' AND table_schema = 'public';
-
--- Verify class_id column exists
-SELECT column_name FROM information_schema.columns
-WHERE table_name = 'vehicles' AND column_name = 'class_id';
+WHERE table_schema = 'public'
+ORDER BY table_name;
 ---
 
-Each query should return exactly one row. If you see results for all three,
-the migration succeeded.
+You should see 7 tables:
+✓ classes
+✓ race_results
+✓ racer_profiles
+✓ sessions
+✓ setup_changes
+✓ setup_embeddings
+✓ vehicles
+
+If you see all 7 tables, schema creation succeeded.
 
 ================================================================================
 STEP 3: Test Locally (Already done - just verify)
