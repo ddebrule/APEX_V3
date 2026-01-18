@@ -96,7 +96,7 @@ export interface AdvisorState {
   ) => Promise<void>;
   setIsAccepting: (loading: boolean) => void;
   fetchSessionHistory: (changes: SetupChange[]) => void;
-  setTireFatigue: (tireFatigue: string | null, runCount: number) => void;
+  setTireFatigue: (tireFatigue: 'TIRE_CHANGE_RECOMMENDED' | 'MONITOR_TIRE_WEAR' | null, runCount: number) => void;
   setScenarioB: (isScenarioB: boolean) => void;
   setDriverConfidence: (confidence: number) => void;
   setError: (error: string | null) => void;
@@ -621,7 +621,7 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
   /**
    * Set tire fatigue status and run count
    */
-  setTireFatigue: (tireFatigue: string | null, runCount: number) => {
+  setTireFatigue: (tireFatigue: 'TIRE_CHANGE_RECOMMENDED' | 'MONITOR_TIRE_WEAR' | null, runCount: number) => {
     set({ tireFatigue, runCount });
   },
 
