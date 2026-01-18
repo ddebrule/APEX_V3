@@ -235,18 +235,29 @@ export default function PaddockOps() {
   useEffect(() => {
     // Apply scale to the main app container or body
     // using transform instead of zoom for better compatibility
-    document.body.style.transform = `scale(${uiScale / 100})`;
-    document.body.style.transformOrigin = 'top center';
-    // Adjust height to prevent scroll issues if needed, requires generic reset
-    if (uiScale === 100) document.body.style.removeProperty('transform');
+    const s = uiScale / 100;
+    if (uiScale === 100) {
+      document.body.style.removeProperty('transform');
+      document.body.style.removeProperty('transformOrigin');
+      document.body.style.removeProperty('width');
+      document.body.style.removeProperty('height');
+    } else {
+      document.body.style.transform = `scale(${s})`;
+      document.body.style.transformOrigin = 'top left';
+      document.body.style.width = `${100 / s}%`;
+      document.body.style.height = `${100 / s}%`;
+    }
 
     return () => {
       document.body.style.removeProperty('transform');
+      document.body.style.removeProperty('transformOrigin');
+      document.body.style.removeProperty('width');
+      document.body.style.removeProperty('height');
     }
   }, [uiScale]);
 
   return (
-    <div className="flex h-full bg-[#121212] text-white font-sans overflow-hidden relative">
+    <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
 
       {/* PINNED SIDEBAR (RACER IDENTITY) */}
       <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
@@ -341,6 +352,13 @@ export default function PaddockOps() {
                   <option value="Chassis">Chassis</option>
                   <option value="Paint">Paint</option>
                 </select>
+                <button
+                  onClick={() => handleAddSponsor({ key: 'Enter' } as React.KeyboardEvent)}
+                  className="border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black px-3 rounded hover:bg-[#FF6B6B] transition-all disabled:opacity-50"
+                  disabled={!selectedRacer || !newSponsor.trim()}
+                >
+                  [+]
+                </button>
               </div>
               <div className="flex gap-[5px] flex-wrap mt-2 min-h-[40px] content-start">
                 {selectedRacer?.sponsors?.map((sponsor, idx) => (
@@ -369,9 +387,8 @@ export default function PaddockOps() {
             </button>
             <button
               onClick={() => setSignalManagerOpen(true)}
-              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] p-2.5 text-left flex justify-between items-center group">
+              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] p-2.5 flex justify-center items-center">
               <span>Handling Signals Map</span>
-              <span className="group-hover:text-white opacity-0 group-hover:opacity-100 transition-opacity">[EDIT]</span>
             </button>
           </div>
         </div>
