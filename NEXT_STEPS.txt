@@ -1,0 +1,160 @@
+================================================================================
+A.P.E.X. V3.1 - IMMEDIATE NEXT STEPS
+================================================================================
+
+STATUS: Backend migration files are ready and committed to GitHub.
+
+CRITICAL NEXT ACTION: Apply the migration to your Supabase database.
+
+================================================================================
+STEP 1: Apply Database Migration (5 minutes)
+================================================================================
+
+1. Open your browser and go to:
+   https://app.supabase.com/
+
+2. Select your APEX_V3 project
+
+3. Click "SQL Editor" in the left sidebar
+
+4. Click "New Query" button
+
+5. Open this file in your project:
+   Directives/Migration_1_1_0.sql
+
+6. Copy ALL the content
+
+7. Paste into the Supabase SQL Editor text area
+
+8. Click the "Run" button (or press Ctrl+Enter)
+
+9. You should see this message:
+   ✓ Migration 1.1.0 completed successfully
+
+10. Close the query window
+
+================================================================================
+STEP 2: Verify Migration (2 minutes - Optional but recommended)
+================================================================================
+
+Create a new SQL query in Supabase and paste this:
+
+---
+-- Verify sponsors column exists
+SELECT column_name FROM information_schema.columns
+WHERE table_name = 'racer_profiles' AND column_name = 'sponsors';
+
+-- Verify classes table exists
+SELECT table_name FROM information_schema.tables
+WHERE table_name = 'classes' AND table_schema = 'public';
+
+-- Verify class_id column exists
+SELECT column_name FROM information_schema.columns
+WHERE table_name = 'vehicles' AND column_name = 'class_id';
+---
+
+Each query should return exactly one row. If you see results for all three,
+the migration succeeded.
+
+================================================================================
+STEP 3: Test Locally (Already done - just verify)
+================================================================================
+
+Your frontend dev server should still be running on:
+  http://localhost:3002
+
+The Phase 2.1 components (EventIdentity, SessionLockSlider, TrackIntelligence)
+should still work exactly as before. The migration doesn't break anything.
+
+Try:
+1. Refresh the page (Ctrl+F5)
+2. No errors should appear
+3. Mission Control tab should load normally
+
+================================================================================
+AFTER MIGRATION: What's Next
+================================================================================
+
+Once the migration is successfully applied, the next phases are:
+
+PHASE 4 (Next): Build V3.1 Shells
+- Create Tab 1: Paddock Ops (rename of Mission Control)
+- Create Tab 2: Unified Race Control (NEW - merges setup + active)
+- Create Tab 3: AI Advisor (redesign of Setup Advisor)
+
+For complete details, read:
+  V3_1_IMPLEMENTATION_ROADMAP.md
+
+For step-by-step migration guide, read:
+  MIGRATION_INSTRUCTIONS.md
+
+================================================================================
+FILES COMMITTED TO GITHUB
+================================================================================
+
+- Directives/Migration_1_1_0.sql
+  Safe, idempotent migration script with error handling
+
+- MIGRATION_INSTRUCTIONS.md
+  Complete guide with pre-migration checklist, troubleshooting, rollback plan
+
+- V3_1_IMPLEMENTATION_ROADMAP.md
+  Full roadmap for phases 2.1 through 5 with architecture diagrams
+
+- NEXT_STEPS.txt
+  This file - quick reference for immediate actions
+
+================================================================================
+IF SOMETHING GOES WRONG
+================================================================================
+
+Migration Failed?
+- Rerun the same query - it's idempotent (safe to run multiple times)
+- If you see "duplicate column" error, that's fine - column already exists
+- Check MIGRATION_INSTRUCTIONS.md "Troubleshooting" section
+
+Rollback Not Needed?
+- The migration is designed to be non-destructive
+- Your existing sessions, racers, vehicles continue to work
+- New fields just sit empty until frontend code populates them
+
+Still Broken?
+- Check that NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+  are set in frontend/.env.local
+- Restart npm run dev server after environment changes
+- Check browser console for specific errors
+
+================================================================================
+TIMELINE
+================================================================================
+
+✅ Phase 2.1 (Complete): Mission Control Aesthetics
+   - 4 components built (EventIdentity, SessionLockSlider,
+     BaselineInitialization, TrackIntelligence)
+   - Deployed to main branch
+
+🔄 Phase 3 (IN PROGRESS): Backend Migration
+   - Migration scripts created ✓
+   - Migration instructions created ✓
+   - Waiting for you to run it in Supabase (NEXT ACTION)
+
+🔜 Phase 4: V3.1 Shells
+   - Build new tabs using existing Phase 2.1 logic engines
+   - Reuse components, don't rewrite them
+
+🔜 Phase 5: Data Wiring
+   - Connect UI to new sponsors/classes schema
+
+================================================================================
+QUESTIONS?
+================================================================================
+
+Read the comprehensive guides:
+- MIGRATION_INSTRUCTIONS.md - detailed migration process
+- V3_1_IMPLEMENTATION_ROADMAP.md - full architecture and phase details
+- mockup_v29_complete_unified_command.html - Unified Race Control design
+- mockup_v31_ai_advisor_complete.html - AI Advisor design
+
+Everything you need is documented. Now just apply the migration!
+
+================================================================================
