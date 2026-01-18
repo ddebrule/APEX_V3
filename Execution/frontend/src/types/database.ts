@@ -11,12 +11,20 @@ export type RacerProfile = {
 export type Vehicle = {
   id: string;
   profile_id: string;
+  class_id?: string;
   created_at: string;
   updated_at: string;
   brand: string;
   model: string;
   transponder?: string;
   baseline_setup: Record<string, unknown>;
+};
+
+export type VehicleClass = {
+  id: string;
+  profile_id: string;
+  name: string;
+  created_at: string;
 };
 
 export type SessionType = 'practice' | 'qualifier' | 'main';
@@ -39,7 +47,7 @@ export type TrackContext = {
   name: string;
   surface: string;
   traction: string;
-  temperature?: number;
+  temperature?: number | null;
 };
 
 export type ChangeStatus = 'pending' | 'accepted' | 'denied' | 'reversed';

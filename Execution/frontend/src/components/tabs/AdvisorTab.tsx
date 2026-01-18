@@ -30,7 +30,7 @@ export default function AdvisorTab() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Mission Control state (provides session context)
-  const { selectedSession, selectedVehicle, driverConfidence } = useMissionControlStore();
+  const { selectedSession, selectedVehicle } = useMissionControlStore();
 
   // Advisor store with new chat actions
   const {
@@ -47,7 +47,6 @@ export default function AdvisorTab() {
     revertLastProposal,
     setTireFatigue,
     setScenarioB,
-    setDriverConfidence,
     fetchSessionHistory,
   } = useAdvisorStore();
 
@@ -74,11 +73,6 @@ export default function AdvisorTab() {
           setLocalError('No active session or vehicle selected');
           setIsInitializing(false);
           return;
-        }
-
-        // Set driver confidence from Mission Control
-        if (driverConfidence !== undefined) {
-          setDriverConfidence(driverConfidence);
         }
 
         // Calculate tire fatigue
@@ -116,7 +110,7 @@ export default function AdvisorTab() {
     };
 
     initialize();
-  }, [selectedSession, selectedVehicle, driverConfidence, setTireFatigue, setScenarioB, setDriverConfidence, fetchSessionHistory]);
+  }, [selectedSession, selectedVehicle, setTireFatigue, setScenarioB, fetchSessionHistory]);
 
   // ===== HANDLERS =====
 
@@ -141,8 +135,8 @@ export default function AdvisorTab() {
 
     await applyProposal(choice, customValue, {
       session_id: selectedSession.id as string,
-      old_value: null,
-      new_value: customValue ? String(customValue) : null,
+      old_value: undefined,
+      new_value: customValue ? String(customValue) : undefined,
     });
   };
 

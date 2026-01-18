@@ -22,9 +22,14 @@ export default function InstitutionalMemory() {
       setLoading(true);
       try {
         const data = await getInstitutionalMemory(selectedRacer.id, 3);
-        setMemories(data as MemoryEntry[]);
+        if (Array.isArray(data)) {
+          setMemories(data as unknown as MemoryEntry[]);
+        } else {
+          setMemories([]);
+        }
       } catch (error) {
         console.error('Failed to load memories:', error);
+        setMemories([]);
       } finally {
         setLoading(false);
       }

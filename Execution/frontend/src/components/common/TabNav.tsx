@@ -1,17 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import MissionControl from '@/components/tabs/MissionControl';
-import AdvisorTab from '@/components/tabs/AdvisorTab';
+import PaddockOps from '@/components/tabs/PaddockOps';
+import UnifiedRaceControl from '@/components/tabs/UnifiedRaceControl';
+import AIAdvisor from '@/components/tabs/AIAdvisor';
 
-type Tab = 'mission-control' | 'advisor' | 'battery' | 'signal' | 'sync';
+type Tab = 'paddock-ops' | 'race-control' | 'ai-advisor' | 'battery' | 'signal' | 'sync';
 
 export default function TabNav() {
-  const [activeTab, setActiveTab] = useState<Tab>('mission-control');
+  const [activeTab, setActiveTab] = useState<Tab>('paddock-ops');
 
   const tabs: { id: Tab; label: string; component: React.ReactNode }[] = [
-    { id: 'mission-control', label: 'Mission Control', component: <MissionControl /> },
-    { id: 'advisor', label: 'Setup Advisor', component: <AdvisorTab /> },
+    { id: 'paddock-ops', label: 'Paddock Ops', component: <PaddockOps /> },
+    { id: 'race-control', label: 'Race Control', component: <UnifiedRaceControl /> },
+    { id: 'ai-advisor', label: 'AI Advisor', component: <AIAdvisor /> },
     { id: 'battery', label: 'Battery', component: <div className="p-8 text-gray-400">Battery tab coming soon</div> },
     { id: 'signal', label: 'Signal', component: <div className="p-8 text-gray-400">Signal tab coming soon</div> },
     { id: 'sync', label: 'Sync', component: <div className="p-8 text-gray-400">Sync tab coming soon</div> },
