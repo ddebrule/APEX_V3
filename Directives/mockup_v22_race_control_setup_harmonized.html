@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Race Control Setup (Final_Harmonized)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.15);
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-green: #4CAF50;
+            --apex-green-glow: rgba(76, 175, 80, 0.15);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 360px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* WEATHER TICKER STRIP (HARMONIZED) */
+        .weather-ticker {
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 8px 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+        }
+
+        .ticker-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ticker-label {
+            color: #555;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .ticker-val {
+            color: var(--apex-white);
+            font-weight: 700;
+        }
+
+        .sync-bullet {
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #4CAF50;
+        }
+
+        .desktop {
+            flex: 1;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 20px;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input,
+        select {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            color: white;
+            font-size: 19px;
+            width: 100%;
+            border-radius: 4px;
+            font-family: var(--apex-font-mono);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .button-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .toggle-btn {
+            background: #0d0d0f;
+            border: 1px solid var(--apex-border);
+            padding: 8px;
+            color: #666;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--apex-red);
+            color: white;
+            background: var(--apex-red-soft);
+        }
+
+        /* MULTI-BRAIN AI BRIDGE (NEW) */
+        .ai-bridge-card {
+            background: var(--apex-red-soft);
+            border: 1px solid var(--apex-red-glow);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .ai-bridge-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .ai-bridge-title {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--apex-red);
+            letter-spacing: 1px;
+        }
+
+        .ai-switch-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(229, 57, 53, 0.2);
+            border: 1px solid var(--apex-red);
+            color: white;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-switch-btn:hover {
+            background: rgba(229, 57, 53, 0.3);
+        }
+
+        /* CLASS PILLS */
+        .class-pill {
+            background: #0d0d10;
+            border: 1px solid var(--apex-border);
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .class-pill.active {
+            border-color: var(--apex-red);
+            border-left-width: 4px;
+            background: rgba(229, 57, 53, 0.03);
+        }
+
+        .race-logic-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .ai-recommendation {
+            background: rgba(229, 57, 53, 0.05);
+            border-left: 4px solid var(--apex-red);
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ai-badge {
+            background: var(--apex-red);
+            color: white;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 2px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .ai-text {
+            font-size: 15px;
+            line-height: 1.4;
+            color: var(--apex-silver);
+        }
+
+        .btn-deploy {
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-weight: 900;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 30px var(--apex-red-glow);
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        footer {
+            padding: 6px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: #444; letter-spacing: 2px;">ATMOS_SYNC: ACTIVE</div>
+    </header>
+
+    <main>
+        <!-- SIDEBAR: EVENT SETUP -->
+        <div class="sidebar">
+            <div class="section-header"><span class="section-title">◆ Event Management</span></div>
+            <div class="sidebar-content">
+                <div class="input-group">
+                    <label class="input-label">Event Designation</label>
+                    <input type="text" value="SDRC FALL BRAWL">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Session Intent</label>
+                    <div class="button-grid">
+                        <div class="toggle-btn">PRACTICE</div>
+                        <div class="toggle-btn active">RACE</div>
+                    </div>
+                </div>
+
+                <div class="race-logic-box">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label class="input-label">Qualifying Rounds</label>
+                            <select>
+                                <option>2 Rounds</option>
+                                <option selected>3 Rounds</option>
+                                <option>4 Rounds</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label class="input-label">Main Events</label>
+                            <select>
+                                <option selected>Single Main</option>
+                                <option>Triple Mains</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 20px;">
+                    <label class="input-label">Deployable Classes</label>
+                    <div class="class-pill active">
+                        <span style="font-weight: 800;">1/8 NITRO BUGGY</span>
+                        <span style="font-size: 10px; font-family: var(--apex-font-mono); color: #555;">HEAT 4</span>
+                    </div>
+                    <div class="class-pill">
+                        <span style="font-weight: 800;">40+ NITRO BUGGY</span>
+                        <span style="font-size: 10px; font-family: var(--apex-font-mono); color: #555;">HEAT 7</span>
+                    </div>
+                </div>
+
+                <!-- AI BRIDGE (INTEGRATED) -->
+                <div class="ai-bridge-card">
+                    <div class="ai-bridge-header">
+                        <div style="font-size: 18px;">🧠</div>
+                        <span class="ai-bridge-title">DIRECT AI BRIDGE</span>
+                    </div>
+                    <p style="font-size: 12px; color: var(--apex-silver); margin-bottom: 12px; line-height: 1.3;">
+                        Need to discuss <strong>Buggy</strong> setup while you wait for your <strong>Truggy</strong>
+                        heat?
+                    </p>
+                    <button class="ai-switch-btn">
+                        <span>DISCUSS BUGGY WITH AI</span>
+                        <span>TAB 03 →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DESKTOP -->
+        <div class="desktop">
+            <div class="glass-card">
+                <!-- WEATHER TICKER STRIP -->
+                <div class="weather-ticker">
+                    <div class="ticker-item">
+                        <div class="sync-bullet"></div> <span class="ticker-label">Live Atmos Sync:</span>
+                    </div>
+                    <div class="ticker-item"><span class="ticker-label">Ambient:</span> <span
+                            class="ticker-val">74.2°F</span></div>
+                    <div class="ticker-item"><span class="ticker-label">Humidity:</span> <span
+                            class="ticker-val">12.4%</span></div>
+                    <div class="ticker-item" style="margin-left: auto;"><span class="ticker-label">Source:</span> <span
+                            class="ticker-val">OPENWEATHERMAP</span></div>
+                </div>
+
+                <div class="section-header"><span class="section-title">◆ Track Context Matrix</span></div>
+
+                <div style="padding: 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px;">
+                    <div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="input-group">
+                                <label class="input-label">Track Scale</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn">Small</div>
+                                    <div class="toggle-btn active">Medium</div>
+                                    <div class="toggle-btn">Large</div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Grip Level</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn">Low</div>
+                                    <div class="toggle-btn active">Med</div>
+                                    <div class="toggle-btn">Hi</div>
+                                    <div class="toggle-btn">Ext</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="input-group">
+                                <label class="input-label">Surface Material</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn active">Clay (Indoor)</div>
+                                    <div class="toggle-btn">Hard Packed</div>
+                                    <div class="toggle-btn">Loam</div>
+                                    <div class="toggle-btn">Blue Groove</div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Surface Condition</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn active">Damp / Fresh</div>
+                                    <div class="toggle-btn">Dry / Dusty</div>
+                                    <div class="toggle-btn">Slick</div>
+                                    <div class="toggle-btn">Bumpy</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="input-group">
+                            <label class="input-label">Manual Track Temp Input (°F)</label>
+                            <input type="text" placeholder="ENTER MEASURED TEMP...">
+                        </div>
+                        <div style="font-size: 11px; color: #555; font-style: italic; margin-top: 10px;">
+                            * Manual input overrides ambient temp estimations for tire logic.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="section-header"><span class="section-title">◆ Mechanical Baseline & AI Tuning</span></div>
+                <div style="padding: 20px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
+                    <div class="input-group">
+                        <label class="input-label">Initial setup</label>
+                        <div class="button-grid" style="grid-template-columns: 1fr; gap: 6px;">
+                            <div class="toggle-btn active">Master Baseline Setup</div>
+                            <div class="toggle-btn">Last Session Setup</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label class="input-label">Tire Compound Choice</label>
+                            <input type="text" value="Pro-Line S3 (Soft Clay)">
+                        </div>
+                        <div class="ai-recommendation">
+                            <div class="ai-badge">AI Intelligence</div>
+                            <div class="ai-text">Based on <strong>Fresh Clay</strong> with <strong>Medium Grip</strong>,
+                                I highly suggest <strong>S3 Soft</strong> for initial mechanical bite.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-deploy">Deploy Racing Operations</button>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // RACE_CONTROL // [ SETUP_MODE ]</div>
+        <div>[ TICKER_SYNC: OK ] [ FONT_SCALE: 19PX ]</div>
+    </footer>
+
+</body>
+
+</html>

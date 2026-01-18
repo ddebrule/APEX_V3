@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Paddock Operations (Locked Design)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-green: #4CAF50;
+            /* For successful race results */
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.06);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* PINNED SIDEBAR */
+        .sidebar {
+            width: 380px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .desktop {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* GARAGE */
+        .garage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .v-card {
+            background: #1a1a1c;
+            border: 1px solid var(--apex-border);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .v-card.active {
+            border-left: 4px solid var(--apex-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        /* RESULTS TABLE */
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--apex-font-mono);
+            font-size: 14px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #1a1a1c;
+            text-align: left;
+            padding: 12px 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #555;
+            border-bottom: 1px solid var(--apex-red);
+        }
+
+        tbody td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            color: var(--apex-silver);
+        }
+
+        .col-important {
+            color: white;
+            font-weight: 700;
+        }
+
+        /* GREEN FOR RACE RESULTS */
+        .res-race {
+            color: var(--apex-green);
+            font-weight: 900;
+        }
+
+        .res-test {
+            color: var(--apex-silver);
+            font-style: italic;
+        }
+
+        .session-tag {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            border: 1px solid #444;
+            color: #777;
+            margin-right: 5px;
+            font-weight: 800;
+        }
+
+        .tag-race {
+            border-color: var(--apex-red);
+            color: var(--apex-red);
+        }
+
+        footer {
+            padding: 8px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            font-family: var(--apex-font-mono);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab active">01 PADDOCK OPS</div>
+            <div class="nav-tab">02 MISSION CTRL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 10px; font-weight: 900; color: #444;">[ PADDOCK_LOCKED ]</div>
+    </header>
+
+    <main>
+        <!-- PINNED SIDEBAR -->
+        <div class="sidebar">
+            <div class="section-header">
+                <span class="section-title">◆ Racer Identity</span>
+            </div>
+            <div style="padding: 20px;">
+                <div style="font-size: 20px; font-weight: 900;">DUSTIN RUSSELL</div>
+                <div style="margin-top: 15px;">
+                    <span
+                        style="font-size: 10px; font-weight: 800; color: var(--apex-red); border: 1px solid var(--apex-red); padding: 4px 8px; border-radius: 3px;">TEKNO
+                        RC</span>
+                </div>
+                <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 10px;">
+                    <button
+                        style="background: var(--apex-red); border: none; padding: 12px; color: white; font-weight: 900; cursor: pointer; border-radius: 4px;">SYSTEM
+                        SETTINGS</button>
+                    <button
+                        style="background: transparent; border: 1px solid #333; padding: 12px; color: #555; font-weight: 900; cursor: pointer; border-radius: 4px;">UI
+                        SCALING: LARGE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DESKTOP -->
+        <div class="desktop">
+            <div class="glass-card">
+                <div class="section-header"><span class="section-title">◆ Active Vehicle Assets</span></div>
+                <div class="garage-grid">
+                    <div class="v-card active">
+                        <div style="font-weight: 900;">TEKNO NB48 2.2</div>
+                        <div style="font-size: 10px; font-family: var(--apex-font-mono); color: #555;">1/8 NITRO •
+                            TX-88741</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="flex: 1;">
+                <div class="section-header">
+                    <span class="section-title">◆ Past Session Results // NB48 2.2</span>
+                    <div style="display: flex; gap: 10px;">
+                        <span
+                            style="font-size: 9px; font-weight: 900; border-bottom: 2px solid var(--apex-red);">ALL</span>
+                        <span style="font-size: 9px; font-weight: 900; color: #444;">RACE</span>
+                        <span style="font-size: 9px; font-weight: 900; color: #444;">TEST</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Event/Location</th>
+                                <th>Class</th>
+                                <th>Result / Status</th>
+                                <th>Consis.</th>
+                                <th>Setup Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- EXAMPLE OF MULTI-CLASS AT SAME EVENT -->
+                            <tr>
+                                <td><span class="session-tag tag-race">RACE</span></td>
+                                <td class="col-important">SDRC FALL BRAWL</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="res-race">A-MAIN P3</td>
+                                <td>94.2%</td>
+                                <td>Blue Groove V2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="session-tag tag-race">RACE</span></td>
+                                <td class="col-important">SDRC FALL BRAWL</td>
+                                <td>40+ NITRO BUGGY</td>
+                                <td class="res-race">A-MAIN P1</td>
+                                <td>95.5%</td>
+                                <td>Blue Groove V2</td>
+                            </tr>
+                            <!-- TEST SESSION -->
+                            <tr>
+                                <td><span class="session-tag">TEST</span></td>
+                                <td class="col-important">PRIVATE SESSION // SDRC</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="res-test">DATA SYNCED</td>
+                                <td>89.1%</td>
+                                <td>Diff Oil Test</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // PADDOCK_OPS // WORKSPACE_SYNCED</div>
+        <div>[ USER: D. RUSSELL ] [ GARAGE: 01 ] [ HISTORY: 142 SESSIONS ]</div>
+    </footer>
+
+</body>
+
+</html>

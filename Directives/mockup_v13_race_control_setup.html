@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Race Control (Session Setup)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.15);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .setup-container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .setup-input {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            padding: 15px;
+            color: white;
+            width: 100%;
+            font-size: 18px;
+            font-family: var(--apex-font-mono);
+            border-radius: 4px;
+        }
+
+        .selection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .selection-item {
+            background: #0d0d0f;
+            border: 1px solid var(--apex-border);
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .selection-item:hover {
+            border-color: var(--apex-red);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .selection-item.active {
+            border-left: 4px solid var(--apex-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        .btn-deploy {
+            grid-column: span 2;
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-weight: 900;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 20px var(--apex-red-glow);
+            transition: transform 0.2s;
+        }
+
+        .btn-deploy:hover {
+            transform: scale(1.01);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 10px; font-weight: 900; color: #444;">[ SESSION: NO_ACTIVE_DEPLOYMENT ]</div>
+    </header>
+
+    <main>
+        <div class="setup-container">
+            <!-- STEP 1: EVENT PARAMETERS -->
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">◆ 01 Session Parameters</span></div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <label class="input-label">Event Designation</label>
+                        <input type="text" class="setup-input" placeholder="e.g. ROAR NATS PREP">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Operational Track</label>
+                        <div class="selection-list">
+                            <div class="selection-item active">SDRC RACEWAY // SAN DIEGO</div>
+                            <div class="selection-item">REVELATION // ONTARIO</div>
+                            <div class="selection-item">+ REGISTER NEW TRACK</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: BASELINE CONFIG -->
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">◆ 02 Baseline Configuration</span></div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <label class="input-label">Vehicle Selected</label>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--apex-red);">TEKNO NB48 2.2</div>
+                        <div style="font-size: 11px; font-family: var(--apex-font-mono); color: #555;">[ UID: 044-DR-001
+                            ]</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Initial Setup Profile</label>
+                        <div class="selection-list">
+                            <div class="selection-item active">BASELINE_V2 (SDRC_STOCK)</div>
+                            <div class="selection-item">BLUE_GROOVE_AGGR</div>
+                            <div class="selection-item">LAST_SESSION_RESUME</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INITIALIZE ACTION -->
+            <button class="btn-deploy">Deploy Racing Operations</button>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // RACE_CONTROL // READY_FOR_DEPLOYMENT</div>
+        <div>[ NODE: APX_BASE ] [ SYNC: OK ]</div>
+    </footer>
+
+</body>
+
+</html>

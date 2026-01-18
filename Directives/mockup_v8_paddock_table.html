@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Paddock Ops (Tabular History)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.06);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .top-row {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+            flex-shrink: 0;
+            height: 38vh;
+        }
+
+        .bottom-row {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        /* DATA TABLE STYLING */
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--apex-font-mono);
+            font-size: 14px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #1a1a1c;
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            border-bottom: 1px solid var(--apex-red);
+            z-index: 10;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--apex-border);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: rgba(229, 57, 53, 0.03);
+        }
+
+        tbody td {
+            padding: 15px 20px;
+            color: var(--apex-silver);
+        }
+
+        .col-important {
+            color: var(--apex-white);
+            font-weight: 700;
+        }
+
+        .col-result {
+            color: var(--apex-red);
+            font-weight: 900;
+        }
+
+        .col-mono {
+            font-size: 13px;
+            letter-spacing: -0.5px;
+        }
+
+        .setup-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--apex-border);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* TOP ROW CONTENT (MINIMIZED BUT CLEAR) */
+        .card-body {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .v-card {
+            background: #0d0d0e;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .v-card.active {
+            border-left: 3px solid var(--apex-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        .v-title {
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .v-info {
+            font-size: 10px;
+            font-family: var(--apex-font-mono);
+            color: #555;
+        }
+
+        footer {
+            padding: 8px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            font-family: var(--apex-font-mono);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab active">01 PADDOCK OPS</div>
+            <div class="nav-tab">02 MISSION CTRL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 800; color: #444;">[ TABLE_VIEW_ENABLED ]</div>
+    </header>
+
+    <main>
+        <div class="top-row">
+            <!-- RACER IDENTITY CARDS -->
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">◆ Racer Registry</span></div>
+                <div class="card-body">
+                    <div style="font-size: 22px; font-weight: 900;">DUSTIN RUSSELL</div>
+                    <div style="font-family: var(--apex-font-mono); font-size: 12px; color: #555; margin-bottom: 20px;">
+                        [ ENGINEER_ID: 044-DR ]</div>
+
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <span class="setup-chip" style="color: var(--apex-red); border-color: var(--apex-red);">TEKNO
+                            RC</span>
+                        <span class="setup-chip">PRO-LINE</span>
+                        <span class="setup-chip">HOBBYWING</span>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <button
+                            style="width: 100%; background: var(--apex-red); border: none; padding: 12px; border-radius: 4px; color: white; font-weight: 900; text-transform: uppercase; font-size: 12px; cursor: pointer;">System
+                            Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VEHICLE GARAGE GRID -->
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">◆ Active Garage Assets</span></div>
+                <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="v-card active">
+                        <div class="v-title">TEKNO NB48 2.2</div>
+                        <div class="v-info">1/8 NITRO • ACTIVE</div>
+                    </div>
+                    <div class="v-card">
+                        <div class="v-title">ASSOCIATED B7.1</div>
+                        <div class="v-info">1/10 ELECTRIC • STANDBY</div>
+                    </div>
+                    <div class="v-card">
+                        <div class="v-title">MUGEN MBX8R</div>
+                        <div class="v-info">1/8 ELECTRIC • ARCHIVED</div>
+                    </div>
+                    <div class="v-card"
+                        style="border-style: dashed; display: flex; align-items: center; justify-content: center; opacity: 0.3;">
+                        <span style="font-size: 10px; font-weight: 800;">[+] ADD NEW CAR</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM ROW: TABULAR HISTORICAL PLAYLIST -->
+        <div class="bottom-row">
+            <div class="glass-card" style="flex: 1;">
+                <div class="card-header">
+                    <span class="card-title">◆ Historical Performance Playlist // TEKNO NB48 2.2</span>
+                    <span style="font-size: 10px; font-weight: 800; color: #444;">[ SELECT ROW FOR DEEP ANALYTICS
+                        ]</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th># ID</th>
+                                <th>Date/Time</th>
+                                <th>Event Name</th>
+                                <th>Track</th>
+                                <th>Class</th>
+                                <th>Result</th>
+                                <th>Consistency</th>
+                                <th>Setup Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-mono">142</td>
+                                <td class="col-mono">15-JAN // 14:30</td>
+                                <td class="col-important">ROAR NATS PREP</td>
+                                <td>SDRC RACEWAY</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result">A-MAIN P3</td>
+                                <td class="col-mono">94.2%</td>
+                                <td><span class="setup-chip">Blue Groove V2</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-mono">141</td>
+                                <td class="col-mono">08-JAN // 09:12</td>
+                                <td class="col-important">SDRC FALL BRAWL</td>
+                                <td>SDRC RACEWAY</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result">QUAL P1</td>
+                                <td class="col-mono">91.8%</td>
+                                <td><span class="setup-chip">Morning Damp</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-mono">140</td>
+                                <td class="col-mono">02-JAN // 16:45</td>
+                                <td class="col-important">PRIVATE TESTING</td>
+                                <td>SDRC RACEWAY</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result">TEST DONE</td>
+                                <td class="col-mono">88.5%</td>
+                                <td><span class="setup-chip">Baseline v1</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-mono">139</td>
+                                <td class="col-mono">28-DEC // 10:15</td>
+                                <td class="col-important">WINTER WARMUP</td>
+                                <td>REVELATION</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result">B-MAIN P1</td>
+                                <td class="col-mono">92.1%</td>
+                                <td><span class="setup-chip">Medium Grip</span></td>
+                            </tr>
+                            <tr style="opacity: 0.5;">
+                                <td class="col-mono">138</td>
+                                <td class="col-mono">20-DEC // 18:30</td>
+                                <td class="col-important">CLUB RACE</td>
+                                <td>SDRC RACEWAY</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result">A-MAIN P5</td>
+                                <td class="col-mono">89.4%</td>
+                                <td><span class="setup-chip">Night Cold</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3 // HUB_ACTIVE // DB_CONNECTED</div>
+        <div>[ CURRENT_RACER: D. RUSSELL ] [ TOTAL_EVENTS: 142 ] [ GARAGE: 03 ]</div>
+    </footer>
+
+</body>
+
+</html>

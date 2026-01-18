@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Natural Conversation Flow</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #131315;
+            --apex-red: #E53935;
+            --apex-red-soft: rgba(229, 57, 53, 0.15);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+
+            --font-size-chat: 19px;
+            /* ACCESSIBLE BUT NOT CLUNKY */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 26px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 25px;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* CHAT INTERFACE - NATURAL FLOW */
+        .chat-feed {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            background-image:
+                radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .message {
+            max-width: 90%;
+            font-size: var(--font-size-chat);
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            padding-left: 20px;
+            border-left: 3px solid var(--apex-red);
+        }
+
+        .ai-label {
+            font-family: var(--apex-font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--apex-red);
+            margin-bottom: 10px;
+            display: block;
+            letter-spacing: 2px;
+        }
+
+        /* INTEGRATED PRESCRIPTION STYLING */
+        .prescription-text {
+            background: var(--apex-red-soft);
+            color: var(--apex-white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(229, 57, 53, 0.3);
+            font-family: var(--apex-font-mono);
+            font-weight: 700;
+            white-space: nowrap;
+            display: inline-block;
+            margin: 0 4px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            border-radius: 20px 20px 4px 20px;
+            color: var(--apex-silver);
+            font-style: italic;
+        }
+
+        /* ACTIONS */
+        .action-bar {
+            padding: 20px 30px;
+            border-top: 1px solid var(--apex-border);
+            display: flex;
+            gap: 15px;
+            background: #000;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: 1px solid #333;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 4px;
+        }
+
+        .btn-apply {
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 0 35px;
+            border-radius: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR */
+        .sidebar-item {
+            padding: 20px;
+            border-bottom: 1px solid var(--apex-border);
+            font-size: 16px;
+            font-weight: 700;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            color: var(--apex-red);
+            background: rgba(229, 57, 53, 0.03);
+        }
+
+        footer {
+            padding: 10px 30px;
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 MISSION</div>
+            <div class="nav-tab active">02 ADVISOR</div>
+            <div class="nav-tab">03 SCRIBE</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 700; color: #666;">[ ACCESSIBILITY: HIGH_GAIN ]</div>
+    </header>
+
+    <main>
+        <div class="glass-card">
+            <div
+                style="padding: 15px; background: rgba(255,255,255,0.02); font-size: 11px; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 2px;">
+                ◆ Detection Signals</div>
+            <div class="sidebar-item">Excessive Understeer</div>
+            <div class="sidebar-item">Snap Oversteer (Loose)</div>
+            <div class="sidebar-item">Bottoming Out</div>
+            <div class="sidebar-item">Brake Bias Fade</div>
+        </div>
+
+        <div class="glass-card">
+            <div class="chat-feed">
+                <!-- AI MESSAGE -->
+                <div class="message ai">
+                    <span class="ai-label">ADVISOR_CORE.EXE</span>
+                    Based on your feedback, it sounds like the car is pushing on corner exit. I recommend going to <span
+                        class="prescription-text">10,000 cSt</span> in the Front Diff and bumping the Rear Sway Bar to
+                    <span class="prescription-text">2.4 mm</span> to help it rotate.
+                </div>
+
+                <!-- USER MESSAGE -->
+                <div class="message user">
+                    Okay, the front diff change sounds good, but let's try 7,000 cSt first to see if that's enough.
+                </div>
+
+                <!-- AI RESPONSE -->
+                <div class="message ai">
+                    <span class="ai-label">ADVISOR_CORE.EXE</span>
+                    Conservative approach noted. I've logged the primary prescription as <span
+                        class="prescription-text">7,000 cSt</span> for the Front Diff. This should provide a safer
+                    increase in steering without sacrificing too much forward bite.
+                </div>
+            </div>
+
+            <div class="action-bar">
+                <input type="text" class="chat-input" placeholder="Type observation...">
+                <button class="btn-apply">Log Change</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1.0 // ENGINE ACTIVE</div>
+        <div>[ TRK_TEMP: 72°F ] [ LATENCY: 22MS ]</div>
+    </footer>
+
+</body>
+
+</html>

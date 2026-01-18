@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - High-Fidelity Mockup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #141416;
+            --apex-green: #00E676;
+            --apex-red: #FF5252;
+            --apex-blue: #2979FF;
+            --apex-amber: #FFC107;
+            --apex-border: rgba(255, 255, 255, 0.05);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: #E2E2E2;
+            font-family: var(--apex-font-sans);
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* TOP NAV BAR */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--apex-border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-version {
+            font-size: 18px;
+            font-weight: 700;
+            color: #666;
+            letter-spacing: 2px;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 20px;
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--apex-green);
+            box-shadow: 0 0 10px var(--apex-green);
+        }
+
+        /* GRID SYSTEM */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* COMPONENT: GLASS CARD */
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #777;
+        }
+
+        .card-accent {
+            width: 8px;
+            height: 8px;
+            background-color: var(--apex-blue);
+            transform: rotate(45deg);
+        }
+
+        /* TELEMETRY STYLES */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .data-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #555;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .data-value {
+            font-family: var(--apex-font-mono);
+            font-size: 14px;
+            color: #FFF;
+        }
+
+        .data-value.green { color: var(--apex-green); }
+        .data-value.blue { color: var(--apex-blue); }
+        .data-value.amber { color: var(--apex-amber); }
+
+        /* LIVE TRACK TICKER */
+        .ticker-bar {
+            background-color: rgba(255,255,255,0.02);
+            border: 1px dashed var(--apex-border);
+            padding: 8px 15px;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+            color: #AAA;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 30px;
+            overflow: hidden;
+        }
+
+        .ticker-item strong {
+            color: var(--apex-amber);
+        }
+
+        /* SLIDE TO LOCK BUTTON */
+        .slider-container {
+            margin-top: 10px;
+            background: #000;
+            height: 48px;
+            border-radius: 24px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            border: 1px solid var(--apex-border);
+        }
+
+        .slider-handle {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #333, #111);
+            border: 1px solid var(--apex-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .slider-text {
+            flex: 1;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #444;
+            pointer-events: none;
+        }
+
+        /* GAUGE SIMULATION */
+        .gauge-ring {
+            width: 120px;
+            height: 60px;
+            border: 8px solid #222;
+            border-bottom: 0;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .gauge-fill {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 120px;
+            height: 60px;
+            border: 8px solid var(--apex-green);
+            border-bottom: 0;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            clip-path: inset(0 40% 0 0);
+        }
+
+        .gauge-value {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--apex-font-mono);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="logo-text">A.P.E.X.</span>
+            <span class="logo-version">V3</span>
+        </div>
+        <div class="status-indicators">
+            <div class="indicator"><div class="dot"></div> BATTERY: 88%</div>
+            <div class="indicator"><div class="dot"></div> SIGNAL: -42ms</div>
+            <div class="indicator"><div class="dot"></div> SYNC: OK</div>
+        </div>
+    </header>
+
+    <div class="ticker-bar">
+        <div class="ticker-item">LIVE: <strong>SDRC RACEWAY</strong></div>
+        <div class="ticker-item">TEMP: <strong>72°F</strong></div>
+        <div class="ticker-item">GRIP: <strong>HIGH</strong></div>
+        <div class="ticker-item">SURFACE: <strong>CLAY</strong></div>
+        <div class="ticker-item">MOISTURE: <strong>12%</strong></div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="column">
+            <!-- FLEET CONFIG -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <span class="card-title">Fleet Configuration // Stage 01</span>
+                    <div class="card-accent" style="background-color: var(--apex-green);"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <div>
+                        <div class="data-row">
+                            <span class="data-label">Selected Racer</span>
+                            <span class="data-value">D. RUSSELL [44]</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">License Status</span>
+                            <span class="data-value green">VERIFIED</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Transponder</span>
+                            <span class="data-value">TX-88741</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="data-row">
+                            <span class="data-label">Vehicle Platform</span>
+                            <span class="data-value">TEKNO NB48 2.2</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Power Source</span>
+                            <span class="data-value amber">NITRO .21</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Active Setup</span>
+                            <span class="data-value blue">SHOP MASTER V2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERFORMANCE ANALYTICS -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <span class="card-title">Performance Telemetry // Institutional Memory</span>
+                    <div class="card-accent" style="background-color: var(--apex-amber);"></div>
+                </div>
+                <div style="padding: 20px 0; display: flex; justify-content: space-around; align-items: center;">
+                    <div style="text-align: center;">
+                        <div class="gauge-ring">
+                            <div class="gauge-fill"></div>
+                            <span class="gauge-value">92.4</span>
+                        </div>
+                        <div class="data-label" style="margin-top: 10px;">Consistency Score</div>
+                    </div>
+                    <div>
+                        <div class="data-row" style="width: 200px;">
+                            <span class="data-label">Avg Lap (Historical)</span>
+                            <span class="data-value">21.442s</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Optimal Pace (ORP)</span>
+                            <span class="data-value green">20.810s</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Grip Correlation</span>
+                            <span class="data-value">0.88</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <!-- MISSION CONTROL -->
+            <div class="glass-card" style="height: 100%; border-left: 2px solid var(--apex-blue);">
+                <div class="card-header">
+                    <span class="card-title">Mission Control Center</span>
+                    <div class="card-accent" style="background-color: var(--apex-blue);"></div>
+                </div>
+                <div style="padding: 10px 0;">
+                    <p style="font-size: 11px; color: #666; margin-bottom: 20px; line-height: 1.5;">
+                        READY FOR SESSION INITIALIZATION. ALL SUBSYSTEMS REPORT NOMINAL. BASELINE SETUP 'SHOP MASTER V2' HAS BEEN BROADCAST TO CLOUD INSTANCE.
+                    </p>
+                    
+                    <div class="data-row">
+                        <span class="data-label">Encryption</span>
+                        <span class="data-value green">AES-256</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">Telemetry Uplink</span>
+                        <span class="data-value blue">CONNECTED</span>
+                    </div>
+                    
+                    <div style="margin-top: 40px;">
+                        <div class="slider-container">
+                            <div class="slider-handle">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                                    <path d="M9 18l6-6-6-6"/>
+                                </svg>
+                            </div>
+                            <div class="slider-text">Slide to Initialize</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

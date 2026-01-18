@@ -17,14 +17,22 @@ CREATE TABLE racer_profiles (
     updated_at TIMESTAMPTZ DEFAULT now(),
     name TEXT NOT NULL,
     email TEXT UNIQUE,
-    sponsors TEXT[] DEFAULT '{}',
+    sponsors JSONB DEFAULT '[]', -- [{"brand": "JConcepts", "category": "Tires"}]
     is_default BOOLEAN DEFAULT FALSE,
     CONSTRAINT email_valid CHECK (email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$')
+);
+
+CREATE TABLE classes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    profile_id UUID REFERENCES racer_profiles(id) ON DELETE CASCADE,
+    name TEXT NOT NULL, -- e.g. "1/8 Expert Nitro Buggy"
+    created_at TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE TABLE vehicles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     profile_id UUID REFERENCES racer_profiles(id) ON DELETE CASCADE,
+    class_id UUID REFERENCES classes(id) ON DELETE SET NULL, -- Many-to-One: Vehicles -> Class
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now(),
     brand TEXT NOT NULL,
@@ -49,6 +57,8 @@ CREATE TABLE sessions (
         "temperature": null
     }',
     actual_setup JSONB DEFAULT '{}',
+    pit_notes TEXT,
+    class_name TEXT,
     status session_status_enum DEFAULT 'draft'
 );
 

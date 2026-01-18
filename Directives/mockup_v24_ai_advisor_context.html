@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - AI Advisor (Context Aware)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.15);
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: radial-gradient(circle at bottom center, rgba(229, 57, 53, 0.05), transparent);
+        }
+
+        /* CONTEXT INDICATOR BAR (NEW) */
+        .context-bar {
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .context-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--apex-red-soft);
+            border: 1px solid var(--apex-red);
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+        .context-pill-label {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--apex-red);
+            text-transform: uppercase;
+        }
+
+        .context-pill-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .context-switcher {
+            display: flex;
+            gap: 10px;
+        }
+
+        .switch-btn {
+            background: transparent;
+            border: 1px solid var(--apex-border);
+            color: #555;
+            padding: 6px 12px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .switch-btn:hover {
+            border-color: var(--apex-red);
+            color: white;
+        }
+
+        /* CHAT INTERFACE */
+        .chat-container {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 20px;
+            border-radius: 4px;
+            line-height: 1.5;
+            font-size: 18px;
+        }
+
+        .message.ai {
+            background: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            align-self: flex-start;
+            border-left: 4px solid var(--apex-red);
+        }
+
+        .message.user {
+            background: #1a1a1c;
+            align-self: flex-end;
+            color: var(--apex-silver);
+        }
+
+        .input-area {
+            padding: 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 15px;
+            background: #000;
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            padding: 12px 20px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 19px;
+            font-family: var(--apex-font-sans);
+            outline: none;
+        }
+
+        .btn-send {
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        footer {
+            padding: 6px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab">02 RACE CONTROL</div>
+            <div class="nav-tab active">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: var(--apex-red); letter-spacing: 2px;">ADVISOR_ENGINE:
+            READY</div>
+    </header>
+
+    <main>
+        <!-- CONTEXT INDICATOR BAR -->
+        <div class="context-bar">
+            <div class="context-indicator">
+                <span class="context-pill-label">Active Brain Context</span>
+                <span class="context-pill-val">1/8 NITRO BUGGY</span>
+            </div>
+
+            <div class="context-switcher">
+                <span style="font-size: 10px; font-weight: 800; color: #444; margin-right: 5px;">SWITCH CONTEXT:</span>
+                <button class="switch-btn">40+ NITRO BUGGY</button>
+                <button class="switch-btn">TRUGGY</button>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="message ai">
+                Hello Racer. I have the telemetry for your <strong>1/8 Nitro Buggy</strong> from the last session at
+                SDRC.
+                The track temperature is rising to 104°F, and your grip factor is slipping into the 'Dry/Slick' range.
+                What specific setup adjustments should we discuss for your next heat?
+            </div>
+            <div class="message user">
+                Thinking about the rear shock oil. It feels a bit bouncy in the technical sections.
+            </div>
+            <div class="message ai">
+                Understood. Based on the <strong>Medium-Scale</strong> track geometry and the current <strong>Low
+                    Humidity (12%)</strong>, increasing your rear shock oil weight by +50wt would help settle the car on
+                landing.
+                <br><br>
+                Would you like me to check your <strong>Truggy</strong> history to see if a similar adjustment worked
+                there?
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" placeholder="Discuss setup adjustments with AI...">
+                <button class="btn-send">SEND_TRANSMISSION</button>
+            </div>
+            <div style="font-size: 11px; color: #444; margin-top: 12px; font-family: var(--apex-font-mono);">
+                BRAIN_STATE: CONTEXTUAL_AWARENESS // MEMORY_LOADED: SDRC_FALL_BRAWL
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // AI_ADVISOR // [ CONTEXT_READY ]</div>
+        <div>[ BRAIN_MODEL: GPT-4O ] [ FONT_SCALE: 19PX ]</div>
+    </footer>
+
+</body>
+
+</html>

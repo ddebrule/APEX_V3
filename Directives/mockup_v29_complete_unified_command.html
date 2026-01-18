@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Complete Unified Command (v29 - Blue)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-blue: #2196F3;
+            --apex-blue-glow: rgba(33, 150, 243, 0.25);
+            --apex-blue-soft: rgba(33, 150, 243, 0.1);
+            --apex-red: #E53935;
+            --apex-green: #4CAF50;
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 360px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .section-header {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input,
+        select {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            color: white;
+            font-size: 19px;
+            width: 100%;
+            border-radius: 4px;
+            font-family: var(--apex-font-mono);
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            background: #0d0d0f;
+            border: 1px solid var(--apex-border);
+            padding: 8px;
+            color: #666;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--apex-blue);
+            color: white;
+            background: var(--apex-blue-soft);
+        }
+
+        .race-logic-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        /* CLASS REGISTRY */
+        .class-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--apex-border);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .class-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .vehicle-select {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            color: #888;
+            font-size: 11px;
+            padding: 8px;
+            border-radius: 2px;
+            width: 100%;
+            font-weight: 700;
+        }
+
+        .btn-deploy {
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-weight: 900;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 30px var(--apex-red-glow);
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn-add-class {
+            background: transparent;
+            border: 1px dashed var(--apex-blue);
+            color: var(--apex-blue);
+            padding: 10px;
+            font-weight: 900;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* DESKTOP */
+        .desktop {
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+        }
+
+        /* TICKER */
+        .weather-ticker {
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 8px 20px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+        }
+
+        .ticker-label {
+            color: #555;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .ticker-val {
+            color: var(--apex-white);
+            font-weight: 700;
+        }
+
+        .sync-bullet {
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #4CAF50;
+        }
+
+        /* TRACK MATRIX */
+        .button-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        /* FLEET MATRIX */
+        .setup-matrix {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .matrix-header th {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: #444;
+            text-align: left;
+            padding: 8px 15px;
+            border-bottom: 1px solid var(--apex-border);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .matrix-row td {
+            padding: 8px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            font-size: 15px;
+        }
+
+        .param-label {
+            font-weight: 800;
+            color: #555;
+            font-size: 11px;
+            text-transform: uppercase;
+            width: 160px;
+        }
+
+        .param-val {
+            font-family: var(--apex-font-mono);
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .ai-bridge-btn {
+            background: var(--apex-red-soft);
+            border: 1px solid var(--apex-red);
+            color: white;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 4px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        footer {
+            padding: 6px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: var(--apex-blue); letter-spacing: 2px;">UNIFIED_WORKSPACE
+            // STANDBY</div>
+    </header>
+
+    <main>
+        <!-- SIDEBAR: COMPLETE EVENT SETUP -->
+        <div class="sidebar">
+            <div class="section-header"><span class="section-title">◆ Event Configuration</span></div>
+            <div class="sidebar-content">
+                <!-- EVENT IDENTITY -->
+                <div class="input-group">
+                    <label class="input-label">Event Name</label>
+                    <input type="text" value="SDRC FALL BRAWL">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Track Name</label>
+                    <input type="text" value="SAN DIEGO RC RACEWAY">
+                </div>
+
+                <!-- SESSION INTENT -->
+                <div class="input-group">
+                    <label class="input-label">Session Intent</label>
+                    <div class="button-grid">
+                        <div class="toggle-btn">PRACTICE</div>
+                        <div class="toggle-btn active">RACE</div>
+                    </div>
+                </div>
+
+                <!-- RACE LOGIC -->
+                <div class="race-logic-box">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label class="input-label">Qualifying Rounds</label>
+                            <select>
+                                <option>2 Rounds</option>
+                                <option selected>3 Rounds</option>
+                                <option>4 Rounds</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label class="input-label">Main Events</label>
+                            <select>
+                                <option selected>Single Main</option>
+                                <option>Triple Mains</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLASS-TO-VEHICLE REGISTRY -->
+                <div class="input-group" style="margin-top: 20px;">
+                    <label class="input-label">Class-to-Vehicle Registry</label>
+
+                    <!-- CLASS ENTRY FIELD -->
+                    <div class="class-card"
+                        style="background: rgba(33, 150, 243, 0.05); border: 1px dashed var(--apex-blue);">
+                        <input type="text" placeholder="ENTER CLASS NAME (e.g., 'INTERMEDIATE NITRO BUGGY')"
+                            style="font-size: 13px; background: transparent; border: none; padding: 8px 0; color: var(--apex-blue); font-weight: 900;">
+                    </div>
+                    <button class="btn-add-class">+ ADD CLASS TO REGISTRY</button>
+
+                    <!-- REGISTERED CLASSES -->
+                    <div style="margin-top: 20px;">
+                        <div class="class-card">
+                            <span class="class-label">INTERMEDIATE NITRO BUGGY</span>
+                            <select class="vehicle-select">
+                                <option selected>MBX8R [CHASSIS_01]</option>
+                                <option>MBX8R [CHASSIS_02]</option>
+                                <option>+ NEW VEHICLE</option>
+                            </select>
+                        </div>
+                        <div class="class-card">
+                            <span class="class-label">40+ NITRO BUGGY</span>
+                            <select class="vehicle-select">
+                                <option selected>MBX8R [CHASSIS_01]</option>
+                                <option>+ NEW VEHICLE</option>
+                            </select>
+                        </div>
+                        <div class="class-card">
+                            <span class="class-label">NITRO TRUGGY</span>
+                            <select class="vehicle-select">
+                                <option selected>MBX8T [FLEET_04]</option>
+                                <option>+ NEW VEHICLE</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-deploy">COMMIT & START SESSION</button>
+            </div>
+        </div>
+
+        <!-- DESKTOP: COMPLETE OPERATIONAL VIEW -->
+        <div class="desktop">
+            <!-- WEATHER TICKER -->
+            <div class="glass-card">
+                <div class="weather-ticker">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div class="sync-bullet"></div> <span class="ticker-label">Live Atmos Sync:</span>
+                    </div>
+                    <div><span class="ticker-label">Ambient:</span> <span class="ticker-val">74.2°F</span></div>
+                    <div style="margin-left: auto;"><span class="ticker-label">Source:</span> <span
+                            class="ticker-val">OPENWEATHERMAP</span></div>
+                </div>
+            </div>
+
+            <!-- TRACK CONTEXT MATRIX (16 PARAMETERS) -->
+            <div class="glass-card">
+                <div class="section-header"><span class="section-title">◆ Track Context Matrix</span></div>
+                <div style="padding: 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px;">
+                    <div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="input-group">
+                                <label class="input-label">Track Scale</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn">Small</div>
+                                    <div class="toggle-btn active">Medium</div>
+                                    <div class="toggle-btn">Large</div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Grip Level</label>
+                                <div class="button-grid-4">
+                                    <div class="toggle-btn">Low</div>
+                                    <div class="toggle-btn active">Med</div>
+                                    <div class="toggle-btn">Hi</div>
+                                    <div class="toggle-btn">Ext</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="input-group">
+                                <label class="input-label">Surface Material</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn active">Clay (Indoor)</div>
+                                    <div class="toggle-btn">Hard Packed</div>
+                                    <div class="toggle-btn">Loam</div>
+                                    <div class="toggle-btn">Blue Groove</div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">Surface Condition</label>
+                                <div class="button-grid">
+                                    <div class="toggle-btn active">Damp / Fresh</div>
+                                    <div class="toggle-btn">Dry / Dusty</div>
+                                    <div class="toggle-btn">Slick</div>
+                                    <div class="toggle-btn">Bumpy</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="input-group">
+                            <label class="input-label">Manual Track Temp Input (°F)</label>
+                            <input type="text" placeholder="ENTER MEASURED TEMP...">
+                        </div>
+                        <div style="font-size: 11px; color: #555; font-style: italic; margin-top: 10px;">
+                            * Manual input overrides ambient temp estimations for tire logic.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BASELINE SELECTOR -->
+            <div class="glass-card">
+                <div class="section-header"><span class="section-title">◆ Mechanical Baseline Selector</span></div>
+                <div style="padding: 20px;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label class="input-label">Initial Setup</label>
+                        <div class="button-grid">
+                            <div class="toggle-btn active">Master Baseline Setup</div>
+                            <div class="toggle-btn">Last Session Setup</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FLEET TECHNICAL MATRIX (FULL SPECS WITH AI BRIDGE) -->
+            <div class="glass-card">
+                <div class="section-header"><span class="section-title">◆ Active Fleet Technical Matrix</span></div>
+                <div style="overflow-y: auto;">
+                    <table class="setup-matrix">
+                        <thead class="matrix-header">
+                            <tr>
+                                <th>Technical Parameter</th>
+                                <th>
+                                    <div style="color: var(--apex-blue); font-weight: 900; font-size: 14px;">MBX8R
+                                        [CHASSIS_01]</div>
+                                    <div class="ai-bridge-btn">Discuss with AI →</div>
+                                </th>
+                                <th>
+                                    <div style="color: white; font-weight: 900; font-size: 14px;">MBX8T [FLEET_04]</div>
+                                    <div class="ai-bridge-btn">Discuss with AI →</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="matrix-row">
+                                <td class="param-label">Shock Oil (F/R)</td>
+                                <td class="param-val">450 / 400 CST</td>
+                                <td class="param-val">600 / 550 CST</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Spring Rate (F/R)</td>
+                                <td class="param-val">White / Blue</td>
+                                <td class="param-val">Purple / Purple</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Diff Oil (F/C/R)</td>
+                                <td class="param-val">7 / 10 / 5 K</td>
+                                <td class="param-val">10 / 15 / 7 K</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Tire / Foam</td>
+                                <td class="param-val">S3 / Blue</td>
+                                <td class="param-val">M3 / Red</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Ride Height (F/R)</td>
+                                <td class="param-val">27 / 29 MM</td>
+                                <td class="param-val">30 / 32 MM</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Camber (F/R)</td>
+                                <td class="param-val">-2.0 / -2.5 DEG</td>
+                                <td class="param-val">-1.5 / -2.0 DEG</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Sway Bar (F/R)</td>
+                                <td class="param-val">2.3 / 2.5 MM</td>
+                                <td class="param-val">2.5 / 2.8 MM</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Droop (F/R)</td>
+                                <td class="param-val">102 / 118 MM</td>
+                                <td class="param-val">110 / 125 MM</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Toe-In / Out</td>
+                                <td class="param-val">+1.0 OUT / +3.0 IN</td>
+                                <td class="param-val">+0.5 OUT / +2.5 IN</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // COMPLETE_UNIFIED_COMMAND // [ MODE: SETUP ]</div>
+        <div>[ FONT_SCALE: 19PX ] [ BLUE: PRE-SESSION ]</div>
+    </footer>
+
+</body>
+
+</html>

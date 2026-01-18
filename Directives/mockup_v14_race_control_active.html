@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Race Control (Active Dashboard)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-green: #4CAF50;
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        /* LIVE STATUS BAR */
+        .live-status {
+            background: #000;
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            gap: 30px;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+            color: #555;
+            align-items: center;
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--apex-red);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--apex-red);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* MULTI-COLUMN OPERATIONS DASHBOARD */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 400px 1fr 380px;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* DASHBOARD ELEMENTS */
+        .data-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .data-mono {
+            font-family: var(--apex-font-mono);
+            font-size: 18px;
+            color: var(--apex-silver);
+        }
+
+        /* HEAT LIST */
+        .heat-item {
+            background: #0d0d10;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .heat-item.active {
+            border-left: 3px solid var(--apex-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        .heat-name {
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .heat-time {
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+            color: #555;
+        }
+
+        /* TRACK CONDITIONS & WEATHER */
+        .condition-block {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-pair {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--apex-border);
+            padding-bottom: 10px;
+        }
+
+        /* AI ADVISOR BRIDGE */
+        .advisor-btn {
+            background: var(--apex-red-soft);
+            border: 1px solid var(--apex-red);
+            color: var(--apex-red);
+            padding: 15px;
+            border-radius: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        footer {
+            padding: 8px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            font-family: var(--apex-font-mono);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 12px; font-weight: 900; color: var(--apex-red);">SESSION_ACTIVE: SDRC_FALL_BRAWL</div>
+    </header>
+
+    <div class="live-status">
+        <div class="live-indicator"></div>
+        <span>LIVE TELEMETRY ACTIVE</span>
+        <span style="margin-left: auto;">[ ELAPSED: 01:24:42 ]</span>
+        <span>[ SYNC_HEALTH: 100% ]</span>
+    </div>
+
+    <main>
+        <!-- COLUMN 1: TRACK & ENVIRONMENT -->
+        <div class="glass-card">
+            <div class="card-header"><span class="card-title">◆ Operations Context</span></div>
+            <div class="card-body">
+                <div class="condition-block">
+                    <div class="stat-pair">
+                        <div>
+                            <span class="data-label">Track Surface</span>
+                            <div style="font-weight: 800; font-size: 18px;">BLUE GROOVE // HIGH GRIP</div>
+                        </div>
+                    </div>
+                    <div class="stat-pair">
+                        <div>
+                            <span class="data-label">Atmospheric Temp</span>
+                            <div class="data-mono">82°F</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="data-label">Humidity</span>
+                            <div class="data-mono">14%</div>
+                        </div>
+                    </div>
+                    <div class="stat-pair">
+                        <div>
+                            <span class="data-label">Track Temp</span>
+                            <div class="data-mono" style="color: var(--apex-red);">98°F</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <span class="data-label">Last Known Result</span>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--apex-green);">P1 - QUALIFIER #2
+                        </div>
+                        <div class="data-mono" style="font-size: 12px; margin-top: 5px;">TIME: 15:42.2 // CONSIS: 94%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: HEAT LIST & SCHEDULE -->
+        <div class="glass-card">
+            <div class="card-header"><span class="card-title">◆ Event Heat List</span></div>
+            <div class="card-body">
+                <div class="heat-item">
+                    <div class="heat-name">QUALIFIER #1</div>
+                    <div class="heat-time">COMPLETED // P3</div>
+                </div>
+                <div class="heat-item active">
+                    <div class="heat-name">QUALIFIER #2</div>
+                    <div class="heat-time">ACTIVE // ON STAND</div>
+                </div>
+                <div class="heat-item">
+                    <div class="heat-name">QUALIFIER #3</div>
+                    <div class="heat-time">SCHEDULED: 15:45</div>
+                </div>
+                <div class="heat-item">
+                    <div class="heat-name">A-MAIN EVENT</div>
+                    <div class="heat-time">SCHEDULED: 18:00</div>
+                </div>
+
+                <div style="margin-top: 40px; border-top: 1px dashed var(--apex-border); padding-top: 20px;">
+                    <span class="data-label">Upcoming Benchmark</span>
+                    <div style="font-size: 16px; font-weight: 700;">TARGET LAP: <span
+                            style="color: var(--apex-red);">24.2s</span></div>
+                    <div style="font-size: 12px; color: #555; margin-top: 5px;">Based on Current Track Temp (98°F)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 3: CURRENT SETUP & ADVISOR BRIDGE -->
+        <div class="glass-card">
+            <div class="card-header"><span class="card-title">◆ Active Setup Status</span></div>
+            <div class="card-body">
+                <div class="input-group">
+                    <span class="data-label">Current Configuration</span>
+                    <div style="font-size: 20px; font-weight: 900;">BASELINE_V2_MOD</div>
+                    <div style="font-size: 11px; color: #777;">Last Change: Front Shock Oil (+2.5wt)</div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <span class="data-label">Optimizer Benchmarks (ORP)</span>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                        <div class="stat-pair">
+                            <span style="font-size: 12px;">Corner Entry Alpha</span>
+                            <span style="font-size: 12px; font-weight: 900; color: var(--apex-red);">9.2</span>
+                        </div>
+                        <div class="stat-pair">
+                            <span style="font-size: 12px;">Rear Rotation Flex</span>
+                            <span style="font-size: 12px; font-weight: 900; color: var(--apex-red);">8.7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advisor-btn">Need Setup Adjustment? Consult AI Advisor →</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // RACE_CONTROL // OPERATIONS_LIVE</div>
+        <div>[ SESSION_UID: 998-XC ] [ AUTO_SAVE: ON ]</div>
+    </footer>
+
+</body>
+
+</html>

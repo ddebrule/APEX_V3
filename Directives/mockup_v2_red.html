@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Redesign V2 (Red Brand)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #141416;
+            --apex-red: #E53935;
+            /* Primary Brand Red */
+            --apex-red-glow: rgba(229, 57, 53, 0.4);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOP NAVIGATION */
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+        }
+
+        .nav-tab {
+            padding: 12px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            color: var(--apex-white);
+            border-bottom-color: var(--apex-red);
+            background: linear-gradient(to bottom, transparent, rgba(229, 57, 53, 0.05));
+        }
+
+        /* MAIN CONTENT */
+        main {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* ADVISOR TAB LAYOUT (TAB 2) */
+        .advisor-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* CHAT INTERFACE */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .chat-feed {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid var(--apex-red);
+            font-family: var(--apex-font-sans);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--apex-red);
+            color: white;
+            font-weight: 600;
+        }
+
+        .ai-prefix {
+            font-family: var(--apex-font-mono);
+            font-size: 10px;
+            color: var(--apex-red);
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        /* PROPOSAL CARDS */
+        .proposal-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .proposal-card {
+            background: #1a1a1c;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            border-radius: 4px;
+            flex: 1;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .proposal-card:hover {
+            border-color: var(--apex-red);
+            transform: translateY(-2px);
+        }
+
+        .proposal-card.primary {
+            border-left: 3px solid var(--apex-red);
+        }
+
+        .proposal-tag {
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .prescription-val {
+            font-family: var(--apex-font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--apex-red);
+            margin-bottom: 4px;
+        }
+
+        .prescription-label {
+            font-size: 11px;
+            color: #AAA;
+            font-weight: 600;
+        }
+
+        /* SIDEBAR / SYMPTOMS */
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--apex-border);
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #666;
+        }
+
+        .symptom-list {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .symptom-btn {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            color: #888;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-family: var(--apex-font-mono);
+        }
+
+        .symptom-btn:hover {
+            border-color: var(--apex-red);
+            color: var(--apex-white);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        /* INPUT AREA */
+        .input-container {
+            padding: 20px;
+            border-top: 1px solid var(--apex-border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 13px;
+            font-family: var(--apex-font-mono);
+        }
+
+        .send-btn {
+            background: var(--apex-red);
+            border: none;
+            padding: 0 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .thinking {
+            font-family: var(--apex-font-mono);
+            font-size: 10px;
+            color: var(--apex-red);
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-area">
+            <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        </div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 Mission Control</div>
+            <div class="nav-tab active">02 Setup Advisor</div>
+            <div class="nav-tab">03 Station Scribe</div>
+            <div class="nav-tab">04 Telemetry</div>
+        </div>
+        <div style="font-family: var(--apex-font-mono); font-size: 12px; color: #555;">[ SESSION: SDRC_FALL_BRAWL ]
+        </div>
+    </header>
+
+    <main>
+        <div class="advisor-container">
+            <!-- SYMPTOM SELECTOR SIDEBAR -->
+            <div class="glass-card">
+                <div class="sidebar-header">◆ Input Signal Detection</div>
+                <div class="symptom-list">
+                    <button class="symptom-btn">Excessive Understeer</button>
+                    <button class="symptom-btn">Rear-End Snap (Loose)</button>
+                    <button class="symptom-btn">Bottoming Out (Jumps)</button>
+                    <button class="symptom-btn">Lateral Traction Loss</button>
+                    <button class="symptom-btn">Thermal Oil Drift</button>
+                    <button class="symptom-btn">Clutch Engagement Lag</button>
+                </div>
+                <div style="margin-top:auto; padding: 20px; border-top: 1px solid var(--apex-border);">
+                    <div
+                        style="font-size: 9px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+                        System Status</div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div
+                            style="width: 8px; height: 8px; border-radius: 50%; background: var(--apex-red); box-shadow: 0 0 5px var(--apex-red);">
+                        </div>
+                        <span style="font-size: 10px; font-weight: 700;">ORP ENGINE ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAT AREA -->
+            <div class="glass-card chat-area">
+                <div class="chat-feed">
+                    <!-- AI MESSAGE -->
+                    <div class="message ai">
+                        <span class="ai-prefix">[INITIALIZING SOCRATIC LOOP]</span>
+                        Welcome back, Racer. I see we're dealing with <strong>Excessive Understeer</strong> on the SDRC
+                        surface. To narrow down the prescription, is this happening at <em>Corner Entry</em> or
+                        <em>Mid-Corner</em> specifically?
+                    </div>
+
+                    <!-- USER MESSAGE -->
+                    <div class="message user">
+                        It's mostly happening mid-corner when I get back on the power.
+                    </div>
+
+                    <!-- AI PROPOSAL MESSAGE -->
+                    <div class="message ai">
+                        <span class="ai-prefix">[CALCULATING PRESCRIPTION...]</span>
+                        Understood. Mid-corner push on power suggests the center diff is unloading too much torque or
+                        the rear is too stiff relative to the front.
+
+                        <div
+                            style="margin-top: 15px; margin-bottom: 5px; font-size: 11px; font-weight: 700; color: #666;">
+                            RECOMMENDED MECHANICAL ADJUSTMENTS:</div>
+
+                        <div class="proposal-container">
+                            <div class="proposal-card primary">
+                                <span class="proposal-tag">Option A: Traction Focus</span>
+                                <div class="prescription-val">7,000 cSt</div>
+                                <div class="prescription-label">Center Diff Fluid</div>
+                                <div style="font-size: 10px; color: #666; margin-top: 10px;">Thicker fluid will provide
+                                    more drive out of corners.</div>
+                            </div>
+                            <div class="proposal-card">
+                                <span class="proposal-tag">Option B: Lateral Grip</span>
+                                <div class="prescription-val">1.4 mm</div>
+                                <div class="prescription-label">Rear Sway Bar</div>
+                                <div style="font-size: 10px; color: #666; margin-top: 10px;">Softer bar (down from 1.6)
+                                    to increase side bite.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- THINKING INDICATOR -->
+                    <div class="thinking" style="margin-left: 10px;">[ MONITORING TELEMETRY... ]</div>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" class="chat-input" placeholder="Type observation or select signal...">
+                    <button class="send-btn">Transmit</button>
+                    <button
+                        style="background: transparent; border: 1px solid var(--apex-border); padding: 0 15px; border-radius: 4px; color: var(--apex-red); font-weight: 800; font-size: 11px; cursor: pointer;">VOICE</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer
+        style="background: var(--apex-surface); padding: 8px 24px; border-top: 1px solid var(--apex-border); display: flex; justify-content: space-between; align-items: center; font-family: var(--apex-font-mono); font-size: 10px; color: #555;">
+        <div>A.P.E.X. CORE V3.1.0 // ENGINE: GPT-4O-RACER</div>
+        <div style="display: flex; gap: 20px;">
+            <span>[ LATENCY: 142MS ]</span>
+            <span>[ UPTIME: 99.9% ]</span>
+            <span style="color: var(--apex-red);">[ MISSION: ACTIVE ]</span>
+        </div>
+    </footer>
+
+</body>
+
+</html>

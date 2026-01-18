@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Mission Control (F1 Pit Wall)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.2);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        /* LIVE TELEMETRY TICKER BAR */
+        .telemetry-ticker {
+            background: #000;
+            border-bottom: 1px solid var(--apex-border);
+            padding: 6px 20px;
+            display: flex;
+            gap: 40px;
+            font-family: var(--apex-font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #444;
+            overflow: hidden;
+        }
+
+        .ticker-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .ticker-val {
+            color: var(--apex-red);
+            font-weight: 700;
+        }
+
+        /* MAIN COMMAND CENTER */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 15px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .active-session-zone {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        /* LIVE TELEMETRY MODULES */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 15px;
+        }
+
+        .tel-card {
+            background: #0d0d0f;
+            border: 1px solid var(--apex-border);
+            padding: 15px;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .tel-label {
+            font-size: 8px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tel-main {
+            font-family: var(--apex-font-mono);
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 5px 0;
+        }
+
+        .tel-delta {
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .up {
+            color: #4CAF50;
+        }
+
+        .down {
+            color: var(--apex-red);
+        }
+
+        /* SPARKLINE MOCKUP */
+        .sparkline {
+            height: 30px;
+            margin-top: 10px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            opacity: 0.3;
+        }
+
+        .spark-bar {
+            width: 4px;
+            background: var(--apex-red);
+            border-radius: 1px;
+        }
+
+        /* SESSION INTEL (MAP/TRACK) */
+        .track-intel {
+            flex: 1;
+            background: radial-gradient(circle at center, #1a1a1c 0%, #0a0a0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .track-svg {
+            width: 80%;
+            opacity: 0.2;
+            filter: drop-shadow(0 0 10px var(--apex-red-glow));
+        }
+
+        .track-data-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .overlay-item {
+            background: rgba(0, 0, 0, 0.6);
+            border-left: 3px solid var(--apex-red);
+            padding: 10px 15px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* SIDEBAR: SYSTEM READINESS */
+        .system-readiness {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            box-shadow: 0 0 5px #4CAF50;
+        }
+
+        .status-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* SLIDE TO LOCK COMPONENT */
+        .slide-to-lock-container {
+            padding: 20px;
+            background: #000;
+            border-top: 1px solid var(--apex-border);
+        }
+
+        .lock-slider {
+            width: 100%;
+            height: 50px;
+            background: #111;
+            border: 1px solid var(--apex-border);
+            border-radius: 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slider-text {
+            font-size: 11px;
+            font-weight: 800;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        .slider-handle {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            width: 40px;
+            height: 40px;
+            background: var(--apex-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 0 15px var(--apex-red-glow);
+        }
+
+        footer {
+            padding: 8px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 MISSION CTRL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 10px; font-weight: 900; color: #444; letter-spacing: 2px;">STATUS: STANDBY</div>
+    </header>
+
+    <!-- LIVE TELEMETRY TICKER -->
+    <div class="telemetry-ticker">
+        <div class="ticker-item">TEKNO NB48: <span class="ticker-val">CONNECTED</span></div>
+        <div class="ticker-item">FUEL_LVL: <span class="ticker-val">84%</span></div>
+        <div class="ticker-item">TRANSPONDER: <span class="ticker-val">OK</span></div>
+        <div class="ticker-item">TRACK_TEMP: <span class="ticker-val">74°F</span></div>
+        <div class="ticker-item">ENV_HUMIDITY: <span class="ticker-val">12%</span></div>
+        <div class="ticker-item">AUTO_SAVER: <span class="ticker-val">ACTIVE</span></div>
+    </div>
+
+    <main>
+        <!-- ACTIVE SESSION ZONE -->
+        <div class="active-session-zone">
+            <!-- TELEMETRY DASHBOARD -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <span class="card-title">◆ Live Performance Telemetry</span>
+                    <span style="font-size: 10px; font-family: var(--apex-font-mono); color: #444;">SOURCE:
+                        MANUAL_SCRIBE_INGESTION</span>
+                </div>
+                <div class="telemetry-grid">
+                    <!-- CONSISTENCY -->
+                    <div class="tel-card">
+                        <span class="tel-label">Consistency Score</span>
+                        <div class="tel-main">94.2%</div>
+                        <div class="tel-delta up">▲ 2.1% FROM BASELINE</div>
+                        <div class="sparkline">
+                            <div class="spark-bar" style="height: 40%;"></div>
+                            <div class="spark-bar" style="height: 60%;"></div>
+                            <div class="spark-bar" style="height: 55%;"></div>
+                            <div class="spark-bar" style="height: 80%;"></div>
+                            <div class="spark-bar" style="height: 90%;"></div>
+                            <div class="spark-bar" style="height: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- BEST LAP -->
+                    <div class="tel-card">
+                        <span class="tel-label">Current Best Lap</span>
+                        <div class="tel-main">24.582</div>
+                        <div class="tel-delta down">▼ 0.12s VS LAST QUAL</div>
+                        <div class="sparkline">
+                            <div class="spark-bar" style="height: 70%;"></div>
+                            <div class="spark-bar" style="height: 72%;"></div>
+                            <div class="spark-bar" style="height: 68%;"></div>
+                            <div class="spark-bar" style="height: 65%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- AVG SPEED -->
+                    <div class="tel-card">
+                        <span class="tel-label">Est. Fuel Runtime</span>
+                        <div class="tel-main">12:42</div>
+                        <div class="tel-delta up">▲ 30s OPTIMIZED</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRACK VISUALIZER -->
+            <div class="glass-card track-intel">
+                <div class="track-data-overlay">
+                    <div class="overlay-item">
+                        <div class="tel-label">Event Focus</div>
+                        <div style="font-weight: 800; font-size: 14px;">SDRC RACEWAY // FALL BRAWL</div>
+                    </div>
+                </div>
+                <svg class="track-svg" viewBox="0 0 100 100">
+                    <path d="M10,50 Q10,10 50,10 T90,50 T50,90 T10,50" fill="none" stroke="var(--apex-red)"
+                        stroke-width="2" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: SYSTEM READINESS -->
+        <div class="system-readiness">
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">◆ Subsystem Health</span></div>
+                <div style="padding: 15px; display: flex; flex-direction: column; gap: 12px;">
+                    <div class="ticker-item">
+                        <div class="status-dot status-pulse"></div> CLOUD_DB: NOMINAL
+                    </div>
+                    <div class="ticker-item">
+                        <div class="status-dot"></div> ENGINE_AI: READY
+                    </div>
+                    <div class="ticker-item">
+                        <div class="status-dot"></div> VOICE_COMMAND: OFF
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="flex: 1;">
+                <div class="card-header"><span class="card-title">◆ Active Configuration</span></div>
+                <div style="padding: 15px; display: flex; flex-direction: column; gap: 10px;">
+                    <div class="tel-label">Selected Vehicle</div>
+                    <div style="font-weight: 900; font-size: 14px;">TEKNO NB48 2.2</div>
+                    <div style="margin-top: 15px; border-top: 1px solid var(--apex-border); padding-top: 10px;">
+                        <button
+                            style="width: 100%; background: transparent; border: 1px solid #333; color: #777; padding: 10px; font-size: 10px; font-weight: 800; text-transform: uppercase;">Change
+                            Session Plan</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INITIALIZE SESSION BUTTON -->
+            <div class="slide-to-lock-container">
+                <div class="lock-slider">
+                    <div class="slider-handle">»</div>
+                    <div class="slider-text">SLIDE TO LOCK SESSION</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // MISSION_CONTROL // [ STANDBY ]</div>
+        <div>[ NODE_APX_02 ] [ SYNC_TIME: 1.2ms ]</div>
+    </footer>
+
+</body>
+
+</html>

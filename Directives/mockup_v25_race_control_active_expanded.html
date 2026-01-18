@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - High-Density Operations Dashboard (v25)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.25);
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-green: #4CAF50;
+            --apex-green-glow: rgba(76, 175, 80, 0.15);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: radial-gradient(circle at bottom right, rgba(229, 57, 53, 0.08), transparent);
+        }
+
+        .sidebar {
+            width: 340px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .desktop {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 15px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .center-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* PARAMETER MATRIX (HIGH DENSITY) */
+        .setup-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .matrix-header th {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #555;
+            text-align: left;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--apex-border);
+        }
+
+        .matrix-row td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 16px;
+        }
+
+        .param-label {
+            font-weight: 800;
+            color: var(--apex-silver);
+            font-size: 13px;
+            text-transform: uppercase;
+            width: 140px;
+        }
+
+        .param-val {
+            font-family: var(--apex-font-mono);
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        .val-diff {
+            color: var(--apex-red);
+            filter: drop-shadow(0 0 5px var(--apex-red-glow));
+        }
+
+        /* LIVE STATUS BOXES */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .status-box {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--apex-border);
+        }
+
+        .status-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .status-val {
+            font-family: var(--apex-font-mono);
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* RIGHT PANEL: CHECKLIST & AI */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .check-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .check-box.done {
+            border-color: var(--apex-green);
+            background: var(--apex-green-glow);
+        }
+
+        .check-box.done::after {
+            content: '✓';
+            color: var(--apex-green);
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .check-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--apex-silver);
+        }
+
+        /* WEATHER TICKER */
+        .ticker-strip {
+            background: #000;
+            border-bottom: 1px solid var(--apex-border);
+            padding: 8px 20px;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+        }
+
+        .heat-pill {
+            padding: 4px 10px;
+            border-radius: 2px;
+            font-size: 11px;
+            font-weight: 900;
+            background: var(--apex-red-soft);
+            color: var(--apex-red);
+            border: 1px solid var(--apex-red);
+        }
+
+        footer {
+            padding: 6px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: var(--apex-green); letter-spacing: 2px;">SESSION_LIVE // [
+            SDRC FALL BRAWL ]</div>
+    </header>
+
+    <div class="ticker-strip">
+        <div style="color: var(--apex-green);">● SYNCED</div>
+        <div><span style="color: #444;">AMBIENT:</span> 76.8°F</div>
+        <div><span style="color: #444;">HUMIDITY:</span> 12.4%</div>
+        <div><span style="color: #444;">SURFACE:</span> CLAY (INDOOR)</div>
+        <div style="margin-left: auto; text-transform: uppercase; color: var(--apex-red); font-weight: 800;">Next Heat:
+            4 // T-Minus 12:40</div>
+    </div>
+
+    <main>
+        <!-- SIDEBAR: SESSION LOG -->
+        <div class="sidebar">
+            <div class="section-header"><span class="section-title">◆ Live Session Log</span></div>
+            <div style="padding: 15px; flex: 1; overflow-y: auto;">
+                <div style="font-family: var(--apex-font-mono); font-size: 12px; color: #666; line-height: 1.6;">
+                    [19:42:01] Session Initialized<br>
+                    [19:42:05] Synced OpenWeatherMap API<br>
+                    [19:44:12] Pre-Flight Checklist Started<br>
+                    [19:45:00] <span style="color: var(--apex-green);">Baseline Setup Loaded</span><br>
+                    [19:46:22] <span style="color: var(--apex-red);">Sync Error: Station_04 (Retrying)</span><br>
+                    [19:46:25] Sync Restored
+                </div>
+
+                <div
+                    style="margin-top: 30px; background: var(--apex-red-soft); border: 1px solid var(--apex-red); border-radius: 4px; padding: 15px;">
+                    <span class="section-title" style="margin-bottom: 10px; display: block;">🧠 AI Bridge</span>
+                    <p style="font-size: 13px; color: var(--apex-silver); line-height: 1.3; margin-bottom: 15px;">
+                        Discussing <strong>1/8 Nitro Buggy</strong> context for Heat 4.
+                    </p>
+                    <button
+                        style="width: 100%; border: 1px solid var(--apex-red); background: rgba(229, 57, 53, 0.2); color: white; padding: 12px; font-size: 11px; font-weight: 900; cursor: pointer; border-radius: 2px;">
+                        LAUNCH AI ADVISOR [TAB 03]
+                    </button>
+                    <button
+                        style="width: 100%; height: 1px; background: var(--apex-border); border: none; margin: 10px 0;"></button>
+                    <p
+                        style="font-size: 11px; color: #444; font-weight: 800; text-transform: uppercase; text-align: center;">
+                        Switch Vehicle Context:</p>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 5px; margin-top: 10px;">
+                        <button
+                            style="background: transparent; border: 1px solid var(--apex-border); padding: 8px; font-size: 10px; color: #555; font-weight: 900; cursor: pointer;">40+
+                            NITRO BUGGY</button>
+                        <button
+                            style="background: transparent; border: 1px solid var(--apex-border); padding: 8px; font-size: 10px; color: #555; font-weight: 900; cursor: pointer;">NITRO
+                            TRUGGY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DESKTOP -->
+        <div class="desktop">
+            <div class="center-stack">
+                <div class="glass-card">
+                    <div class="section-header">
+                        <span class="section-title">◆ Cross-Vehicle Setup Matrix</span>
+                        <div class="heat-pill">LIVE_ACTIVE_SESSION</div>
+                    </div>
+
+                    <div class="status-grid">
+                        <div class="status-box"><span class="status-label">Live Track Temp</span><span
+                                class="status-val">102.4°F</span></div>
+                        <div class="status-box"><span class="status-label">Estimated Grip</span><span class="status-val"
+                                style="color: var(--apex-green);">HIGH</span></div>
+                        <div class="status-box"><span class="status-label">Session Type</span><span
+                                class="status-val">QUAL_2</span></div>
+                        <div class="status-box"><span class="status-label">Laps Recorded</span><span
+                                class="status-val">12</span></div>
+                    </div>
+
+                    <table class="setup-matrix">
+                        <thead class="matrix-header">
+                            <tr>
+                                <th>Parameter Node</th>
+                                <th style="color: var(--apex-red); font-weight: 900;">[1] 1/8 Nitro Buggy</th>
+                                <th>[2] 40+ Nitro Buggy</th>
+                                <th>[3] Nitro Truggy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="matrix-row">
+                                <td class="param-label">Shock Oil (F/R)</td>
+                                <td class="param-val">450 / 400 <span style="font-size: 10px; color: #444;">CST</span>
+                                </td>
+                                <td class="param-val">400 / 350 <span style="font-size: 10px; color: #444;">CST</span>
+                                </td>
+                                <td class="param-val">600 / 550 <span style="font-size: 10px; color: #444;">CST</span>
+                                </td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Spring Rate</td>
+                                <td class="param-val">White / Blue</td>
+                                <td class="param-val">White / White</td>
+                                <td class="param-val">Purple / Purple</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Diff Oil (F/C/R)</td>
+                                <td class="param-val">7 / 10 / 5 <span style="font-size: 10px; color: #444;">K</span>
+                                </td>
+                                <td class="param-val">7 / 7 / 3 <span style="font-size: 10px; color: #444;">K</span>
+                                </td>
+                                <td class="param-val val-diff">10 / 15 / 7 <span
+                                        style="font-size: 10px; color: #444;">K</span></td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Tire / Foam</td>
+                                <td class="param-val">S3 / Blue</td>
+                                <td class="param-val">S3 / Blue</td>
+                                <td class="param-val">M3 / Red</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Ride Height</td>
+                                <td class="param-val">27 / 29 <span style="font-size: 10px; color: #444;">MM</span></td>
+                                <td class="param-val">27 / 27 <span style="font-size: 10px; color: #444;">MM</span></td>
+                                <td class="param-val">30 / 32 <span style="font-size: 10px; color: #444;">MM</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div
+                        style="padding: 15px; border-top: 1px solid var(--apex-border); background: rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: 800; color: #555;">MATRIX_LOG:
+                            ALL_PARAMS_SYNCED</span>
+                        <span
+                            style="font-size: 10px; color: var(--apex-red); cursor: pointer; text-decoration: underline;">EDIT
+                            GLOBAL MATRIX →</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="glass-card" style="padding: 15px;">
+                        <span class="section-title" style="margin-bottom: 12px; display: block;">◆ Operational
+                            Signals</span>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div
+                                style="background: var(--apex-red-soft); border-left: 3px solid var(--apex-red); padding: 12px;">
+                                <div style="font-size: 14px; font-weight: 800; color: white;">Grip Factor Degrading
+                                </div>
+                                <div style="font-size: 12px; color: #888; margin-top: 4px;">Track surface is slicking
+                                    out. Pivot to <strong>M3 Compounds</strong> for Main Event.</div>
+                            </div>
+                            <div
+                                style="background: rgba(255,160,0,0.1); border-left: 3px solid #ffa000; padding: 12px;">
+                                <div style="font-size: 14px; font-weight: 800; color: white;">Thermal Drift Detected
+                                </div>
+                                <div style="font-size: 12px; color: #888; margin-top: 4px;">Track temp rising. Thicken
+                                    rear shock oil by +50 CST.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card" style="padding: 15px; background: rgba(0,0,0,0.4);">
+                        <span class="section-title" style="margin-bottom: 12px; display: block;">◆ Session
+                            Performance</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 9px; color: #555;">Best Lap</div>
+                                <div style="font-family: var(--apex-font-mono); font-size: 24px; font-weight: 900;">
+                                    22.441</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 9px; color: #555;">Consistency</div>
+                                <div
+                                    style="font-family: var(--apex-font-mono); font-size: 24px; font-weight: 900; color: var(--apex-green);">
+                                    94.2%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel">
+                <div class="glass-card" style="flex: 1; min-height: 480px;">
+                    <div class="section-header"><span class="section-title">◆ Pre-Flight Readiness</span></div>
+                    <div style="padding: 15px; overflow-y: auto;">
+                        <div class="checklist-item">
+                            <div class="check-box done"></div>
+                            <span class="check-label" style="color: white;">Receiver Battery [100%]</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="check-box done"></div>
+                            <span class="check-label" style="color: white;">Failsafe Terminal Test [PASS]</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="check-box"></div>
+                            <span class="check-label">Transponder Signal Confirmed</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="check-box"></div>
+                            <span class="check-label">Mechanical Bolt Check</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="check-box"></div>
+                            <span class="check-label">Tire Glue / Weld Integrity</span>
+                        </div>
+
+                        <div
+                            style="margin-top: 30px; padding: 15px; border: 1px dashed var(--apex-border); border-radius: 4px;">
+                            <span class="section-title" style="color: #444; font-size: 9px;">Historical Note</span>
+                            <p style="font-size: 13px; color: #555; font-style: italic; margin-top: 8px;">
+                                "Last Fall Brawl, center diff overheating was an issue. Monitor casing temp after Q2."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    style="background: var(--apex-red); color: white; border: none; padding: 20px; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-radius: 4px; box-shadow: 0 0 40px var(--apex-red-glow);">
+                    CLOSE SESSION & SYNC
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3 // OPERATIONS_CTR // [ HIGH_DENSITY ]</div>
+        <div>[ SESSION: 84C2-X ] [ FONT: 19PX ] [ PARAMS: VERIFIED ]</div>
+    </footer>
+
+</body>
+
+</html>

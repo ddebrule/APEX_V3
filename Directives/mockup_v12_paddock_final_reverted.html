@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - Paddock Operations (V9 Reverted)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-green: #4CAF50;
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.06);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 24px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* PINNED SIDEBAR (V9 STYLE) */
+        .sidebar {
+            width: 380px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-content {
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .text-input {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 4px;
+            font-family: var(--apex-font-mono);
+        }
+
+        /* CENTRAL DESKTOP */
+        .desktop {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            gap: 25px;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* GARAGE */
+        .garage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .v-card {
+            background: #1a1a1c;
+            border: 1px solid var(--apex-border);
+            padding: 18px;
+            border-radius: 4px;
+        }
+
+        .v-card.active {
+            border-left: 4px solid var(--apex-red);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
+        /* RESULTS TABLE */
+        .table-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--apex-font-mono);
+            font-size: 14px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: #1a1a1c;
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #555;
+            border-bottom: 1px solid var(--apex-red);
+        }
+
+        tbody td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            color: var(--apex-silver);
+        }
+
+        .col-important {
+            color: white;
+            font-weight: 700;
+        }
+
+        .col-result-race {
+            color: var(--apex-green);
+            font-weight: 900;
+        }
+
+        .session-tag {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            border: 1px solid #444;
+            color: #777;
+            margin-right: 5px;
+        }
+
+        .tag-race {
+            border-color: var(--apex-red);
+            color: var(--apex-red);
+        }
+
+        footer {
+            padding: 8px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 11px;
+            color: #444;
+            font-family: var(--apex-font-mono);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab active">01 PADDOCK OPS</div>
+            <div class="nav-tab">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 10px; font-weight: 900; color: #444; letter-spacing: 2px;">V9_REVERT_LOCKED</div>
+    </header>
+
+    <main>
+        <!-- PINNED SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span style="font-size: 11px; font-weight: 900; text-transform: uppercase;">◆ Racer Identity</span>
+            </div>
+            <div class="profile-content">
+                <div class="input-group">
+                    <label class="input-label">Registry Name</label>
+                    <input type="text" class="text-input" value="DUSTIN RUSSELL">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Sponsor Portfolio</label>
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <span
+                            style="font-size: 10px; padding: 4px 8px; border: 1px solid var(--apex-red); color: var(--apex-red); font-weight: 700; border-radius: 3px;">TEKNO
+                            RC</span>
+                        <span
+                            style="font-size: 10px; padding: 4px 8px; border: 1px solid #333; color: #888; border-radius: 3px;">PRO-LINE</span>
+                    </div>
+                </div>
+                <div style="margin-top: 40px; border-top: 1px solid var(--apex-border); padding-top: 20px;">
+                    <button
+                        style="width: 100%; background: var(--apex-red); border: none; color: white; padding: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 4px;">System
+                        Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DESKTOP -->
+        <div class="desktop">
+            <div class="glass-card">
+                <div class="sidebar-header"><span
+                        style="font-size: 11px; font-weight: 900; text-transform: uppercase;">◆ Vehicle Assets</span>
+                </div>
+                <div class="garage-grid">
+                    <div class="v-card active">
+                        <div style="font-weight: 900; font-size: 18px;">TEKNO NB48 2.2</div>
+                        <div style="font-family: var(--apex-font-mono); font-size: 10px; color: #666;">1/8 NITRO •
+                            TX-88741</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card" style="flex: 1;">
+                <div class="sidebar-header">
+                    <span style="font-size: 11px; font-weight: 900; text-transform: uppercase;">◆ Past Session
+                        Results</span>
+                    <div style="display: flex; gap: 15px;">
+                        <span style="font-size: 9px; font-weight: 900; color: var(--apex-red);">ALL</span>
+                        <span style="font-size: 9px; font-weight: 900; color: #444;">RACE</span>
+                        <span style="font-size: 9px; font-weight: 900; color: #444;">TEST</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Date/Time</th>
+                                <th>Event/Location</th>
+                                <th>Class</th>
+                                <th>Result / Status</th>
+                                <th>Consis.</th>
+                                <th>Setup Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="session-tag tag-race">RACE</span></td>
+                                <td>15-JAN // 14:30</td>
+                                <td class="col-important">SDRC FALL BRAWL</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td class="col-result-race">A-MAIN P3</td>
+                                <td>94.2%</td>
+                                <td>Blue Groove V2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="session-tag tag-race">RACE</span></td>
+                                <td>15-JAN // 14:30</td>
+                                <td class="col-important">SDRC FALL BRAWL</td>
+                                <td>40+ NITRO BUGGY</td>
+                                <td class="col-result-race">A-MAIN P1</td>
+                                <td>95.5%</td>
+                                <td>Blue Groove V2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="session-tag">TEST</span></td>
+                                <td>12-JAN // 10:15</td>
+                                <td class="col-important">SDRC TRACK DAY</td>
+                                <td>1/8 NITRO BUGGY</td>
+                                <td>DATA ONLY</td>
+                                <td>89.1%</td>
+                                <td>Diff Oil Test</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // PADDOCK_OPS // LOCKED</div>
+        <div>[ USER: D. RUSSELL ] [ GARAGE: 01 ] [ SESSIONS: 142 ]</div>
+    </footer>
+
+</body>
+
+</html>

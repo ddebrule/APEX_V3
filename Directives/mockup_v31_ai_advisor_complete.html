@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - AI Advisor (V31 Complete)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.25);
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-green: #4CAF50;
+            --apex-blue: #2196F3;
+            --apex-blue-soft: rgba(33, 150, 243, 0.15);
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: white;
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR: CONTEXT DECK */
+        .sidebar {
+            width: 320px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .context-select-wrapper {
+            margin-top: 5px;
+        }
+
+        .context-select {
+            background: var(--apex-dark);
+            border: 1px solid var(--apex-red);
+            color: white;
+            padding: 8px;
+            width: 100%;
+            font-family: var(--apex-font-mono);
+            font-weight: 800;
+            font-size: 14px;
+            /* Reduced for better fit */
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .context-label {
+            font-size: 9px;
+            font-weight: 900;
+            color: var(--apex-red);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .data-block {
+            padding: 20px;
+            border-bottom: 1px solid var(--apex-border);
+        }
+
+        .data-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .telemetry-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .t-val {
+            font-family: var(--apex-font-mono);
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+
+        .t-unit {
+            font-size: 10px;
+            color: #555;
+            margin-left: 2px;
+        }
+
+        .setup-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setup-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            padding-bottom: 4px;
+        }
+
+        .s-key {
+            color: #888;
+            font-weight: 600;
+        }
+
+        .s-val {
+            color: var(--apex-blue);
+            font-weight: 700;
+            font-family: var(--apex-font-mono);
+        }
+
+        .s-val-diff {
+            color: var(--apex-green);
+            font-weight: 700;
+            font-family: var(--apex-font-mono);
+        }
+
+        /* Dynamic update highlight */
+
+        /* MAIN CHAT AREA */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at top right, #1a1a1c, #0A0A0B);
+        }
+
+        .chat-feed {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .msg-row {
+            display: flex;
+            gap: 16px;
+            max-width: 80%;
+        }
+
+        .msg-row.ai {
+            align-self: flex-start;
+        }
+
+        .msg-row.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        .avatar.ai-av {
+            background: var(--apex-red);
+            color: white;
+            box-shadow: 0 0 15px var(--apex-red-glow);
+        }
+
+        .avatar.user-av {
+            background: #333;
+            color: #888;
+        }
+
+        .msg-content {
+            background: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            padding: 16px 20px;
+            border-radius: 4px;
+            line-height: 1.5;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .msg-row.ai .msg-content {
+            border-top-left-radius: 0;
+            border-left: 2px solid var(--apex-red);
+        }
+
+        .msg-row.user .msg-content {
+            border-top-right-radius: 0;
+            background: rgba(33, 150, 243, 0.05);
+            border-color: rgba(33, 150, 243, 0.2);
+        }
+
+        /* RAG INJECTION BLOCK */
+        .rag-block {
+            margin-top: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed var(--apex-border);
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .rag-header {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--apex-blue);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rag-content {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        /* INPUT AREA */
+        .input-deck {
+            padding: 20px;
+            border-top: 1px solid var(--apex-border);
+            background: var(--apex-surface);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            background: #000;
+            border: 1px solid var(--apex-border);
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            color: white;
+            font-size: 16px;
+            font-family: var(--apex-font-sans);
+            outline: none;
+        }
+
+        .btn-send {
+            background: var(--apex-red);
+            color: white;
+            border: none;
+            padding: 0 24px;
+            font-weight: 900;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        /* RIGHT RAIL: TACTICAL DIRECTIVES */
+        .right-rail {
+            width: 280px;
+            background: #0d0d0f;
+            border-left: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .concept-btn {
+            background: rgb(21, 21, 24);
+            border: 1px solid var(--apex-border);
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .concept-btn:hover {
+            border-color: var(--apex-blue);
+            background: var(--apex-blue-soft);
+        }
+
+        .concept-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            display: block;
+        }
+
+        .concept-desc {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .custom-concept-input {
+            background: #000;
+            border: 1px dashed var(--apex-border);
+            color: #888;
+            padding: 8px;
+            font-size: 11px;
+            width: 100%;
+            border-radius: 4px;
+            font-family: var(--apex-font-mono);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab">02 RACE CONTROL</div>
+            <div class="nav-tab active">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: #666; letter-spacing: 2px;">NEURAL_LINK: ACTIVE</div>
+    </header>
+
+    <main>
+        <!-- SIDEBAR: CONTEXT DECK -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="context-label">Select Active Context</div>
+                <div class="context-select-wrapper">
+                    <select class="context-select" onchange="updateContext(this.value)">
+                        <option value="buggy" selected>MBX8R [CHASSIS_01] (BUGGY)</option>
+                        <option value="truggy">MBX8T [FLEET_04] (TRUGGY)</option>
+                        <option value="e-buggy">RC8B4.1e [TEST_MULE] (E-BUGGY)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- LIVE TELEMETRY SNAPSHOT -->
+            <div class="data-block">
+                <div class="data-label">Live Telemetry (Sync)</div>
+                <div class="telemetry-grid">
+                    <div class="telemetry-item">
+                        <div style="font-size: 9px; color: #888;">AMBIENT</div>
+                        <span class="t-val">74.2</span><span class="t-unit">°F</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <div style="font-size: 9px; color: #888;">HUMIDITY</div>
+                        <span class="t-val">12.4</span><span class="t-unit">%</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <div style="font-size: 9px; color: #888;">TRACK TEMP</div>
+                        <span class="t-val">81.0</span><span class="t-unit">°F</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <div style="font-size: 9px; color: #888;">CONDITION</div>
+                        <span class="t-val" style="font-size: 11px; color: var(--apex-blue);">FRESH CLAY</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC SETUP SNAPSHOT -->
+            <div class="data-block" style="flex: 1; overflow-y: auto;">
+                <div class="data-label">Dynamic Configuration</div>
+                <div class="setup-list" id="setupList">
+                    <!-- Default Buggy Setup -->
+                    <div class="setup-item"><span class="s-key">Shock Oil (F)</span><span class="s-val">450 CST</span>
+                    </div>
+                    <div class="setup-item"><span class="s-key">Shock Oil (R)</span><span class="s-val">400 CST</span>
+                    </div>
+                    <div class="setup-item"><span class="s-key">Springs (F)</span><span class="s-val">WHITE</span></div>
+                    <div class="setup-item"><span class="s-key">Springs (R)</span><span class="s-val">BLUE</span></div>
+                    <div class="setup-item"><span class="s-key">Diffs (F/C/R)</span><span class="s-val">7/10/5</span>
+                    </div>
+                    <div class="setup-item"><span class="s-key">Tires</span><span class="s-val">S3 (SOFT)</span></div>
+                    <div class="setup-item"><span class="s-key">Camber (R)</span><span class="s-val">-2.5°</span></div>
+                </div>
+                <div style="margin-top: 15px; font-size: 10px; color: #444; font-style: italic;">
+                    * Configuration updates automatically based on selected vehicle context.
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CHAT AREA -->
+        <div class="chat-area">
+            <div class="chat-feed">
+                <!-- AI MESSAGE -->
+                <div class="msg-row ai">
+                    <div class="avatar ai-av">AI</div>
+                    <div class="msg-content">
+                        Data loaded for <strong>MBX8R [Chassis_01]</strong>.
+                        <br><br>
+                        I've analyzed your telemetry against the <strong>Fresh Clay</strong> conditions. Your rear end
+                        seems loose on corner exit.
+                        <br><br>
+                        Given the <strong>12% Humidity</strong>, would you like to explore stiffening the rear sway bar
+                        or changing to a firmer tire insert?
+
+                        <!-- RAG INJECTION -->
+                        <div class="rag-block">
+                            <div class="rag-header">
+                                <span>⚡ INSTITUTIONAL MEMORY RECALL</span>
+                            </div>
+                            <div class="rag-content">
+                                Found 2 similar sessions from <strong>SDRC Fall Brawl 2024</strong> where +0.2mm Sway
+                                Bar improved exit stability by 14%.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER MESSAGE -->
+                <div class="msg-row user">
+                    <div class="avatar user-av">DR</div>
+                    <div class="msg-content">
+                        The sway bar sounds right. What if we also went up on the rear diff oil?
+                    </div>
+                </div>
+
+                <!-- AI MESSAGE -->
+                <div class="msg-row ai">
+                    <div class="avatar ai-av">AI</div>
+                    <div class="msg-content">
+                        That is a valid option. Going from <strong>5K</strong> to <strong>7K</strong> in the rear
+                        differential will provide more on-power rotation, but be careful—it might induce occasional
+                        oversteer on these slicker sections.
+                        <br><br>
+                        <strong>Recommendation:</strong> Start with the Sway Bar adjustment first to isolate the
+                        variable.
+                    </div>
+                </div>
+            </div>
+
+            <!-- INPUT DECK -->
+            <div class="input-deck">
+                <div class="input-wrapper">
+                    <input type="text" placeholder="Describe handling issues or ask for tuning advice...">
+                    <!-- VOICE INPUT BTN -->
+                    <button
+                        style="background: rgba(76, 175, 80, 0.1); border: 1px solid var(--apex-green); color: var(--apex-green); width: 40px; border-radius: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                    <button class="btn-send">TRANSMIT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT RAIL: TACTICAL ACTIONS -->
+        <div class="right-rail">
+            <div class="data-label" style="color: var(--apex-blue);">Tactical Directives</div>
+            <div style="font-size: 10px; color: #666; margin-bottom: 15px;">Quick-inject concepts into chat stream.
+            </div>
+
+            <div class="concept-btn">
+                <span class="concept-title">"Loose Rear End"</span>
+                <span class="concept-desc">Oversteer on entry/exit.</span>
+            </div>
+            <div class="concept-btn">
+                <span class="concept-title">"Push / Understeer"</span>
+                <span class="concept-desc">Front end washing out.</span>
+            </div>
+            <div class="concept-btn">
+                <span class="concept-title">"Bottoms Out"</span>
+                <span class="concept-desc">Chassis slap on landing/G-out.</span>
+            </div>
+            <div class="concept-btn">
+                <span class="concept-title">"Lacks Forward Drive"</span>
+                <span class="concept-desc">Spinning wheels on power.</span>
+            </div>
+
+            <div class="data-label" style="margin-top: 20px;">User Concepts</div>
+            <div class="concept-btn" style="border-style: dashed;">
+                <span class="concept-title">"Loose Rear End"</span>
+                <span class="concept-desc">User-defined query template.</span>
+            </div>
+
+            <input type="text" class="custom-concept-input" placeholder="+ ADD NEW CONCEPT...">
+        </div>
+    </main>
+
+    <script>
+        // Simple mock function to demonstrate dynamic update
+        function updateContext(val) {
+            const list = document.getElementById('setupList');
+            if (val === 'truggy') {
+                list.innerHTML = `
+                    <div class="setup-item"><span class="s-key">Shock Oil (F)</span><span class="s-val-diff">600 CST</span></div>
+                    <div class="setup-item"><span class="s-key">Shock Oil (R)</span><span class="s-val-diff">550 CST</span></div>
+                    <div class="setup-item"><span class="s-key">Springs (F)</span><span class="s-val-diff">PURPLE</span></div>
+                    <div class="setup-item"><span class="s-key">Springs (R)</span><span class="s-val-diff">PURPLE</span></div>
+                    <div class="setup-item"><span class="s-key">Diffs (F/C/R)</span><span class="s-val-diff">10/15/7</span></div>
+                    <div class="setup-item"><span class="s-key">Tires</span><span class="s-val-diff">M3 (MED)</span></div>
+                `;
+            } else {
+                list.innerHTML = `
+                    <div class="setup-item"><span class="s-key">Shock Oil (F)</span><span class="s-val">450 CST</span></div>
+                    <div class="setup-item"><span class="s-key">Shock Oil (R)</span><span class="s-val">400 CST</span></div>
+                    <div class="setup-item"><span class="s-key">Springs (F)</span><span class="s-val">WHITE</span></div>
+                    <div class="setup-item"><span class="s-key">Springs (R)</span><span class="s-val">BLUE</span></div>
+                    <div class="setup-item"><span class="s-key">Diffs (F/C/R)</span><span class="s-val">7/10/5</span></div>
+                    <div class="setup-item"><span class="s-key">Tires</span><span class="s-val">S3 (SOFT)</span></div>
+                    <div class="setup-item"><span class="s-key">Camber (R)</span><span class="s-val">-2.5°</span></div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>

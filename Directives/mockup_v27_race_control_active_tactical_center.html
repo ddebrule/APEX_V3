@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.P.E.X. V3 - High-Density Operations (v27)</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --apex-dark: #0A0A0B;
+            --apex-surface: #121214;
+            --apex-red: #E53935;
+            --apex-red-glow: rgba(229, 57, 53, 0.25);
+            --apex-red-soft: rgba(229, 57, 53, 0.1);
+            --apex-green: #4CAF50;
+            --apex-green-glow: rgba(76, 175, 80, 0.15);
+            --apex-silver: #B0BEC5;
+            --apex-white: #FFFFFF;
+            --apex-border: rgba(255, 255, 255, 0.08);
+            --apex-font-sans: 'Inter', sans-serif;
+            --apex-font-mono: 'JetBrains Mono', monospace;
+            --font-size-base: 19px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--apex-dark);
+            color: var(--apex-white);
+            font-family: var(--apex-font-sans);
+            font-size: var(--font-size-base);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--apex-surface);
+            border-bottom: 2px solid var(--apex-red);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: -1px;
+        }
+
+        .brand-logo span {
+            color: var(--apex-red);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: var(--apex-red);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: radial-gradient(circle at bottom right, rgba(229, 57, 53, 0.08), transparent);
+        }
+
+        .sidebar {
+            width: 340px;
+            background: #0d0d0f;
+            border-right: 1px solid var(--apex-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--apex-red);
+        }
+
+        .desktop {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 15px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .center-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .glass-card {
+            background-color: var(--apex-surface);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ANALYTIC / MONITOR DATA (TOP) */
+        .analytics-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* PARAMETER MATRIX (BOTTOM) */
+        .setup-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .matrix-header th {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #555;
+            text-align: left;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--apex-border);
+        }
+
+        .matrix-row td {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            font-size: 16px;
+        }
+
+        .param-label {
+            font-weight: 800;
+            color: var(--apex-silver);
+            font-size: 13px;
+            text-transform: uppercase;
+            width: 140px;
+        }
+
+        .param-val {
+            font-family: var(--apex-font-mono);
+            font-weight: 500;
+            font-size: 18px;
+        }
+
+        /* RIGHT PANEL: TACTICAL CENTER */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* TACTICAL NOTES */
+        .notes-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .note-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .historical-memory {
+            font-size: 14px;
+            color: var(--apex-silver);
+            line-height: 1.4;
+            border-left: 3px solid var(--apex-red);
+            padding-left: 12px;
+        }
+
+        .pit-notes-field {
+            background: #000;
+            border: 1px solid var(--apex-border);
+            border-radius: 4px;
+            padding: 12px;
+            height: 180px;
+            width: 100%;
+            color: white;
+            font-family: var(--apex-font-sans);
+            font-size: 15px;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        .pit-notes-field::placeholder {
+            color: #333;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        /* TICKER */
+        .ticker-strip {
+            background: #000;
+            border-bottom: 1px solid var(--apex-border);
+            padding: 8px 20px;
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            font-family: var(--apex-font-mono);
+            font-size: 11px;
+        }
+
+        footer {
+            padding: 6px 24px;
+            background: var(--apex-surface);
+            border-top: 1px solid var(--apex-border);
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--apex-font-mono);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="brand-logo">A.P.E.X. <span>V3</span></div>
+        <div class="nav-tabs">
+            <div class="nav-tab">01 PADDOCK OPS</div>
+            <div class="nav-tab active">02 RACE CONTROL</div>
+            <div class="nav-tab">03 AI ADVISOR</div>
+        </div>
+        <div style="font-size: 9px; font-weight: 900; color: var(--apex-green); letter-spacing: 2px;">SESSION_LIVE // [
+            SD_FALL_BRAWL ]</div>
+    </header>
+
+    <div class="ticker-strip">
+        <div style="color: var(--apex-green);">● SYNCED</div>
+        <div><span style="color: #444;">AMBIENT:</span> 76.8°F</div>
+        <div><span style="color: #444;">HUMIDITY:</span> 12.4%</div>
+        <div><span style="color: #444;">TRACK_TEMP:</span> 102.4°F</div>
+        <div style="margin-left: auto; text-transform: uppercase; color: var(--apex-red); font-weight: 800;">Qualifying
+            2 // Heat 4 // T-Minus 12:40</div>
+    </div>
+
+    <main>
+        <!-- SIDEBAR: LIVE STREAM -->
+        <div class="sidebar">
+            <div class="section-header"><span class="section-title">◆ Session Monitor</span></div>
+            <div style="padding: 15px; flex: 1; overflow-y: auto;">
+                <div style="font-family: var(--apex-font-mono); font-size: 12px; color: #444; line-height: 1.6;">
+                    [19:42:01] Baseline MBX8R Sync OK<br>
+                    [19:42:05] Scribe Persistence: READY<br>
+                    [19:45:00] <span style="color: var(--apex-green);">Weather Core: SDRC_SYNC_PASS</span><br>
+                    [19:50:33] Driver Link Established
+                </div>
+
+                <div
+                    style="margin-top: 40px; background: var(--apex-red-soft); border: 1px solid var(--apex-red); border-radius: 4px; padding: 15px;">
+                    <span class="section-title" style="margin-bottom: 10px; display: block;">🧠 Direct AI Bridge</span>
+                    <p style="font-size: 13px; color: #888; margin-bottom: 12px; line-height: 1.3;">
+                        Current Focus: <strong>MBX8R [CHASSIS_01]</strong>
+                    </p>
+                    <button
+                        style="width: 100%; border: 1px solid var(--apex-red); background: rgba(229, 57, 53, 0.2); color: white; padding: 12px; font-size: 11px; font-weight: 900; cursor: pointer; border-radius: 2px;">
+                        NAVIGATE TO AI ADVISOR [TAB 03]
+                    </button>
+                    <p
+                        style="font-size: 10px; color: #333; font-weight: 800; text-transform: uppercase; text-align: center; margin-top:15px;">
+                        Other Vehicles In Session:</p>
+                    <button
+                        style="width: 100%; background: transparent; border: 1px solid var(--apex-border); padding: 8px; font-size: 10px; color: #555; font-weight: 900; cursor: pointer; margin-top: 5px;">MBX8T
+                        [FLEET_04]</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="desktop">
+            <div class="center-stack">
+                <!-- ANALYTICS / MONITOR DATA (TOP) -->
+                <div class="analytics-row">
+                    <div class="glass-card" style="padding: 15px;">
+                        <span class="section-title" style="margin-bottom: 12px; display: block;">◆ Operational
+                            Signals</span>
+                        <div
+                            style="background: var(--apex-red-soft); border-left: 3px solid var(--apex-red); padding: 12px; margin-bottom: 8px;">
+                            <div style="font-size: 14px; font-weight: 800;">Grip Factor Degrading</div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">Track surface slicking out.
+                                Pivot to <strong>M3 Compounds</strong> for Main.</div>
+                        </div>
+                        <div style="background: rgba(255,160,0,0.1); border-left: 3px solid #ffa000; padding: 12px;">
+                            <div style="font-size: 14px; font-weight: 800;">Thermal Drift Detected</div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">Track temp rising. Thicken rear
+                                shock oil by <strong>+50 CST</strong>.</div>
+                        </div>
+                    </div>
+                    <div class="glass-card" style="padding: 15px; background: rgba(0,0,0,0.4);">
+                        <span class="section-title" style="margin-bottom: 12px; display: block;">◆ Session
+                            Performance</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 9px; color: #444; font-weight: 800; text-transform: uppercase;">
+                                    Best Lap</div>
+                                <div style="font-family: var(--apex-font-mono); font-size: 28px; font-weight: 900;">
+                                    22.441</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 9px; color: #444; font-weight: 800; text-transform: uppercase;">
+                                    Consistency</div>
+                                <div
+                                    style="font-family: var(--apex-font-mono); font-size: 28px; font-weight: 900; color: var(--apex-green);">
+                                    94.2%</div>
+                            </div>
+                        </div>
+                        <div
+                            style="margin-top: 15px; text-align: center; border-top: 1px solid var(--apex-border); padding-top: 10px;">
+                            <span style="font-size: 11px; color: var(--apex-silver); font-weight: 700;">LAPS RECORDED:
+                                12 / 15</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDITABLE / STATIC DATA (BOTTOM) -->
+                <div class="glass-card" style="flex: 1;">
+                    <div class="section-header">
+                        <span class="section-title">◆ Fleet Setup Matrix</span>
+                        <span style="font-size: 9px; color: #444; font-weight: 800;">SYNC_ID: MBX8_ALPHA_SET</span>
+                    </div>
+
+                    <table class="setup-matrix">
+                        <thead class="matrix-header">
+                            <tr>
+                                <th>Operational Param</th>
+                                <th style="color: var(--apex-red); font-weight: 900;">MBX8R [CHASSIS_01]</th>
+                                <th>MBX8T [FLEET_04]</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="matrix-row">
+                                <td class="param-label">Shock Oil (F/R)</td>
+                                <td class="param-val">450 / 400 <span style="font-size: 10px; color: #444;">CST</span>
+                                </td>
+                                <td class="param-val">600 / 550 <span style="font-size: 10px; color: #444;">CST</span>
+                                </td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Spring Rate</td>
+                                <td class="param-val">White / Blue</td>
+                                <td class="param-val">Purple / Purple</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Diff Oil (F/C/R)</td>
+                                <td class="param-val">7 / 10 / 5 <span style="font-size: 10px; color: #444;">K</span>
+                                </td>
+                                <td class="param-val" style="color: var(--apex-red);">10 / 15 / 7 <span
+                                        style="font-size: 10px; color: #444;">K</span></td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Tire / Foam</td>
+                                <td class="param-val">ProLine S3 / Blue</td>
+                                <td class="param-val">ProLine M3 / Red</td>
+                            </tr>
+                            <tr class="matrix-row">
+                                <td class="param-label">Ride Height</td>
+                                <td class="param-val">27 / 29 <span style="font-size: 10px; color: #444;">MM</span></td>
+                                <td class="param-val">30 / 32 <span style="font-size: 10px; color: #444;">MM</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div
+                        style="padding: 12px; border-top: 1px solid var(--apex-border); background: rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; font-weight: 800; color: #555;">MATRIX_TYPE: VEHICLE_BASE</span>
+                        <span
+                            style="font-size: 10px; color: var(--apex-red); cursor: pointer; text-decoration: underline;">ADJUST
+                            PARAMS →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: TACTICAL CENTER -->
+            <div class="right-panel">
+                <div class="glass-card" style="flex: 1; padding: 15px;">
+                    <span class="section-title" style="margin-bottom: 12px; display: block;">◆ Tactical Center</span>
+
+                    <div class="notes-area">
+                        <!-- HISTORICAL MEMORY -->
+                        <div class="note-card">
+                            <span class="section-title"
+                                style="color: #444; font-size: 9px; margin-bottom: 8px; display: block;">Institutional
+                                Memory</span>
+                            <div class="historical-memory">
+                                "Last Fall Brawl (SDRC), center diff overheating caused handling fade after 8 minutes.
+                                Monitor casing temp."
+                            </div>
+                        </div>
+
+                        <!-- RACER NOTES -->
+                        <div class="note-card">
+                            <span class="section-title"
+                                style="color: #444; font-size: 9px; margin-bottom: 5px; display: block;">Active Pit
+                                Notes</span>
+                            <textarea class="pit-notes-field"
+                                placeholder="ADD TACTICAL NOTES (E.G. TALK TO TEAM MANAGER, SECURE PIT GUY, ORDER PARTS...)">Talk to Jamie about the technical section line before Q3.
+Secure a pit guy for the Nitro Buggy main event.
+Check with team manager about track watering schedule.
+Note: Order fresh front arms (MBX8) after race.</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    style="background: var(--apex-red); color: white; border: none; padding: 22px; font-weight: 900; font-size: 20px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-radius: 4px; box-shadow: 0 0 40px var(--apex-red-glow);">
+                    CLOSE SESSION & SYNC
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>A.P.E.X. V3.1 // OPERATIONS_CTR // [ UNIFIED_TACTICAL ]</div>
+        <div>[ MODE: ANALYTIC_TOP ] [ FONT: 19PX ]</div>
+    </footer>
+
+</body>
+
+</html>
