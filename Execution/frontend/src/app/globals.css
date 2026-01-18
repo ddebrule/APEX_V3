@@ -69,4 +69,10 @@ body {
   animation: pulse-ticker 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Tab content base typography - PHASE 5 */
+.tab-content {
+  font-size: 19px;
+  line-height: 1.5;
+}
+
 /* Force Rebuild 2 */

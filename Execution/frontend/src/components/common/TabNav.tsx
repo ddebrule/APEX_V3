@@ -4,6 +4,7 @@ import { useState } from 'react';
 import RacerGarage from '@/components/tabs/RacerGarage';
 import UnifiedRaceControl from '@/components/tabs/UnifiedRaceControl';
 import AIAdvisor from '@/components/tabs/AIAdvisor';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 type Tab = 'racer-garage' | 'race-control' | 'ai-advisor' | 'battery' | 'signal' | 'sync';
 
@@ -11,9 +12,9 @@ export default function TabNav() {
   const [activeTab, setActiveTab] = useState<Tab>('racer-garage');
 
   const tabs: { id: Tab; label: string; component: React.ReactNode }[] = [
-    { id: 'racer-garage', label: 'Racer Garage', component: <RacerGarage /> },
-    { id: 'race-control', label: 'Race Control', component: <UnifiedRaceControl /> },
-    { id: 'ai-advisor', label: 'AI Advisor', component: <AIAdvisor /> },
+    { id: 'racer-garage', label: 'Racer Garage', component: <ErrorBoundary><RacerGarage /></ErrorBoundary> },
+    { id: 'race-control', label: 'Race Control', component: <ErrorBoundary><UnifiedRaceControl /></ErrorBoundary> },
+    { id: 'ai-advisor', label: 'AI Advisor', component: <ErrorBoundary><AIAdvisor /></ErrorBoundary> },
     { id: 'battery', label: 'Battery', component: <div className="p-8 text-gray-400">Battery tab coming soon</div> },
     { id: 'signal', label: 'Signal', component: <div className="p-8 text-gray-400">Signal tab coming soon</div> },
     { id: 'sync', label: 'Sync', component: <div className="p-8 text-gray-400">Sync tab coming soon</div> },
@@ -38,7 +39,7 @@ export default function TabNav() {
       </div>
 
       {/* TAB CONTENT */}
-      <div className="flex-1 overflow-auto">
+      <div className="tab-content flex-1 overflow-auto">
         {tabs.find(tab => tab.id === activeTab)?.component}
       </div>
     </div>

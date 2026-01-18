@@ -16,6 +16,7 @@ export interface MissionControlState {
   // UI state
   isInitializing: boolean;
   isLocked: boolean;
+  sessionStatus: 'draft' | 'active';
   error: string | null;
   uiScale: number;
 
@@ -28,6 +29,7 @@ export interface MissionControlState {
   setSessions: (sessions: Session[]) => void;
   setIsInitializing: (isInitializing: boolean) => void;
   setIsLocked: (isLocked: boolean) => void;
+  setSessionStatus: (status: 'draft' | 'active') => void;
   setError: (error: string | null) => void;
   setUiScale: (uiScale: number) => void;
 
@@ -47,17 +49,27 @@ export const useMissionControlStore = create<MissionControlState>()(
       sessions: [],
       isInitializing: false,
       isLocked: false,
+      sessionStatus: 'draft',
       error: null,
       uiScale: 100,
 
       setSelectedRacer: (racer) => set({ selectedRacer: racer }),
       setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
-      setSelectedSession: (session) => set({ selectedSession: session }),
+      setSelectedSession: (session) => {
+        // Sync sessionStatus with the session's status field
+        const newStatus = session?.status === 'active' ? 'active' : 'draft';
+        set({ selectedSession: session, sessionStatus: newStatus });
+      },
       setRacers: (racers) => set({ racers }),
       setVehicles: (vehicles) => set({ vehicles }),
       setSessions: (sessions) => set({ sessions }),
       setIsInitializing: (isInitializing) => set({ isInitializing }),
-      setIsLocked: (isLocked) => set({ isLocked }),
+      setIsLocked: (isLocked) => {
+        // Sync isLocked with sessionStatus
+        const newStatus = isLocked ? 'active' : 'draft';
+        set({ isLocked, sessionStatus: newStatus });
+      },
+      setSessionStatus: (status) => set({ sessionStatus: status, isLocked: status === 'active' }),
       setError: (error) => set({ error }),
       setUiScale: (uiScale) => set({ uiScale: uiScale }),
 

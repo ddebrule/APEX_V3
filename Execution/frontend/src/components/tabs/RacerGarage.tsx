@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
-import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal } from '@/lib/queries';
+import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal, createSession } from '@/lib/queries';
 import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
 
 export default function RacerGarage() {
-  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale } = useMissionControlStore();
+  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, setSelectedSession, uiScale, setUiScale } = useMissionControlStore();
 
   // Data State
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -228,6 +228,33 @@ export default function RacerGarage() {
     if (!classId) return 'NO CLASS';
     const cls = classes.find(c => c.id === classId);
     return cls ? cls.name : 'Unknown';
+  };
+
+  const handleNewSession = async () => {
+    if (!selectedRacer || !selectedVehicle) {
+      alert('Please select a racer and vehicle first');
+      return;
+    }
+
+    try {
+      // Create draft session
+      const newSession = await createSession({
+        profile_id: selectedRacer.id,
+        vehicle_id: selectedVehicle.id,
+        event_name: 'New Session',
+        track_context: { name: 'TBD', surface: 'hard_packed', traction: 'medium' },
+        session_type: 'practice',
+        status: 'draft',
+        actual_setup: selectedVehicle.baseline_setup || {},
+      });
+
+      // Update store
+      setSelectedSession(newSession);
+      alert('New session created. Click Race Control tab to set up.');
+    } catch (err: any) {
+      console.error('Failed to create session', err);
+      alert(`Failed to create session: ${err.message || 'Unknown error'}`);
+    }
   };
 
 
@@ -464,10 +491,17 @@ export default function RacerGarage() {
 
         {/* PAST SESSION RESULTS (BOTTOM) */}
         <div className="bg-[#121214] border border-white/5 rounded flex flex-col flex-1 min-h-0">
-          <div className="p-4 bg-white/[0.02] border-b border-white/5 shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5 shrink-0 flex justify-between items-center">
             <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">
               ◆ Past Session Results // {selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : 'SELECT VEHICLE'}
             </span>
+            <button
+              onClick={handleNewSession}
+              disabled={!selectedRacer || !selectedVehicle}
+              className="text-[10px] px-3 py-1.5 border border-[#2196F3] bg-[#2196F3]/10 text-[#2196F3] font-black uppercase tracking-widest rounded hover:bg-[#2196F3]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              ◆ NEW SESSION
+            </button>
           </div>
 
           <div className="px-5 py-2.5 bg-black/20 border-b border-white/5 flex gap-5 items-center shrink-0">
