@@ -22,8 +22,8 @@ Phase 4 Stage 2 successfully implements all three V3.1 frontend shells using con
 
 ## Implementation Summary
 
-### Tab 1: Paddock Operations ✅ COMPLETE
-**File**: `Execution/frontend/src/components/tabs/PaddockOps.tsx` (342 lines)
+### Tab 1: Racer Garage ✅ COMPLETE
+**File**: `Execution/frontend/src/components/tabs/RacerGarage.tsx` (720 lines)
 
 **Architecture**:
 - Two-section layout: Event Identity (top) + Class Registry (sidebar)
@@ -208,7 +208,7 @@ Active: RED (Session Running)
 Execution/frontend/src/
 ├── components/
 │   ├── tabs/
-│   │   ├── PaddockOps.tsx ..................... Tab 1 (342 lines) ✅
+│   │   ├── RacerGarage.tsx ..................... Tab 1 (720 lines) ✅
 │   │   ├── UnifiedRaceControl.tsx ............ Tab 2 (310 lines) ✅
 │   │   ├── AIAdvisor.tsx ..................... Tab 3 (230 lines) ✅
 │   │   └── TabNav.tsx ....................... Updated (routing)
@@ -361,8 +361,8 @@ export type Vehicle = {
 ### Overview
 All three frontend shells (built in Stage 2) are now wired to Supabase backend. Replaced inline database calls with centralized query functions from `lib/queries.ts`. All components now support real data persistence.
 
-### Tab 1: PaddockOps - ClassRegistry CRUD Wiring ✅
-**Changes to `components/tabs/PaddockOps.tsx`**:
+### Tab 1: RacerGarage - ClassRegistry CRUD Wiring ✅
+**Changes to `components/tabs/RacerGarage.tsx`**:
 - Replaced inline Supabase calls with query functions
 - useEffect fetches classes from `getClassesByProfileId(selectedRacer.id)`
 - handleAddClass uses `createClass()` to persist new vehicle classes

@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import PaddockOps from '@/components/tabs/PaddockOps';
+import RacerGarage from '@/components/tabs/RacerGarage';
 import UnifiedRaceControl from '@/components/tabs/UnifiedRaceControl';
 import AIAdvisor from '@/components/tabs/AIAdvisor';
 
-type Tab = 'paddock-ops' | 'race-control' | 'ai-advisor' | 'battery' | 'signal' | 'sync';
+type Tab = 'racer-garage' | 'race-control' | 'ai-advisor' | 'battery' | 'signal' | 'sync';
 
 export default function TabNav() {
-  const [activeTab, setActiveTab] = useState<Tab>('paddock-ops');
+  const [activeTab, setActiveTab] = useState<Tab>('racer-garage');
 
   const tabs: { id: Tab; label: string; component: React.ReactNode }[] = [
-    { id: 'paddock-ops', label: 'Paddock Ops', component: <PaddockOps /> },
+    { id: 'racer-garage', label: 'Racer Garage', component: <RacerGarage /> },
     { id: 'race-control', label: 'Race Control', component: <UnifiedRaceControl /> },
     { id: 'ai-advisor', label: 'AI Advisor', component: <AIAdvisor /> },
     { id: 'battery', label: 'Battery', component: <div className="p-8 text-gray-400">Battery tab coming soon</div> },
@@ -27,11 +27,10 @@ export default function TabNav() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-4 text-sm font-semibold uppercase tracking-wide transition-all border-b-2 ${
-              activeTab === tab.id
+            className={`px-6 py-4 text-sm font-semibold uppercase tracking-wide transition-all border-b-2 ${activeTab === tab.id
                 ? 'text-apex-green border-apex-green'
                 : 'text-gray-400 border-transparent hover:text-gray-300'
-            }`}
+              }`}
           >
             {tab.label}
           </button>

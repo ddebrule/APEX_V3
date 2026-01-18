@@ -87,7 +87,7 @@ AFTER MIGRATION: What's Next
 Once the migration is successfully applied, the next phases are:
 
 PHASE 4 (Next): Build V3.1 Shells
-- Create Tab 1: Paddock Ops (rename of Mission Control)
+- Create Tab 1: Racer Garage (rename of Mission Control)
 - Create Tab 2: Unified Race Control (NEW - merges setup + active)
 - Create Tab 3: AI Advisor (redesign of Setup Advisor)
 

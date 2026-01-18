@@ -45,7 +45,7 @@ What's new:
 
 ## V3.1 Tab Structure
 
-### Tab 1: Paddock Ops (was Mission Control)
+### Tab 1: Racer Garage (was Mission Control)
 **Reuses**: EventIdentity.tsx (existing)
 - Racer profile selector
 - Vehicle selector
@@ -53,7 +53,7 @@ What's new:
 
 **New Elements**: Class Registry sidebar
 
-**File**: `frontend/src/components/tabs/PaddockOps.tsx` (refactor from MissionControl)
+**File**: `frontend/src/components/tabs/RacerGarage.tsx` (refactor from MissionControl)
 
 ---
 
@@ -122,27 +122,27 @@ Files to modify:
 Changes:
 ```
 Old Tabs: Mission Control | Setup Advisor | Battery | Signal | Sync
-New Tabs: Paddock Ops | Race Control | AI Advisor | Battery | Signal | Sync
+New Tabs: Racer Garage | Race Control | AI Advisor | Battery | Signal | Sync
 ```
 
 ---
 
-### Step 3: Build Paddock Ops (After Tab Nav Update)
-**File**: `frontend/src/components/tabs/PaddockOps.tsx`
+### Step 3: Build Racer Garage (After Tab Nav Update)
+**File**: `frontend/src/components/tabs/RacerGarage.tsx`
 
 This is mostly a refactoring of MissionControl → rename and wire up new Class Registry sidebar.
 
 **Steps**:
-1. Copy MissionControl.tsx → PaddockOps.tsx
+1. Copy MissionControl.tsx → RacerGarage.tsx
 2. Keep EventIdentity.tsx (no changes needed)
 3. Add Class Registry sidebar showing vehicle classes
-4. Update store references (rename mission_control selectors to paddock_ops if needed)
+4. Update store references (rename mission_control selectors to racer_garage if needed)
 
 **Estimated**: 1-2 changes only
 
 ---
 
-### Step 4: Build Unified Race Control (After Paddock Ops)
+### Step 4: Build Unified Race Control (After Racer Garage)
 **File**: `frontend/src/components/tabs/UnifiedRaceControl.tsx`
 
 **Architecture**:

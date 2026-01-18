@@ -212,7 +212,7 @@ Check off each item:
 - Can now fetch and save data
 
 🔄 **Next Phase:**
-- Build V3.1 Tab 1 (Paddock Ops)
+- Build V3.1 Tab 1 (Racer Garage)
 - Build V3.1 Tab 2 (Unified Race Control)
 - Build V3.1 Tab 3 (AI Advisor)
 

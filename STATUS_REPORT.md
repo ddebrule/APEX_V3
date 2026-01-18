@@ -82,8 +82,8 @@ Implemented Socratic loop state machine with:
 
 **What Needs to Be Built**:
 
-#### Tab 1: Paddock Ops
-- Refactor Mission Control → Paddock Ops
+#### Tab 1: Racer Garage
+- Refactor Mission Control → Racer Garage
 - Add Class Registry sidebar
 - Reuse: EventIdentity.tsx (existing)
 
@@ -226,7 +226,7 @@ All documentation committed to GitHub:
 ## Remaining Work for Phase 4
 
 ### Estimated Scope
-- **Tab 1 (Paddock Ops)**: 1 file, minor refactor
+- **Tab 1 (Racer Garage)**: 1 file, minor refactor
 - **Tab 2 (Unified Race Control)**: 4-5 files, medium complexity
 - **Tab 3 (AI Advisor)**: 5-6 files, high complexity
 
@@ -254,7 +254,7 @@ All documentation committed to GitHub:
 
 🔄 **Next Critical Steps**:
 1. Test racer profile creation (verify DB connection)
-2. Build Tab 1 (Paddock Ops)
+2. Build Tab 1 (Racer Garage)
 3. Build Tab 2 (Race Control)
 4. Build Tab 3 (AI Advisor)
 5. End-to-end testing

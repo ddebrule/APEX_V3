@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import UIScaleProvider from '@/components/common/UIScaleProvider';
 
 export const metadata: Metadata = {
   title: 'A.P.E.X. V3 | Mission Control',
@@ -18,9 +19,11 @@ export default function RootLayout({
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
       </head>
       <body className="bg-apex-dark text-white font-inter antialiased">
-        <div className="min-h-screen">
-          {children}
-        </div>
+        <UIScaleProvider>
+          <div className="min-h-screen">
+            {children}
+          </div>
+        </UIScaleProvider>
       </body>
     </html>
   );

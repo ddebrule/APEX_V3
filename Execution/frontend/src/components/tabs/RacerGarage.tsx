@@ -5,8 +5,8 @@ import { useMissionControlStore } from '@/stores/missionControlStore';
 import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal } from '@/lib/queries';
 import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
 
-export default function PaddockOps() {
-  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer } = useMissionControlStore();
+export default function RacerGarage() {
+  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale } = useMissionControlStore();
 
   // Data State
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -28,7 +28,6 @@ export default function PaddockOps() {
   const [setupForm, setSetupForm] = useState({ shocks: '', diff: '', gearing: '' });
 
   const [uiScalingOpen, setUiScalingOpen] = useState(false);
-  const [uiScale, setUiScale] = useState(100);
 
   const [signalManagerOpen, setSignalManagerOpen] = useState(false);
   const [customSignals, setCustomSignals] = useState<HandlingSignal[]>([]);
@@ -231,30 +230,6 @@ export default function PaddockOps() {
     return cls ? cls.name : 'Unknown';
   };
 
-  // Apply UI Scaling
-  useEffect(() => {
-    // Apply scale to the main app container or body
-    // using transform instead of zoom for better compatibility
-    const s = uiScale / 100;
-    if (uiScale === 100) {
-      document.body.style.removeProperty('transform');
-      document.body.style.removeProperty('transformOrigin');
-      document.body.style.removeProperty('width');
-      document.body.style.removeProperty('height');
-    } else {
-      document.body.style.transform = `scale(${s})`;
-      document.body.style.transformOrigin = 'top left';
-      document.body.style.width = `${100 / s}%`;
-      document.body.style.height = `${100 / s}%`;
-    }
-
-    return () => {
-      document.body.style.removeProperty('transform');
-      document.body.style.removeProperty('transformOrigin');
-      document.body.style.removeProperty('width');
-      document.body.style.removeProperty('height');
-    }
-  }, [uiScale]);
 
   return (
     <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
@@ -339,19 +314,29 @@ export default function PaddockOps() {
                   placeholder="Sponsor Name..."
                   disabled={!selectedRacer}
                 />
-                <select
+                <input
+                  type="text"
+                  list="sponsor-categories"
                   value={sponsorCategory}
                   onChange={(e) => setSponsorCategory(e.target.value)}
-                  className="bg-black border border-white/5 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935] min-w-[80px]"
+                  className="bg-black border border-white/5 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935] min-w-[120px]"
+                  placeholder="Category..."
                   disabled={!selectedRacer}
-                >
-                  <option value="">Category</option>
-                  <option value="Tires">Tires</option>
-                  <option value="Fuel">Fuel</option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Chassis">Chassis</option>
-                  <option value="Paint">Paint</option>
-                </select>
+                />
+                <datalist id="sponsor-categories">
+                  <option value="Tires" />
+                  <option value="Fuel" />
+                  <option value="Electronics" />
+                  <option value="Chassis" />
+                  <option value="Engine" />
+                  <option value="Shocks" />
+                  <option value="Stickers" />
+                  <option value="Bodies" />
+                  <option value="Bearings" />
+                  <option value="Tools" />
+                  <option value="Radio" />
+                  <option value="Paint" />
+                </datalist>
                 <button
                   onClick={() => handleAddSponsor({ key: 'Enter' } as React.KeyboardEvent)}
                   className="border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black px-3 rounded hover:bg-[#FF6B6B] transition-all disabled:opacity-50"

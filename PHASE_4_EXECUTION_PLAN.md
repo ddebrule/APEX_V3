@@ -40,8 +40,8 @@
 **Time**: ~2-3 hours
 
 #### Tasks:
-1. Create `frontend/src/components/tabs/PaddockOps.tsx`
-2. Rename label: "Mission Control" → "Paddock Operations"
+1. Create `frontend/src/components/tabs/RacerGarage.tsx`
+2. Rename label: "Mission Control" → "Racer Garage"
 3. Migrate EventIdentity.tsx as the main component
 4. Implement Class Registry sidebar:
    - Input field for class name
@@ -51,9 +51,9 @@
 
 #### Component Structure:
 ```
-PaddockOps.tsx
+RacerGarage.tsx
 ├── Header
-│   ├── Red brand (◆ PADDOCK OPS)
+│   ├── Red brand (◆ RACER GARAGE)
 │   └── Status indicators
 ├── EventIdentity.tsx (existing - no changes)
 │   ├── Fleet Configuration (Green ◆)
@@ -282,8 +282,8 @@ if racer.sponsors.contains("JConcepts"):
 - [ ] Create CSS variables in global stylesheet
 - [ ] Update TabNav.tsx with new tab labels
 
-### Tab 1: Paddock Operations
-- [ ] Create PaddockOps.tsx
+### Tab 1: Racer Garage
+- [ ] Create RacerGarage.tsx
 - [ ] Import EventIdentity.tsx (no changes)
 - [ ] Create ClassRegistry.tsx component
 - [ ] Wire database queries (classes table)
@@ -416,7 +416,7 @@ AIAdvisor.tsx
 ```
 frontend/src/components/
 ├── tabs/
-│   ├── PaddockOps.tsx (NEW - Tab 1)
+│   ├── RacerGarage.tsx (NEW - Tab 1)
 │   ├── UnifiedRaceControl.tsx (NEW - Tab 2)
 │   ├── AIAdvisor.tsx (NEW - Tab 3)
 │   └── [Battery, Signal, Sync tabs - existing]
