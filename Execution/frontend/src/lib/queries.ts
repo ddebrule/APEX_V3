@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { RacerProfile, Vehicle, Session } from '@/types/database';
+import type { RacerProfile, Vehicle, Session, VehicleClass, HandlingSignal } from '@/types/database';
 
 // ========== RACER PROFILES ==========
 
@@ -300,4 +300,106 @@ export async function getRaceResults(sessionId: string) {
   }
 
   return data || null;
+}
+
+// ========== VEHICLE CLASSES ==========
+
+export async function getClassesByProfileId(profileId: string): Promise<VehicleClass[]> {
+  const { data, error } = await supabase
+    .from('classes')
+    .select('*')
+    .eq('profile_id', profileId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching classes:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+export async function getClassById(id: string): Promise<VehicleClass | null> {
+  const { data, error } = await supabase
+    .from('classes')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    console.error('Error fetching class:', error);
+  }
+
+  return data || null;
+}
+
+export async function createClass(vehicleClass: Omit<VehicleClass, 'id' | 'created_at'>): Promise<VehicleClass> {
+  const { data, error } = await supabase
+    .from('classes')
+    .insert([vehicleClass])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating class:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function deleteClass(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('classes')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting class:', error);
+    throw error;
+  }
+}
+
+// ========== HANDLING SIGNALS ==========
+
+export async function getHandlingSignalsByProfileId(profileId: string): Promise<HandlingSignal[]> {
+  const { data, error } = await supabase
+    .from('handling_signals')
+    .select('*')
+    .eq('profile_id', profileId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching handling signals:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+export async function createHandlingSignal(signal: Omit<HandlingSignal, 'id' | 'created_at'>): Promise<HandlingSignal> {
+  const { data, error } = await supabase
+    .from('handling_signals')
+    .insert([signal])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating handling signal:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function deleteHandlingSignal(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('handling_signals')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting handling signal:', error);
+    throw error;
+  }
 }

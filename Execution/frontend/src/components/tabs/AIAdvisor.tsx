@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import { useChatMessages } from '@/stores/advisorStore';
 import ChatMessage from '@/components/advisor/ChatMessage';
+import { getVehiclesByProfileId } from '@/lib/queries';
 
 interface ContextData {
   vehicleId: string;
@@ -43,22 +44,64 @@ const SAMPLE_CONTEXTS: Record<string, ContextData> = {
 };
 
 const TACTICAL_DIRECTIVES = [
-  { title: 'Tire Strategy', desc: 'Manage compound selection' },
-  { title: 'Setup Tuning', desc: 'Suspension optimization' },
-  { title: 'Race Tactics', desc: 'Track positioning guide' },
-  { title: 'Performance', desc: 'Lap time improvement' },
-  { title: 'Diagnostics', desc: 'Issue troubleshooting' },
+  { title: '"Loose Rear End"', desc: 'Oversteer on entry/exit.' },
+  { title: '"Push / Understeer"', desc: 'Front end washing out.' },
+  { title: '"Bottoms Out"', desc: 'Chassis slap on landing/G-out.' },
+  { title: '"Lacks Forward Drive"', desc: 'Spinning wheels on power.' },
 ];
 
 export default function AIAdvisor() {
-  const { selectedVehicle } = useMissionControlStore();
+  const { selectedVehicle, selectedRacer } = useMissionControlStore();
   const chatMessages = useChatMessages();
-  const [selectedContext, setSelectedContext] = useState<string>('chassis-01');
+  const [vehicles, setVehicles] = useState(selectedVehicle ? [selectedVehicle] : []);
+  const [selectedContext, setSelectedContext] = useState<string>('');
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const context = SAMPLE_CONTEXTS[selectedContext];
+  // Fetch vehicles for the selected racer
+  useEffect(() => {
+    if (!selectedRacer) {
+      setVehicles([]);
+      setSelectedContext('');
+      return;
+    }
+
+    const fetchVehicles = async () => {
+      setIsFetching(true);
+      try {
+        const data = await getVehiclesByProfileId(selectedRacer.id);
+        setVehicles(data);
+        if (data.length > 0) {
+          setSelectedContext(data[0].id);
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        // Fall back to sample data if fetch fails
+        setVehicles(selectedVehicle ? [selectedVehicle] : []);
+        if (selectedVehicle) {
+          setSelectedContext(selectedVehicle.id);
+        }
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchVehicles();
+  }, [selectedRacer, selectedVehicle]);
+
+  // Build context data from selected vehicle
+  const selectedVehicleData = vehicles.find(v => v.id === selectedContext);
+  const context: ContextData = selectedVehicleData
+    ? {
+      vehicleId: selectedVehicleData.id,
+      vehicleName: `${selectedVehicleData.brand} ${selectedVehicleData.model}`,
+      temperature: selectedVehicleData.baseline_setup?.temperature as number | undefined,
+      condition: (selectedVehicleData.baseline_setup?.condition as string) || 'FRESH CLAY',
+      setupParams: (selectedVehicleData.baseline_setup || {}) as Record<string, string>,
+    }
+    : SAMPLE_CONTEXTS['chassis-01'];
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -113,10 +156,17 @@ export default function AIAdvisor() {
             <select
               value={selectedContext}
               onChange={(e) => handleContextChange(e.target.value)}
-              className="w-full px-3 py-2 bg-apex-dark border border-apex-red rounded text-white text-xs font-mono font-bold focus:outline-none focus:border-apex-red/80"
+              disabled={isFetching || vehicles.length === 0}
+              className="w-full px-3 py-2 bg-apex-dark border border-apex-red rounded text-white text-xs font-mono font-bold focus:outline-none focus:border-apex-red/80 disabled:opacity-50"
             >
-              <option value="chassis-01">MBX8R [CHASSIS_01] (BUGGY)</option>
-              <option value="fleet-04">MBX8T [FLEET_04] (TRUGGY)</option>
+              <option value="">
+                {isFetching ? 'Loading vehicles...' : vehicles.length === 0 ? 'No vehicles' : 'Select vehicle'}
+              </option>
+              {vehicles.map((vehicle) => (
+                <option key={vehicle.id} value={vehicle.id}>
+                  {vehicle.brand} {vehicle.model} [{vehicle.id?.slice(0, 8).toUpperCase()}]
+                </option>
+              ))}
             </select>
           </div>
 
@@ -178,7 +228,7 @@ export default function AIAdvisor() {
                   <div key={msg.id}>
                     <ChatMessage
                       message={msg}
-                      onClarifyingResponse={() => {}}
+                      onClarifyingResponse={() => { }}
                       isLoading={isLoading}
                     />
                   </div>
@@ -203,9 +253,9 @@ export default function AIAdvisor() {
               <button
                 onClick={handleSendMessage}
                 disabled={isLoading || !userInput.trim()}
-                className="px-4 py-2 bg-apex-red text-white font-bold text-xs uppercase rounded hover:bg-apex-red/90 disabled:opacity-50 transition-all"
+                className="px-4 py-2 bg-apex-green text-white font-bold text-xs uppercase rounded hover:bg-apex-green/90 disabled:opacity-50 transition-all shadow-[0_0_10px_rgba(46,125,50,0.3)] hover:shadow-[0_0_15px_rgba(46,125,50,0.5)]"
               >
-                {isLoading ? '⟳' : '→'}
+                {isLoading ? '⟳' : '🎤'}
               </button>
             </div>
           </div>

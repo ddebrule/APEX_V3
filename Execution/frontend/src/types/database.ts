@@ -81,3 +81,11 @@ export type SetupEmbedding = {
   content: string;
   embedding: number[];
 };
+
+export type HandlingSignal = {
+  id: string;
+  profile_id: string;
+  label: string;
+  description?: string;
+  created_at: string;
+};

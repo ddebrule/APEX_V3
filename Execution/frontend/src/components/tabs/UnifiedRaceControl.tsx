@@ -6,6 +6,7 @@ import GlassCard from '@/components/common/GlassCard';
 import TrackContextMatrix from '@/components/matrices/TrackContextMatrix';
 import VehicleTechnicalMatrix from '@/components/matrices/VehicleTechnicalMatrix';
 import TrackIntelligence from '@/components/sections/TrackIntelligence';
+import { updateSession, createSession } from '@/lib/queries';
 import type { TrackContext, Vehicle } from '@/types/database';
 
 type RaceMode = 'BLUE' | 'RED';
@@ -57,15 +58,38 @@ export default function UnifiedRaceControl() {
     }));
   };
 
-  const handleDeploy = () => {
+  const handleDeploy = async () => {
     if (!selectedVehicle || !selectedRacer) {
       console.error('Vehicle or racer not selected');
       return;
     }
 
-    // Deploy: lock the session and transition to RED mode
-    setIsLocked(true);
-    setMode('RED');
+    try {
+      // If we already have a session, update it; otherwise create a new one
+      if (selectedSession?.id) {
+        await updateSession(selectedSession.id, {
+          track_context: config.trackContext as TrackContext,
+          status: 'active',
+        });
+      } else {
+        // Create new session
+        await createSession({
+          profile_id: selectedRacer.id,
+          vehicle_id: selectedVehicle.id,
+          event_name: config.trackContext.name || 'New Session',
+          track_context: config.trackContext as TrackContext,
+          session_type: 'practice',
+          status: 'active',
+          actual_setup: selectedVehicle.baseline_setup,
+        });
+      }
+
+      // Deploy: lock the session and transition to RED mode
+      setIsLocked(true);
+      setMode('RED');
+    } catch (error) {
+      console.error('Error deploying session:', error);
+    }
   };
 
   // Vehicles list from selected racer

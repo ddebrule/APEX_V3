@@ -110,17 +110,17 @@ export default function EventIdentity() {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Fleet Configuration */}
       <GlassCard>
-        <div className="flex justify-between items-center mb-4 border-b border-apex-green/20 pb-3">
+        <div className="flex justify-between items-center mb-4 border-b border-apex-red/20 pb-3">
           <div className="flex items-center gap-2">
-            <span className="text-apex-green font-mono text-xs">◆</span>
-            <h2 className="header-uppercase text-sm font-bold tracking-widest text-apex-green">
+            <span className="text-apex-red font-mono text-xs">◆</span>
+            <h2 className="header-uppercase text-sm font-bold tracking-widest text-apex-red">
               Fleet Configuration
             </h2>
           </div>
           {!isAddingRacer && (
             <button
               onClick={() => setIsAddingRacer(true)}
-              className="text-[9px] uppercase font-bold tracking-widest px-2 py-1 border border-apex-green text-apex-green hover:bg-apex-green/5 transition-colors rounded font-mono"
+              className="text-[9px] uppercase font-bold tracking-widest px-2 py-1 border border-apex-red text-apex-red hover:bg-apex-red/5 transition-colors rounded font-mono"
             >
               [+] Add
             </button>
@@ -137,7 +137,7 @@ export default function EventIdentity() {
                 type="text"
                 value={newRacer.name}
                 onChange={(e) => setNewRacer({ ...newRacer, name: e.target.value })}
-                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-green focus:ring-1 focus:ring-apex-green/20 font-mono transition-all"
+                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all"
                 placeholder="Name"
               />
             </div>
@@ -149,7 +149,7 @@ export default function EventIdentity() {
                 type="email"
                 value={newRacer.email}
                 onChange={(e) => setNewRacer({ ...newRacer, email: e.target.value })}
-                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-green focus:ring-1 focus:ring-apex-green/20 font-mono transition-all"
+                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all"
                 placeholder="email@racing.io"
               />
             </div>
@@ -161,14 +161,14 @@ export default function EventIdentity() {
                 type="text"
                 value={newRacer.sponsors}
                 onChange={(e) => setNewRacer({ ...newRacer, sponsors: e.target.value })}
-                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-green focus:ring-1 focus:ring-apex-green/20 font-mono transition-all"
+                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all"
                 placeholder="Sponsor1, Sponsor2"
               />
             </div>
             <div className="flex gap-2 pt-1">
               <button
                 onClick={handleSaveRacer}
-                className="flex-1 px-2 py-1.5 bg-apex-green/10 border border-apex-green text-apex-green text-[9px] font-bold uppercase tracking-widest rounded hover:bg-apex-green/20 transition-colors font-mono"
+                className="flex-1 px-2 py-1.5 bg-apex-red/10 border border-apex-red text-apex-red text-[9px] font-bold uppercase tracking-widest rounded hover:bg-apex-red/20 transition-colors font-mono"
               >
                 Save
               </button>
@@ -189,9 +189,9 @@ export default function EventIdentity() {
               <select
                 value={selectedRacer?.id || ''}
                 onChange={handleRacerChange}
-                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-green focus:ring-1 focus:ring-apex-green/20 font-mono transition-all appearance-none"
+                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all appearance-none"
                 style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300e676' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff1744' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'right 8px center',
                   paddingRight: '24px',
@@ -210,7 +210,7 @@ export default function EventIdentity() {
               <div className="space-y-2 pt-2 border-t border-apex-border/20">
                 <div className="flex justify-between items-center">
                   <span className="text-[9px] uppercase tracking-widest text-gray-600 font-mono">ID:</span>
-                  <span className="text-[9px] text-apex-green font-mono">{selectedRacer.id.slice(0, 8)}</span>
+                  <span className="text-[9px] text-apex-red font-mono">{selectedRacer.id.slice(0, 8)}</span>
                 </div>
                 {selectedRacer.email && (
                   <div className="flex justify-between items-center">
