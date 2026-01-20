@@ -25,7 +25,23 @@ export default function RacerGarage() {
   const [newVehicle, setNewVehicle] = useState({ brand: '', model: '', transponder: '', class_id: '' });
 
   const [setupModalOpen, setSetupModalOpen] = useState(false);
-  const [setupForm, setSetupForm] = useState({ shocks: '', diff: '', gearing: '' });
+  const [setupForm, setSetupForm] = useState({
+    shocks: '',
+    diff: '',
+    gearing: '',
+    // v6.0.1 Schema Expansion
+    tire_compound: '',
+    tire_insert: '',
+    tread_pattern: '',
+    camber: '',
+    toe_in: '',
+    ride_height: '',
+    front_toe_out: '',
+    front_sway_bar: '',
+    rear_sway_bar: '',
+    punch: '',
+    brake: ''
+  });
 
   const [uiScalingOpen, setUiScalingOpen] = useState(false);
 
@@ -170,7 +186,19 @@ export default function RacerGarage() {
     setSetupForm({
       shocks: (setup.shock_oil || '') as string,
       diff: (setup.diff_oil || '') as string,
-      gearing: (setup.gear || '') as string
+      gearing: (setup.gear || '') as string,
+      // v6.0.1 Schema Fields
+      tire_compound: (setup.tire_compound || '') as string,
+      tire_insert: (setup.tire_insert || '') as string,
+      tread_pattern: (setup.tread_pattern || '') as string,
+      camber: (setup.camber || '') as string,
+      toe_in: (setup.toe_in || '') as string,
+      ride_height: (setup.ride_height || '') as string,
+      front_toe_out: (setup.front_toe_out || '') as string,
+      front_sway_bar: (setup.front_sway_bar || '') as string,
+      rear_sway_bar: (setup.rear_sway_bar || '') as string,
+      punch: (setup.punch || '') as string,
+      brake: (setup.brake || '') as string
     });
     setSetupModalOpen(true);
   };
@@ -182,7 +210,19 @@ export default function RacerGarage() {
         baseline_setup: {
           shock_oil: setupForm.shocks.trim(),
           diff_oil: setupForm.diff.trim(),
-          gear: setupForm.gearing.trim()
+          gear: setupForm.gearing.trim(),
+          // v6.0.1 Schema Fields
+          tire_compound: setupForm.tire_compound.trim(),
+          tire_insert: setupForm.tire_insert.trim(),
+          tread_pattern: setupForm.tread_pattern.trim(),
+          camber: setupForm.camber.trim(),
+          toe_in: setupForm.toe_in.trim(),
+          ride_height: setupForm.ride_height.trim(),
+          front_toe_out: setupForm.front_toe_out.trim(),
+          front_sway_bar: setupForm.front_sway_bar.trim(),
+          rear_sway_bar: setupForm.rear_sway_bar.trim(),
+          punch: setupForm.punch.trim(),
+          brake: setupForm.brake.trim()
         }
       });
       setVehicles(vehicles.map(v => v.id === updated.id ? updated : v));
@@ -615,6 +655,141 @@ export default function RacerGarage() {
                   className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
                   placeholder="e.g., 16/37, 17/37..."
                 />
+              </div>
+
+              {/* v6.0.1 SCHEMA EXPANSION */}
+              <div className="border-t border-white/10 pt-4 mt-4">
+                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">TIRES (Grip Foundation)</span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tire Compound</label>
+                    <input
+                      type="text"
+                      value={setupForm.tire_compound}
+                      onChange={(e) => setSetupForm({ ...setupForm, tire_compound: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., Soft, Medium, Hard"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tire Insert</label>
+                    <input
+                      type="text"
+                      value={setupForm.tire_insert}
+                      onChange={(e) => setSetupForm({ ...setupForm, tire_insert: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 40, 45, 50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tread Pattern</label>
+                    <input
+                      type="text"
+                      value={setupForm.tread_pattern}
+                      onChange={(e) => setSetupForm({ ...setupForm, tread_pattern: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., Street, Grid, Custom"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-4">
+                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">GEOMETRY (Cornering Control)</span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Camber</label>
+                    <input
+                      type="text"
+                      value={setupForm.camber}
+                      onChange={(e) => setSetupForm({ ...setupForm, camber: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., -2.5°"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Toe In</label>
+                    <input
+                      type="text"
+                      value={setupForm.toe_in}
+                      onChange={(e) => setSetupForm({ ...setupForm, toe_in: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 0.5mm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Ride Height</label>
+                    <input
+                      type="text"
+                      value={setupForm.ride_height}
+                      onChange={(e) => setSetupForm({ ...setupForm, ride_height: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., Front 18mm, Rear 20mm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Front Toe Out</label>
+                    <input
+                      type="text"
+                      value={setupForm.front_toe_out}
+                      onChange={(e) => setSetupForm({ ...setupForm, front_toe_out: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 1.0mm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-4">
+                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">SHOCKS & BARS (Chassis Dynamics)</span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Front Sway Bar (mm)</label>
+                    <input
+                      type="text"
+                      value={setupForm.front_sway_bar}
+                      onChange={(e) => setSetupForm({ ...setupForm, front_sway_bar: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 5.0"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Rear Sway Bar (mm)</label>
+                    <input
+                      type="text"
+                      value={setupForm.rear_sway_bar}
+                      onChange={(e) => setSetupForm({ ...setupForm, rear_sway_bar: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 5.5"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-4">
+                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">POWER (Acceleration & Braking)</span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Punch (Engine Tuning)</label>
+                    <input
+                      type="text"
+                      value={setupForm.punch}
+                      onChange={(e) => setSetupForm({ ...setupForm, punch: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., 1.3:1, 1.5:1"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Brake</label>
+                    <input
+                      type="text"
+                      value={setupForm.brake}
+                      onChange={(e) => setSetupForm({ ...setupForm, brake: e.target.value })}
+                      className="w-full bg-black border border-white/10 p-2 text-white text-xs font-mono rounded focus:outline-none focus:border-[#E53935]"
+                      placeholder="e.g., Ceramic, Metallic"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

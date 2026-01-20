@@ -31,15 +31,21 @@ function getGlobalTop5Average(racerLaps: Record<string, any>): number {
 }
 ```
 - **Fade Factor (Telemetry Bounds)**:
-    - **Constraint**: Requires a minimum of 6 laps to compute a meaningful trend.
+    - **Constraint**: Requires a minimum of 6 laps.
+    - **Context Awareness**: 
+        - **< 10 Min (Qualifier)**: Tire wear is **NEGLIGIBLE**. Prioritize diagnostic inquiries in this order:
+            1. **Track Evolution**: General surface changes (drying, blowing out, groove building). **Forbid location guesses** (e.g., "at the triple").
+            2. **Mechanical**: Hardware drift (Nitro thermal drift, Eco-motor heat soak, clutch engagement, or drivetrain friction).
+            3. **Driver Focus/Fatigue**: Lap-to-lap mental consistency.
+        - **> 15 Min (Mains)**: Tire wear/degradation remains a valid factor after the top 3 are addressed.
 ```typescript
 function calculateFade(lapTimes: number[]): number | null {
-  if (lapTimes.length < 6) return null; // Null handles UI "Calculating..." state
+  if (lapTimes.length < 6) return null; 
   const firstThree = lapTimes.slice(0, 3);
   const lastThree = lapTimes.slice(-3);
   const avgFirst = firstThree.reduce((a, b) => a + b) / 3;
   const avgLast = lastThree.reduce((a, b) => a + b) / 3;
-  return (avgLast - avgFirst) / avgFirst; // Positive result = Performance Fade (Slower)
+  return (avgLast - avgFirst) / avgFirst; 
 }
 ```
 
@@ -72,9 +78,14 @@ Racer Scribe: {{racer_scribe_feedback}}
 
 INSTRUCTION: 
 1. Present the ORP and Fade data as objective terminal reports.
-2. Review the 'Raw Setup Context'—this is a dynamic object. Identify the current values for each category.
-3. Ask one open-ended Socratic question about the car's behavior.
-4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.
+2. **SESSION AWARENESS**: 
+   - If `session_type` is 'qualifier' or duration < 10m: Assume tires are NOT the issue.
+   - **Diagnostic Hierarchy**: 1) Track Evolution, 2) Mechanical (Engine/Clutch/Drivetrain), 3) Driver Focus/Fatigue.
+   - If `session_type` is 'main' and duration > 12m: Consider tire wear only after the hierarchy above is explored.
+3. Review the 'Raw Setup Context'—Identify current values for each category.
+4. Ask one open-ended Socratic question about the car's behavior.
+5. **FORBIDDEN**: Do not lead with "Are your tires wearing out?" unless in a long-duration Main.
+6. **FORBIDDEN**: Do not assume *where* on the track a problem is occurring (e.g., "in the rhythm section"). Keep questions purely mechanical/behavioral.
 ```
 
 ## 5. Librarian: "Push to Advisor" Logic

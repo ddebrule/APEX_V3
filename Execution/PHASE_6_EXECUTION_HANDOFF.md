@@ -58,7 +58,18 @@ Every component you build must serve the ORP Mission.
 
 ---
 
+## 📋 Neutral Debrief Protocol (Strict)
+When the Advisor initiates a debrief after a data injection:
+- **FORBIDDEN (Short Sessions < 10m)**: "Are your tires wearing out?" (Tire wear is negligible in Qualifiers).
+- **MANDATORY (Short Sessions < 10m)**: "ORP dropped on Lap 7. Did the track surface blow out, or did the car start feeling mechanically lazy?" (Hierarchy: 1. Track Evolution, 2. Mechanical, 3. Driver Fatigue).
+- **FORBIDDEN**: Do not assume *where* on the track a problem occurred (e.g., "in the rhythm section").
+- **MANDATORY (Long Sessions > 15m)**: Integrate tire degradation as a valid diagnostic pillar.
+
+---
+
 ## 🏗️ Technical Specification Addendum
-**[CRITICAL]** You must strictly follow the schema and logic defined in the **[TECHNICAL_SPEC_ADDENDUM.md](file:///c:/Users/dnyce/Desktop/Coding/Antigravit%20Workspaces/APEX_V3/Execution/TECHNICAL_SPEC_ADDENDUM.md)**.
+**[CRITICAL]** You must strictly follow the schema and logic defined in the **[TECHNICAL_SPEC_ADDENDUM.md](file:///c:/Users/dnyce/Desktop/Coding/Antigravit%20Workspaces/APEX_V3/Execution/TECHNICAL_SPEC_ADDENDUM.md)** which has been hardened for:
+1.  **Cold Start Resilience**: Graceful fallbacks for zero-history profiles.
+2.  **Session-Aware Fade**: Deprioritizing tire wear for short sessions (<15m).
 
 **You are cleared to begin Sprint 1. Perform your architectural audit and signal "Go" to start the Scraper implementation.**

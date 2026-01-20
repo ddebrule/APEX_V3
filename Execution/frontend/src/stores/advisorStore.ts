@@ -59,6 +59,9 @@ export interface SessionContext {
   current_setup_id: string;                 // Reference to the setup used
   applied_setup_snapshot: VehicleSetup;     // Deep-clone of full VehicleSetup
   racer_scribe_feedback?: string;           // High-level notes from Race Control
+  // v6.0.1 Diagnostic Context
+  session_type?: 'qualifier' | 'main' | 'practice';  // Session type for diagnostic hierarchy
+  session_duration_minutes?: number;         // Session duration for tire wear assessment
 }
 
 export interface Message {
@@ -734,6 +737,7 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
   /**
    * Generate Debrief system prompt from sessionContext
    * Injects ORP telemetry, setup context, and racer scribe feedback
+   * v6.0.1: Integrates diagnostic hierarchy (Qualifiers vs Mains)
    * COLD START: Detects first-run and injects SESSION_MANIFEST: FIRST_RUN marker
    */
   generateDebriefSystemPrompt: () => {
@@ -747,6 +751,32 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
     const isFirstRun = state.sessionSetupChanges.length === 0 && state.conversationLedger.length === 0;
     const sessionManifest = isFirstRun ? 'SESSION_MANIFEST: FIRST_RUN' : 'SESSION_MANIFEST: ONGOING';
 
+    // v6.0.1 Diagnostic Hierarchy: Determine context awareness based on session type
+    const isQualifier = sessionContext.session_type === 'qualifier' || (sessionContext.session_duration_minutes || 0) < 10;
+    const isLongMain = sessionContext.session_type === 'main' && (sessionContext.session_duration_minutes || 0) > 12;
+
+    const diagnosticHierarchy = isQualifier ? `
+SESSION AWARENESS (QUALIFIER < 10 MIN):
+- Tire wear is NEGLIGIBLE. Do NOT lead with tire-related questions.
+- DIAGNOSTIC HIERARCHY (in order):
+  1. TRACK EVOLUTION: Surface changes, drying, grooving, blowing out
+  2. MECHANICAL: Nitro thermal drift, Eco-motor heat soak, clutch engagement, drivetrain friction
+  3. DRIVER FOCUS/FATIGUE: Lap-to-lap mental consistency
+- FORBIDDEN: Do not guess track location (e.g., "in the rhythm section")
+- ONLY ask about mechanics and behavior: "Did the track surface blow out, or did the car feel mechanically lazy?"` : isLongMain ? `
+SESSION AWARENESS (MAIN > 12 MIN):
+- Tire wear becomes a valid diagnostic factor AFTER the primary hierarchy is explored
+- DIAGNOSTIC HIERARCHY (in order):
+  1. TRACK EVOLUTION: Surface changes first
+  2. MECHANICAL: Hardware drift and thermal soak second
+  3. DRIVER FOCUS/FATIGUE: Consistency third
+  4. TIRE WEAR: Only after the above are ruled out
+- FORBIDDEN: Do not assume tire wear without confirming other factors first` : `
+SESSION AWARENESS (PRACTICE):
+- Use same diagnostic hierarchy as Qualifiers
+- Focus on baseline establishment and driver comfort
+- Tire considerations secondary to learning curve`;
+
     return `
 CRITICAL MISSION: DEBRIEF MODE
 ===============================
@@ -757,11 +787,14 @@ ${setupJson}
 
 Racer Scribe Notes: "${sessionContext.racer_scribe_feedback || 'No notes provided'}"
 
+${diagnosticHierarchy}
+
 INSTRUCTION:
 1. Present the ORP and Fade data as objective terminal reports.
-2. Review the 'Raw Setup Context'—this is a dynamic object. Identify the current values for each category.
-3. Ask one open-ended Socratic question about the car's behavior.
-4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.${isFirstRun ? `
+2. Review the 'Raw Setup Context'—Identify current values for each category (TIRES → GEOMETRY → SHOCKS → POWER).
+3. Ask ONE open-ended Socratic question about the car's behavior using the diagnostic hierarchy above.
+4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.
+5. FORBIDDEN: Do not suggest solutions—only diagnostic questions.${isFirstRun ? `
 
 BASELINE ESTABLISHMENT (FIRST RUN):
 - Frame all advice as establishing a baseline for future comparison, not as corrective measures.

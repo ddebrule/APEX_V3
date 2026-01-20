@@ -28,9 +28,10 @@ The racer no longer has to "inform" the Advisor—the Advisor (The Engineer) pro
     - Applied Mechanical Setup (from database)
     - Environmental Context (from Race Strategy)
 - **[MODIFY] [AIAdvisor.tsx](file:///c:/Users/dnyce/Desktop/Coding/Antigravit%20Workspaces/APEX_V3/Execution/frontend/src/components/tabs/AIAdvisor.tsx)**: 
-    - **Neutral Analytical Persona**: Forbid the AI from making assumptions (e.g., "tires faded"). 
-    - **Data-First Opening**: The AI must present objective telemetry first: *"I've reconciled the LiveRC data. ORP was stable at 92% until Lap 8, then drifted to 74%. How did the car feel during that final window?"*
-    - **Multi-Factor Socratic Loop**: Pivot the dialogue to explore mechanical, environmental, or human factors (focus/fatigue) based on the racer's response.
+    - **Context-Aware Diagnostics**: The AI must ignore tire wear for Qualifiers. 
+    - **Priority Hierarchy**: 1) Track Evolution, 2) Mechanical (Engine/Clutch/Drivetrain), 3) Driver Focus.
+    - **Assumption-Free Logic**: Forbid the AI from guessing track locations (e.g., "in the rhythm section"). Questions must be behavioral: *"Did the track surface blow out, or did the car start feeling mechanically lazy?"*
+    - **Data-First Opening**: The AI presents objective telemetry first.
 
 ### 3. The Knowledge Vault (The Librarian)
 - **[NEW] [TheVault.tsx](file:///c:/Users/dnyce/Desktop/Coding/Antigravit%20Workspaces/APEX_V3/Execution/frontend/src/components/tabs/TheVault.tsx)**: 
