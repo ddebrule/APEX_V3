@@ -1,4 +1,4 @@
-# Handoff: Phase 6 - The A.P.E.X. Workspace (Execution)
+# Handoff: Phase 6 - The A.P.E.X. Workspace (v6.0.1)
 
 **Claude (Builder), the Strategist (Gemini) has finalized the blueprints for the A.P.E.X. Workspace. Your task is to execute this multi-part evolution from a "Monolithic Toggle" UI to a "Persona-Driven Workspace" centered on ORP.**
 
@@ -76,5 +76,6 @@ When the Advisor initiates a debrief after a data injection:
 3.  **Fade Factor Bounds**: Null check for heats < 6 laps to prevent runtime errors.
 4.  **Librarian Trigger**: Systematic handshake between Vault and Advisor during "struggles."
 5.  **Refined Setup Model**: Use `springs` (not `spring_rate`), `front_sway_bar`, `rear_sway_bar`, `tread_pattern`, and `front_toe_out`. "Damping" is renamed to "Shocks".
+6.  **Cold Start Resilience**: Implement gracefull fallbacks (UI badges, AI directives) for new racer profiles with zero history.
 
 **You are cleared to begin Sprint 1. Perform your architectural audit and signal "Go" to start the Scraper implementation.**
