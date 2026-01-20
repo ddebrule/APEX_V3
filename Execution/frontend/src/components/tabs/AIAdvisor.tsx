@@ -130,15 +130,12 @@ export default function AIAdvisor() {
   return (
     <div className="w-full h-screen bg-apex-dark text-white flex flex-col overflow-hidden">
       {/* HEADER */}
-      <div className="px-6 py-4 border-b border-apex-border bg-apex-surface/50">
+      <div className="px-6 py-4 border-b border-[#E53935]/30 bg-[#0a0a0b]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-2xl font-bold uppercase tracking-tight">A.P.E.X. V3</div>
-            <div className="text-sm font-bold uppercase tracking-tight text-gray-500">
-              AI Advisor
-            </div>
+            <div className="text-2xl font-bold uppercase tracking-tight text-[#E53935]">◆ SETUP_IQ</div>
           </div>
-          <div className="text-[9px] font-mono font-bold uppercase text-gray-600">
+          <div className="text-[9px] font-mono font-bold uppercase text-[#666]">
             NEURAL_LINK: ACTIVE
           </div>
         </div>
@@ -150,14 +147,14 @@ export default function AIAdvisor() {
         <div className="w-80 bg-apex-surface/30 border-r border-apex-border flex flex-col overflow-y-auto">
           {/* Context Header */}
           <div className="px-5 py-4 border-b border-apex-border bg-black/30">
-            <label className="text-[9px] uppercase font-bold tracking-widest text-apex-red block mb-3 font-mono">
+            <label className="text-[9px] uppercase font-bold tracking-widest text-#E53935 block mb-3 font-mono">
               ◆ Select Active Context
             </label>
             <select
               value={selectedContext}
               onChange={(e) => handleContextChange(e.target.value)}
               disabled={isFetching || vehicles.length === 0}
-              className="w-full px-3 py-2 bg-apex-dark border border-apex-red rounded text-white text-xs font-mono font-bold focus:outline-none focus:border-apex-red/80 disabled:opacity-50"
+              className="w-full px-3 py-2 bg-apex-dark border border-#E53935 rounded text-white text-xs font-mono font-bold focus:outline-none focus:border-#E53935/80 disabled:opacity-50"
             >
               <option value="">
                 {isFetching ? 'Loading vehicles...' : vehicles.length === 0 ? 'No vehicles' : 'Select vehicle'}
@@ -215,7 +212,7 @@ export default function AIAdvisor() {
             {chatMessages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                  <div className="text-3xl mb-4 text-apex-red font-mono">◆</div>
+                  <div className="text-3xl mb-4 text-#E53935 font-mono">◆</div>
                   <p className="text-gray-400 text-sm mb-2">Welcome to Neural Link</p>
                   <p className="text-gray-600 text-xs font-mono">
                     Ask about setup optimization, tire strategy, or race tactics
@@ -253,7 +250,7 @@ export default function AIAdvisor() {
               <button
                 onClick={handleSendMessage}
                 disabled={isLoading || !userInput.trim()}
-                className="px-4 py-2 bg-apex-green text-white font-bold text-xs uppercase rounded hover:bg-apex-green/90 disabled:opacity-50 transition-all shadow-[0_0_10px_rgba(46,125,50,0.3)] hover:shadow-[0_0_15px_rgba(46,125,50,0.5)]"
+                className="px-4 py-2 bg-[#E53935] text-white font-bold text-xs uppercase rounded hover:bg-[#FF6B6B] disabled:opacity-50 transition-all shadow-[0_0_10px_rgba(229,57,53,0.3)] hover:shadow-[0_0_15px_rgba(229,57,53,0.5)]"
               >
                 {isLoading ? '⟳' : '🎤'}
               </button>
@@ -296,7 +293,7 @@ export default function AIAdvisor() {
           {/* Status */}
           <div className="mt-auto pt-4 border-t border-apex-border/50">
             <div className="flex items-center gap-2 text-[9px] font-mono text-gray-600">
-              <div className="w-2 h-2 rounded-full bg-apex-green animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[#E53935] animate-pulse" />
               <span>NEURAL_LINK</span>
             </div>
             <div className="text-[8px] text-gray-700 mt-1">Connected to context</div>

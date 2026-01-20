@@ -27,12 +27,12 @@ body {
 
 /* Data font */
 .data-mono {
-  @apply font-mono text-sm font-semibold;
+  @apply font-mono text-xs font-semibold tracking-widest;
 }
 
 /* Uppercase headers */
 .header-uppercase {
-  @apply font-inter font-bold uppercase tracking-tight;
+  @apply font-inter font-bold uppercase tracking-widest;
 }
 
 /* Status indicators */
@@ -45,7 +45,7 @@ body {
 }
 
 .status-danger {
-  color: #ff5252;
+  color: #E53935;
 }
 
 .status-neutral {

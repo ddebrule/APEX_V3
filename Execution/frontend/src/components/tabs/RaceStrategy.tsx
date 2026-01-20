@@ -72,154 +72,131 @@ export default function RaceStrategy() {
   };
 
   return (
-    <div className="w-full h-full bg-apex-dark text-white overflow-auto">
-      <div className="p-6 max-w-7xl mx-auto space-y-6">
-        {/* HEADER */}
-        <div className="border-b border-apex-border pb-6">
-          <h1 className="text-3xl font-bold uppercase tracking-tight text-apex-green">
-            Race Strategy
-          </h1>
-          <p className="text-xs text-gray-400 mt-2 font-mono">
-            Configure event details and lock session for monitoring
-          </p>
+    <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
+
+      {/* PINNED SIDEBAR (SESSION CONFIG) */}
+      <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
+        {/* Sidebar Header */}
+        <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
+          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Event Config</span>
+          <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
 
-        {/* EVENT HEADER SECTION */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Event Configuration
-          </h2>
+        {/* Config Content */}
+        <div className="p-[30px] flex-1 overflow-y-auto space-y-5">
+          {/* Event Name */}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Event Name</label>
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              className="w-full bg-black border border-white/5 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+              placeholder="e.g., Winter Series Heat 3"
+            />
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-                Event Name
-              </label>
-              <input
-                type="text"
-                value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm focus:outline-none focus:border-apex-green transition-colors"
-                placeholder="e.g., Winter Series Heat 3"
-              />
-            </div>
+          {/* Session Type */}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Session Type</label>
+            <select
+              value={sessionType}
+              onChange={(e) => setSessionType(e.target.value as 'practice' | 'qualifier' | 'main')}
+              className="w-full bg-black border border-white/5 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+            >
+              <option value="practice">Practice</option>
+              <option value="qualifier">Qualifier</option>
+              <option value="main">Main</option>
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-                Session Type
-              </label>
-              <select
-                value={sessionType}
-                onChange={(e) => setSessionType(e.target.value as 'practice' | 'qualifier' | 'main')}
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm focus:outline-none focus:border-apex-green transition-colors"
-              >
-                <option value="practice">Practice</option>
-                <option value="qualifier">Qualifier</option>
-                <option value="main">Main</option>
-              </select>
+          {/* Vehicle Display */}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Vehicle</label>
+            <div className="bg-black border border-white/5 p-2 text-[11px] text-[#999] font-mono rounded rounded">
+              {selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : '—'}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-                Vehicle
-              </label>
-              <input
-                type="text"
-                value={selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : '—'}
-                disabled
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm text-gray-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-                Racer
-              </label>
-              <input
-                type="text"
-                value={selectedRacer?.name || '—'}
-                disabled
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm text-gray-400"
-              />
+          {/* Racer Display */}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Racer</label>
+            <div className="bg-black border border-white/5 p-2 text-[11px] text-[#999] font-mono rounded">
+              {selectedRacer?.name || '—'}
             </div>
           </div>
+
+          {/* Lock Button */}
+          <button
+            onClick={handleLockAndActivate}
+            disabled={!selectedRacer || !selectedVehicle || !eventName || !urlValid}
+            className={`w-full border font-black uppercase text-[10px] p-2.5 rounded tracking-wider transition-all mt-5 ${
+              selectedRacer && selectedVehicle && eventName && urlValid
+                ? 'border-[#E53935] bg-[#E53935] text-white hover:bg-[#FF6B6B]'
+                : 'border-[#444] bg-[#1a1a1c] text-[#666] cursor-not-allowed opacity-50'
+            }`}
+          >
+            🔒 LOCK & ACTIVATE
+          </button>
         </div>
+      </div>
+
+      {/* MAIN DESKTOP */}
+      <div className="flex-1 flex flex-col p-[25px] gap-[25px] overflow-hidden">
 
         {/* LIVERC URL SECTION */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ LiveRC Feed
-          </h2>
+        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5">
+            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ LiveRC Feed</span>
+          </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">
-              Event URL
-            </label>
+          <div className="p-5 space-y-3">
+            <label className="text-[9px] font-extrabold text-[#555] uppercase block">Event URL</label>
             <input
               type="text"
               value={url}
               onChange={(e) => validateUrl(e.target.value)}
-              className={`w-full bg-apex-dark border rounded px-3 py-2 text-sm focus:outline-none transition-colors ${
-                url && (urlValid ? 'border-apex-green' : 'border-apex-red')
-              } ${!url && 'border-apex-border'} focus:border-apex-green`}
+              className={`w-full bg-black border rounded px-3 py-2 text-[10px] font-mono focus:outline-none transition-colors ${
+                url && (urlValid ? 'border-[#2196F3]' : 'border-[#E53935]')
+              } ${!url && 'border-white/5'} focus:border-[#E53935]`}
               placeholder="Paste LiveRC event URL here"
             />
-            {urlError && <p className="text-xs text-apex-red mt-2">{urlError}</p>}
+            {urlError && <p className="text-[8px] text-[#E53935] mt-2 font-mono">{urlError}</p>}
             {urlValid && (
-              <p className="text-xs text-apex-green mt-2">✓ Valid LiveRC URL</p>
+              <p className="text-[8px] text-[#2196F3] mt-2 font-mono">✓ Valid LiveRC URL</p>
             )}
           </div>
         </div>
 
         {/* TRACK CONTEXT MATRIX */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Track Context
-          </h2>
-          <TrackContextMatrix
-            onContextChange={setTrackContext}
-            isEditable={true}
-            initialContext={trackContext}
-          />
+        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5">
+            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Track Context</span>
+          </div>
+          <div className="p-5 overflow-auto">
+            <TrackContextMatrix
+              onContextChange={setTrackContext}
+              isEditable={true}
+              initialContext={trackContext}
+            />
+          </div>
         </div>
 
         {/* VEHICLE TECHNICAL MATRIX */}
         {selectedVehicle && (
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-              ◆ Vehicle Setup
-            </h2>
-            <VehicleTechnicalMatrix
-              vehicles={selectedVehicle ? [selectedVehicle] : []}
-              isEditable={true}
-              selectedVehicleIds={selectedVehicle ? [selectedVehicle.id] : []}
-            />
+          <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden flex-1 min-h-0">
+            <div className="p-4 bg-white/[0.02] border-b border-white/5 shrink-0">
+              <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Vehicle Setup</span>
+            </div>
+            <div className="p-5 overflow-auto">
+              <VehicleTechnicalMatrix
+                vehicles={selectedVehicle ? [selectedVehicle] : []}
+                isEditable={true}
+                selectedVehicleIds={selectedVehicle ? [selectedVehicle.id] : []}
+              />
+            </div>
           </div>
         )}
-
-        {/* ACTION BUTTONS */}
-        <div className="flex gap-4 pt-6 border-t border-apex-border">
-          <button
-            onClick={handleLockAndActivate}
-            disabled={!selectedRacer || !selectedVehicle || !eventName || !urlValid}
-            className={`flex-1 px-6 py-3 font-semibold uppercase tracking-wide rounded transition-all ${
-              selectedRacer && selectedVehicle && eventName && urlValid
-                ? 'bg-apex-green text-apex-dark hover:bg-opacity-90'
-                : 'bg-gray-700 text-gray-400 cursor-not-allowed opacity-50'
-            }`}
-          >
-            🔒 Lock & Activate Session
-          </button>
-
-          <button
-            onClick={() => window.history.back()}
-            className="px-6 py-3 font-semibold uppercase tracking-wide rounded border border-apex-border text-gray-400 hover:text-gray-300 transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
       </div>
     </div>
   );

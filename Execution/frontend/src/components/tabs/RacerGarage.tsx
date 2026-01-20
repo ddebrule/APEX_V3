@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
-import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal, createSession } from '@/lib/queries';
+import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal } from '@/lib/queries';
 import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
 
 export default function RacerGarage() {
-  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, setSelectedSession, uiScale, setUiScale } = useMissionControlStore();
+  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale } = useMissionControlStore();
 
   // Data State
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -270,33 +270,6 @@ export default function RacerGarage() {
     return cls ? cls.name : 'Unknown';
   };
 
-  const handleNewSession = async () => {
-    if (!selectedRacer || !selectedVehicle) {
-      alert('Please select a racer and vehicle first');
-      return;
-    }
-
-    try {
-      // Create draft session
-      const newSession = await createSession({
-        profile_id: selectedRacer.id,
-        vehicle_id: selectedVehicle.id,
-        event_name: 'New Session',
-        track_context: { name: 'TBD', surface: 'hard_packed', traction: 'medium' },
-        session_type: 'practice',
-        status: 'draft',
-        actual_setup: selectedVehicle.baseline_setup || {},
-      });
-
-      // Update store
-      setSelectedSession(newSession);
-      alert('New session created. Click Race Control tab to set up.');
-    } catch (err: any) {
-      console.error('Failed to create session', err);
-      alert(`Failed to create session: ${err.message || 'Unknown error'}`);
-    }
-  };
-
 
   return (
     <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
@@ -529,76 +502,6 @@ export default function RacerGarage() {
           </div>
         </div>
 
-        {/* PAST SESSION RESULTS (BOTTOM) */}
-        <div className="bg-[#121214] border border-white/5 rounded flex flex-col flex-1 min-h-0">
-          <div className="p-4 bg-white/[0.02] border-b border-white/5 shrink-0 flex justify-between items-center">
-            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">
-              ◆ Past Session Results // {selectedVehicle ? `${selectedVehicle.brand} ${selectedVehicle.model}` : 'SELECT VEHICLE'}
-            </span>
-            <button
-              onClick={handleNewSession}
-              disabled={!selectedRacer || !selectedVehicle}
-              className="text-[10px] px-3 py-1.5 border border-[#2196F3] bg-[#2196F3]/10 text-[#2196F3] font-black uppercase tracking-widest rounded hover:bg-[#2196F3]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              ◆ NEW SESSION
-            </button>
-          </div>
-
-          <div className="px-5 py-2.5 bg-black/20 border-b border-white/5 flex gap-5 items-center shrink-0">
-            {['All Sessions', 'Race Events', 'Practice & Testing', 'Analytics View'].map((filter, idx) => (
-              <button
-                key={filter}
-                className={`bg-transparent border-none text-[10px] font-black uppercase tracking-widest cursor-pointer py-2.5 border-b-2 transition-colors ${idx === 0 ? 'text-white border-[#E53935]' : 'text-[#555] border-transparent hover:text-white'
-                  }`}
-              >
-                {filter}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex-1 overflow-auto">
-            <table className="w-full border-collapse font-mono text-sm">
-              <thead className="sticky top-0 bg-[#1a1a1c] z-10">
-                <tr>
-                  {['Type', 'Date/Time', 'Event/Location', 'Class', 'Result', 'Consistency', 'Setup Profile'].map(header => (
-                    <th key={header} className="text-left p-5 text-[10px] font-extrabold uppercase text-[#555] border-b border-[#E53935]">
-                      {header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {/* Mock Data Row 1 */}
-                <tr
-                  className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
-                  onClick={() => alert('Session Details coming in Phase 4')}
-                >
-                  <td className="p-5 text-[#B0BEC5]">
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] border border-[#E53935] text-[#E53935]">RACE</span>
-                  </td>
-                  <td className="p-5 text-[#B0BEC5]">15-JAN // 14:30</td>
-                  <td className="p-5 text-white font-bold">ROAR NATS PREP // SDRC</td>
-                  <td className="p-5 text-[#B0BEC5]">1/8 NITRO</td>
-                  <td className="p-5 text-[#E53935] font-black">A-MAIN P3</td>
-                  <td className="p-5 text-[#B0BEC5]">94.2%</td>
-                  <td className="p-5 text-[#666] text-[11px]">Blue Groove V2</td>
-                </tr>
-                {/* Mock Data Row 2 */}
-                <tr className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                  <td className="p-5 text-[#B0BEC5]">
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-[2px] border border-[#444] text-[#777]">TEST</span>
-                  </td>
-                  <td className="p-5 text-[#B0BEC5]">12-JAN // 10:15</td>
-                  <td className="p-5 text-white font-bold">PRIVATE SESSION // SDRC</td>
-                  <td className="p-5 text-[#B0BEC5]">1/8 NITRO</td>
-                  <td className="p-5 text-[#B0BEC5] font-bold">DATA ONLY</td>
-                  <td className="p-5 text-[#B0BEC5]">89.1%</td>
-                  <td className="p-5 text-[#666] text-[11px]">Diff Oil Test</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
 
       {/* SETUP DETAIL MODAL */}

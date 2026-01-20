@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import RacerGarage from '@/components/tabs/RacerGarage';
 import RaceStrategy from '@/components/tabs/RaceStrategy';
-import RaceControl from '@/components/tabs/RaceControl';
+import UnifiedRaceControl from '@/components/tabs/UnifiedRaceControl';
 import AIAdvisor from '@/components/tabs/AIAdvisor';
 import PerformanceAudit from '@/components/tabs/PerformanceAudit';
 import TheVault from '@/components/tabs/TheVault';
@@ -13,12 +13,12 @@ import { useMissionControlStore } from '@/stores/missionControlStore';
 type Tab = 'garage' | 'strategy' | 'control' | 'advisor' | 'audit' | 'vault';
 
 const TABS: { id: Tab; label: string; icon: string; disabledWhen?: (isSessionActive: boolean) => boolean }[] = [
-  { id: 'garage', label: 'Garage', icon: '🏠' },
-  { id: 'strategy', label: 'Strategy', icon: '📋' },
-  { id: 'control', label: 'Control', icon: '⚡', disabledWhen: (active) => !active },
-  { id: 'advisor', label: 'Advisor', icon: '🤖' },
-  { id: 'audit', label: 'Audit', icon: '📊' },
-  { id: 'vault', label: 'Vault', icon: '📚' },
+  { id: 'garage', label: 'RACER GARAGE', icon: '🏠' },
+  { id: 'strategy', label: 'RACE STRATEGY', icon: '📋' },
+  { id: 'control', label: 'RACE CONTROL', icon: '⚡', disabledWhen: (active) => !active },
+  { id: 'advisor', label: 'SETUP_IQ', icon: '🤖' },
+  { id: 'audit', label: 'DATA & ANALYSIS', icon: '📊' },
+  { id: 'vault', label: 'THE VAULT', icon: '📚' },
 ];
 
 export default function TabNav() {
@@ -50,7 +50,7 @@ export default function TabNav() {
       case 'strategy':
         return <ErrorBoundary><RaceStrategy /></ErrorBoundary>;
       case 'control':
-        return <ErrorBoundary><RaceControl /></ErrorBoundary>;
+        return <ErrorBoundary><UnifiedRaceControl /></ErrorBoundary>;
       case 'advisor':
         return <ErrorBoundary><AIAdvisor /></ErrorBoundary>;
       case 'audit':
@@ -75,13 +75,12 @@ export default function TabNav() {
               key={tab.id}
               onClick={() => !isDisabled && handleTabChange(tab.id)}
               disabled={isDisabled}
-              className={`px-6 py-4 text-sm font-semibold uppercase tracking-wide transition-all border-b-2 flex items-center gap-2 ${
-                isActive
+              className={`px-6 py-4 text-sm font-semibold uppercase tracking-wide transition-all border-b-2 flex items-center gap-2 ${isActive
                   ? 'text-apex-green border-apex-green'
                   : isDisabled
                     ? 'text-gray-600 border-transparent cursor-not-allowed opacity-50'
                     : 'text-gray-400 border-transparent hover:text-gray-300'
-              }`}
+                }`}
               title={isDisabled ? 'Lock session in Strategy to enable' : ''}
             >
               <span>{tab.icon}</span>

@@ -135,27 +135,52 @@ export default function TheVault() {
   ];
 
   return (
-    <div className="w-full h-full bg-apex-dark text-white overflow-auto">
-      <div className="p-6 max-w-7xl mx-auto space-y-6">
-        {/* HEADER */}
-        <div className="border-b border-apex-border pb-6">
-          <h1 className="text-3xl font-bold uppercase tracking-tight text-apex-green">
-            The Vault
-          </h1>
-          <p className="text-xs text-gray-400 mt-2 font-mono">
-            Session history, Librarian AI, and institutional memory
-          </p>
+    <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
+
+      {/* PINNED SIDEBAR (SESSION HISTORY) */}
+      <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
+        {/* Sidebar Header */}
+        <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
+          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Session History</span>
+          <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
+
+        {/* Session List */}
+        <div className="p-[30px] flex-1 overflow-y-auto space-y-3">
+          {archivedSessions.length === 0 ? (
+            <div className="text-[10px] text-[#555] italic">No sessions archived yet.</div>
+          ) : (
+            archivedSessions.map((session) => (
+              <div
+                key={session.sessionId}
+                onClick={() => setSelectedArchive(session)}
+                className={`p-3 border rounded cursor-pointer transition-all relative group ${
+                  selectedArchive?.sessionId === session.sessionId
+                    ? 'bg-[#E53935]/5 border-[#E53935] border-l-4 shadow-[0_0_20px_rgba(229,57,53,0.1)]'
+                    : 'bg-[#1a1a1c]/80 backdrop-blur-sm border-white/10 hover:border-[#E53935]/50 transition-all duration-300'
+                }`}
+              >
+                <div className="text-[11px] font-bold text-white uppercase">{session.eventName}</div>
+                <div className="font-mono text-[9px] text-[#666] mt-[3px] uppercase">{session.sessionType}</div>
+                <div className="text-[10px] text-[#E53935] font-black mt-[5px]">{session.finalORP.toFixed(1)}% ORP</div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* MAIN DESKTOP */}
+      <div className="flex-1 flex flex-col p-[25px] gap-[25px] overflow-hidden">
 
         {/* COLD START NOTICE */}
         {isColdStart && (
-          <div className="bg-apex-surface border border-blue-600 border-opacity-50 rounded-lg p-4 flex items-center gap-3">
+          <div className="bg-[#121214] border border-[#2196F3] border-opacity-50 rounded p-4 flex items-center gap-3">
             <span className="text-lg">📚</span>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-blue-400 uppercase tracking-wide">
+              <p className="text-[11px] font-black text-[#2196F3] uppercase tracking-[1px]">
                 [BUILDING VAULT] — First Session Initialization
               </p>
-              <p className="text-xs text-gray-300 mt-1">
+              <p className="text-[9px] text-[#999] mt-1 font-mono">
                 Your first session will establish the foundation for institutional memory. Until then, the Librarian uses general racing knowledge as reference material.
               </p>
             </div>
@@ -163,227 +188,178 @@ export default function TheVault() {
         )}
 
         {/* STATISTICS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-4">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Total Archived</p>
-            <p className="text-3xl font-bold text-apex-green">{totalSessionsArchived}</p>
-            <p className="text-xs text-gray-500 mt-2">sessions in vault</p>
+        <div className="grid grid-cols-3 gap-[15px]">
+          <div className="bg-[#121214] border border-white/5 rounded p-[18px]">
+            <p className="text-[9px] text-[#555] uppercase font-black tracking-widest">Total Archived</p>
+            <p className="text-[24px] font-black text-[#E53935] mt-2">{totalSessionsArchived}</p>
+            <p className="text-[9px] text-[#666] mt-2 font-mono">sessions in vault</p>
           </div>
 
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-4">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Average ORP</p>
-            <p className="text-3xl font-bold text-apex-green">{averageORP}%</p>
-            <p className="text-xs text-gray-500 mt-2">across all sessions</p>
+          <div className="bg-[#121214] border border-white/5 rounded p-[18px]">
+            <p className="text-[9px] text-[#555] uppercase font-black tracking-widest">Average ORP</p>
+            <p className="text-[24px] font-black text-[#E53935] mt-2">{averageORP}%</p>
+            <p className="text-[9px] text-[#666] mt-2 font-mono">across all sessions</p>
           </div>
 
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-4">
-            <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Conversation Ledger</p>
-            <p className="text-3xl font-bold text-apex-green">{conversationLedger.length}</p>
-            <p className="text-xs text-gray-500 mt-2">messages recorded</p>
+          <div className="bg-[#121214] border border-white/5 rounded p-[18px]">
+            <p className="text-[9px] text-[#555] uppercase font-black tracking-widest">Ledger</p>
+            <p className="text-[24px] font-black text-[#E53935] mt-2">{conversationLedger.length}</p>
+            <p className="text-[9px] text-[#666] mt-2 font-mono">messages recorded</p>
           </div>
         </div>
 
         {/* LIBRARIAN AI SEARCH */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Librarian AI: Semantic Search
-          </h2>
-          <p className="text-xs text-gray-500">
-            Search historical sessions for similar mechanical issues and solutions
-          </p>
-
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleLibrarianSearch()}
-              placeholder="e.g., 'loose on mid-corner' or 'bouncy suspension'"
-              className="flex-1 bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm focus:outline-none focus:border-apex-green transition-colors"
-            />
-            <button
-              onClick={handleLibrarianSearch}
-              disabled={isSearching || !searchQuery.trim()}
-              className={`px-6 py-2 font-semibold uppercase tracking-wide rounded transition-all ${
-                isSearching || !searchQuery.trim()
-                  ? 'bg-gray-700 text-gray-400 cursor-not-allowed opacity-50'
-                  : 'bg-apex-green text-apex-dark hover:bg-opacity-90'
-              }`}
-            >
-              {isSearching ? '⟳ Searching...' : '🔍 Search'}
-            </button>
+        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5">
+            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Librarian AI: Semantic Search</span>
           </div>
 
-          {librarianResults.length > 0 && (
-            <div className="space-y-3 mt-4">
-              <p className="text-xs font-semibold text-gray-400 uppercase">
-                📚 {isColdStart ? `Baseline Knowledge (${librarianResults.length} reference points)` : `Found ${librarianResults.length} similar cases`}
-              </p>
-              {librarianResults.map((result, idx) => (
-                <div key={idx} className="bg-apex-dark rounded p-4 border border-apex-border border-opacity-30">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="text-sm font-mono text-gray-300">{result.eventDate}</p>
-                      <p className="text-xs text-gray-500 mt-1">Symptom: {result.symptom}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-apex-green">
-                        +{result.orpImprovement.toFixed(1)}% ORP
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {(result.confidence * 100).toFixed(0)}% confidence
-                      </p>
-                    </div>
-                  </div>
+          <div className="p-5 space-y-4">
+            <p className="text-[9px] text-[#666] font-mono">Search historical sessions for similar mechanical issues and solutions</p>
 
-                  <p className="text-sm text-gray-300 bg-apex-surface rounded p-2 mb-3">
-                    ✓ Fix: {result.fix}
-                  </p>
-
-                  <button
-                    onClick={() => handlePushToAdvisor(result)}
-                    className="w-full px-3 py-2 text-xs font-semibold uppercase tracking-wide rounded border border-apex-green text-apex-green hover:bg-apex-green hover:text-apex-dark transition-colors"
-                  >
-                    → Push to Advisor
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* SESSION HISTORY */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Archived Sessions
-          </h2>
-
-          <div className="space-y-2">
-            {archivedSessions.map((session) => (
-              <div
-                key={session.sessionId}
-                onClick={() => setSelectedArchive(session)}
-                className={`rounded p-4 cursor-pointer transition-all ${
-                  selectedArchive?.sessionId === session.sessionId
-                    ? 'bg-apex-green bg-opacity-20 border border-apex-green'
-                    : 'bg-apex-dark border border-apex-border border-opacity-30 hover:border-apex-green hover:border-opacity-50'
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLibrarianSearch()}
+                placeholder="e.g., 'loose on mid-corner' or 'bouncy suspension'"
+                className="flex-1 bg-black border border-white/5 p-2 text-[9px] text-white font-mono rounded focus:outline-none focus:border-[#E53935]"
+              />
+              <button
+                onClick={handleLibrarianSearch}
+                disabled={isSearching || !searchQuery.trim()}
+                className={`px-4 py-2 text-[9px] font-black uppercase rounded tracking-widest transition-all ${
+                  isSearching || !searchQuery.trim()
+                    ? 'bg-[#333] text-[#666] cursor-not-allowed opacity-50'
+                    : 'border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white'
                 }`}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-gray-200">{session.eventName}</p>
-                    <p className="text-xs text-gray-500 font-mono mt-1">{session.createdAt}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-apex-green">{session.finalORP.toFixed(1)}%</p>
-                    <p className="text-xs text-gray-400">ORP</p>
-                  </div>
-                </div>
+                {isSearching ? '⟳' : '🔍'}
+              </button>
+            </div>
 
-                <div className="flex gap-4 text-xs font-mono text-gray-400 mt-2">
-                  <span>{session.totalLaps} laps</span>
-                  <span className="px-2 py-1 rounded bg-gray-800 text-gray-300">{session.sessionType}</span>
-                  {session.improvement !== null && (
-                    <span
-                      className={
-                        session.improvement > 0 ? 'text-apex-green' : 'text-apex-red'
-                      }
+            {librarianResults.length > 0 && (
+              <div className="space-y-3 mt-4 max-h-[300px] overflow-y-auto">
+                <p className="text-[9px] font-black text-[#555] uppercase">
+                  📚 {isColdStart ? `Baseline Knowledge (${librarianResults.length} refs)` : `Found ${librarianResults.length} cases`}
+                </p>
+                {librarianResults.map((result, idx) => (
+                  <div key={idx} className="bg-black rounded p-3 border border-white/5">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="text-[9px] font-mono text-[#999]">{result.eventDate}</p>
+                        <p className="text-[8px] text-[#666] mt-1">Symptom: {result.symptom}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[9px] font-black text-[#E53935]">
+                          +{result.orpImprovement.toFixed(1)}%
+                        </p>
+                        <p className="text-[8px] text-[#666] mt-1">
+                          {(result.confidence * 100).toFixed(0)}% conf
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-[9px] text-[#999] bg-[#0a0a0b] rounded p-2 mb-2 font-mono">
+                      ✓ {result.fix}
+                    </p>
+
+                    <button
+                      onClick={() => handlePushToAdvisor(result)}
+                      className="w-full px-2 py-1 text-[8px] font-black uppercase rounded border border-[#E53935] text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all tracking-widest"
                     >
-                      {session.improvement > 0 ? '↑' : '↓'} {Math.abs(session.improvement).toFixed(1)}%
-                    </span>
-                  )}
-                </div>
+                      → Push
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
 
         {/* SELECTED SESSION DETAIL */}
         {selectedArchive && (
-          <div className="bg-apex-surface border border-apex-green border-opacity-50 rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-apex-green">
-              ◆ Session Detail: {selectedArchive.eventName}
-            </h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div className="bg-apex-dark rounded p-3">
-                <p className="text-xs text-gray-400 uppercase mb-1">Final ORP</p>
-                <p className="text-lg font-bold text-apex-green">{selectedArchive.finalORP.toFixed(1)}%</p>
-              </div>
-              <div className="bg-apex-dark rounded p-3">
-                <p className="text-xs text-gray-400 uppercase mb-1">Total Laps</p>
-                <p className="text-lg font-bold text-gray-300">{selectedArchive.totalLaps}</p>
-              </div>
-              <div className="bg-apex-dark rounded p-3">
-                <p className="text-xs text-gray-400 uppercase mb-1">Session Type</p>
-                <p className="text-lg font-bold text-gray-300">{selectedArchive.sessionType.toUpperCase()}</p>
-              </div>
-              <div className="bg-apex-dark rounded p-3">
-                <p className="text-xs text-gray-400 uppercase mb-1">Recorded</p>
-                <p className="text-xs font-mono text-gray-300">{selectedArchive.createdAt}</p>
-              </div>
+          <div className="bg-[#121214] border border-[#E53935] rounded flex flex-col overflow-hidden flex-1 min-h-0">
+            <div className="p-4 bg-white/[0.02] border-b border-[#E53935]/30">
+              <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ {selectedArchive.eventName}</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Reported Symptoms</p>
-                <ul className="space-y-1">
-                  {selectedArchive.symptoms.map((symptom, idx) => (
-                    <li key={idx} className="text-sm text-gray-300">
-                      • {symptom}
-                    </li>
-                  ))}
-                </ul>
+            <div className="p-5 flex-1 overflow-y-auto space-y-4">
+              <div className="grid grid-cols-4 gap-3">
+                <div className="bg-black rounded p-3 border border-white/5">
+                  <p className="text-[9px] text-[#555] uppercase font-black">Final ORP</p>
+                  <p className="text-[16px] font-black text-[#E53935] mt-2">{selectedArchive.finalORP.toFixed(1)}%</p>
+                </div>
+                <div className="bg-black rounded p-3 border border-white/5">
+                  <p className="text-[9px] text-[#555] uppercase font-black">Total Laps</p>
+                  <p className="text-[16px] font-black text-white mt-2">{selectedArchive.totalLaps}</p>
+                </div>
+                <div className="bg-black rounded p-3 border border-white/5">
+                  <p className="text-[9px] text-[#555] uppercase font-black">Type</p>
+                  <p className="text-[11px] font-black text-white mt-2 uppercase">{selectedArchive.sessionType}</p>
+                </div>
+                <div className="bg-black rounded p-3 border border-white/5">
+                  <p className="text-[9px] text-[#555] uppercase font-black">Recorded</p>
+                  <p className="text-[9px] font-mono text-[#999] mt-2">{selectedArchive.createdAt}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase mb-2">Applied Fixes</p>
-                <ul className="space-y-1">
-                  {selectedArchive.fixes.map((fix, idx) => (
-                    <li key={idx} className="text-sm text-apex-green">
-                      ✓ {fix}
-                    </li>
-                  ))}
-                </ul>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[9px] font-black text-[#555] uppercase mb-2">Reported Symptoms</p>
+                  <ul className="space-y-1">
+                    {selectedArchive.symptoms.map((symptom, idx) => (
+                      <li key={idx} className="text-[9px] text-[#999] font-mono">
+                        • {symptom}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-[9px] font-black text-[#555] uppercase mb-2">Applied Fixes</p>
+                  <ul className="space-y-1">
+                    {selectedArchive.fixes.map((fix, idx) => (
+                      <li key={idx} className="text-[9px] text-[#E53935] font-mono">
+                        ✓ {fix}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* CONVERSATION LEDGER SUMMARY */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Conversation Ledger
-          </h2>
-          <p className="text-xs text-gray-500">
-            Global AI-human dialogue history ({conversationLedger.length} messages recorded)
-          </p>
+        {/* CONVERSATION LEDGER */}
+        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5">
+            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Conversation Ledger</span>
+          </div>
 
-          {conversationLedger.length > 0 ? (
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {conversationLedger.slice(-5).map((msg, idx) => (
+          <div className="p-5 max-h-[200px] overflow-y-auto space-y-2">
+            {conversationLedger.length > 0 ? (
+              conversationLedger.slice(-5).map((msg, idx) => (
                 <div
                   key={idx}
-                  className="bg-apex-dark rounded p-3 text-xs border-l-2"
+                  className="bg-black rounded p-2 text-[8px] border-l-2 font-mono"
                   style={{
                     borderLeftColor:
                       msg.role === 'user'
-                        ? '#00d9ff'
+                        ? '#2196F3'
                         : msg.role === 'ai'
-                          ? '#00ff88'
-                          : '#888',
+                          ? '#E53935'
+                          : '#666',
                   }}
                 >
-                  <p className="font-semibold text-gray-300 capitalize mb-1">{msg.role}</p>
-                  <p className="text-gray-400 line-clamp-2">{msg.content}</p>
-                  <p className="text-gray-600 text-xs mt-1">
-                    {new Date(msg.timestamp).toLocaleTimeString()}
-                  </p>
+                  <p className="font-black text-[#999] uppercase">{msg.role}</p>
+                  <p className="text-[#666] line-clamp-1 mt-1">{msg.content}</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-gray-500 italic">No conversations recorded yet</p>
-          )}
+              ))
+            ) : (
+              <p className="text-[9px] text-[#555] italic font-mono">No conversations recorded yet</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

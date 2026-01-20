@@ -12,7 +12,8 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(git remote remove:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(tree:*)"
     ]
   }
 }

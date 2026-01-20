@@ -51,8 +51,8 @@ export default function PerformanceAudit() {
   const hasHistoricalSessions = sessionsWithORP.length > 0;
 
   const getDeltaColor = (value: number | null) => {
-    if (value === null) return 'text-gray-400';
-    return value > 0 ? 'text-apex-green' : value < 0 ? 'text-apex-red' : 'text-gray-300';
+    if (value === null) return 'text-[#666]';
+    return value > 0 ? 'text-[#2196F3]' : value < 0 ? 'text-[#E53935]' : 'text-[#999]';
   };
 
   const getDeltaArrow = (value: number | null) => {
@@ -61,233 +61,179 @@ export default function PerformanceAudit() {
   };
 
   return (
-    <div className="w-full h-full bg-apex-dark text-white overflow-auto">
-      <div className="p-6 max-w-7xl mx-auto space-y-6">
-        {/* HEADER */}
-        <div className="border-b border-apex-border pb-6">
-          <h1 className="text-3xl font-bold uppercase tracking-tight text-apex-green">
-            Performance Audit
-          </h1>
-          <p className="text-xs text-gray-400 mt-2 font-mono">
-            Side-by-side ORP comparison and trend analysis
-          </p>
+    <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
+
+      {/* PINNED SIDEBAR (SESSION SELECTION) */}
+      <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
+        {/* Sidebar Header */}
+        <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
+          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Session Selector</span>
+          <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
 
-        {/* COLD START CALIBRATION NOTICE */}
-        {!hasHistoricalSessions && (
-          <div className="bg-apex-surface border border-yellow-600 border-opacity-50 rounded-lg p-4 flex items-center gap-3">
-            <span className="text-lg">⚙️</span>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-yellow-400 uppercase tracking-wide">
-                [CALIBRATING] — Awaiting Historical Data
-              </p>
-              <p className="text-xs text-gray-300 mt-1">
-                Complete your first session to establish a performance baseline for future comparisons.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* SESSION SELECTION */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Session Selection */}
+        <div className="p-[30px] flex-1 overflow-y-auto space-y-5">
           {/* SESSION A */}
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-              ◆ Baseline Session (A)
-            </h2>
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Select Session
-              </label>
-              <select
-                value={selectedSessionA?.sessionId || ''}
-                onChange={(e) => {
-                  const session = sessionsWithORP.find((s) => s.sessionId === e.target.value);
-                  setSelectedSessionA(session || null);
-                }}
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm focus:outline-none focus:border-apex-green transition-colors"
-              >
-                <option value="">Choose baseline session...</option>
-                {sessionsWithORP.map((session) => (
-                  <option key={session.sessionId} value={session.sessionId}>
-                    {session.eventName} ({session.sessionType}) - {session.createdAt}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {selectedSessionA && selectedSessionA.orp && (
-              <div className="bg-apex-dark rounded p-4 space-y-2 font-mono text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ORP Score</span>
-                  <span className="text-apex-green">
-                    {selectedSessionA.orp.orp_score.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Consistency</span>
-                  <span className="text-gray-300">
-                    {selectedSessionA.orp.consistency_score.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Speed</span>
-                  <span className="text-gray-300">{selectedSessionA.orp.speed_score.toFixed(1)}%</span>
-                </div>
-                {selectedSessionA.orp.fade_factor !== null && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Fade Factor</span>
-                    <span
-                      className={
-                        selectedSessionA.orp.fade_factor > 0
-                          ? 'text-apex-red'
-                          : 'text-apex-green'
-                      }
-                    >
-                      {(selectedSessionA.orp.fade_factor * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Baseline (A)</label>
+            <select
+              value={selectedSessionA?.sessionId || ''}
+              onChange={(e) => {
+                const session = sessionsWithORP.find((s) => s.sessionId === e.target.value);
+                setSelectedSessionA(session || null);
+              }}
+              className="w-full bg-black border border-white/5 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+            >
+              <option value="">Select baseline...</option>
+              {sessionsWithORP.map((session) => (
+                <option key={session.sessionId} value={session.sessionId}>
+                  {session.eventName}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* SESSION B */}
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-              ◆ Current Session (B)
-            </h2>
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Select Session
-              </label>
-              <select
-                value={selectedSessionB?.sessionId || ''}
-                onChange={(e) => {
-                  const session = sessionsWithORP.find((s) => s.sessionId === e.target.value);
-                  setSelectedSessionB(session || null);
-                }}
-                className="w-full bg-apex-dark border border-apex-border rounded px-3 py-2 text-sm focus:outline-none focus:border-apex-green transition-colors"
-              >
-                <option value="">Choose comparison session...</option>
-                {sessionsWithORP.map((session) => (
-                  <option key={session.sessionId} value={session.sessionId}>
-                    {session.eventName} ({session.sessionType}) - {session.createdAt}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {selectedSessionB && selectedSessionB.orp && (
-              <div className="bg-apex-dark rounded p-4 space-y-2 font-mono text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ORP Score</span>
-                  <span className="text-apex-green">
-                    {selectedSessionB.orp.orp_score.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Consistency</span>
-                  <span className="text-gray-300">
-                    {selectedSessionB.orp.consistency_score.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Speed</span>
-                  <span className="text-gray-300">{selectedSessionB.orp.speed_score.toFixed(1)}%</span>
-                </div>
-                {selectedSessionB.orp.fade_factor !== null && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Fade Factor</span>
-                    <span
-                      className={
-                        selectedSessionB.orp.fade_factor > 0
-                          ? 'text-apex-red'
-                          : 'text-apex-green'
-                      }
-                    >
-                      {(selectedSessionB.orp.fade_factor * 100).toFixed(1)}%
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
+          <div>
+            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Current (B)</label>
+            <select
+              value={selectedSessionB?.sessionId || ''}
+              onChange={(e) => {
+                const session = sessionsWithORP.find((s) => s.sessionId === e.target.value);
+                setSelectedSessionB(session || null);
+              }}
+              className="w-full bg-black border border-white/5 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+            >
+              <option value="">Select current...</option>
+              {sessionsWithORP.map((session) => (
+                <option key={session.sessionId} value={session.sessionId}>
+                  {session.eventName}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* SESSION A STATS */}
+          {selectedSessionA && selectedSessionA.orp && (
+            <div className="bg-[#1a1a1c] border border-[#2196F3]/30 rounded p-3 space-y-2">
+              <div className="text-[9px] font-black text-[#555] uppercase">Session A</div>
+              <div className="space-y-1 font-mono text-[9px]">
+                <div className="flex justify-between text-[#999]">
+                  <span>ORP Score</span>
+                  <span className="text-[#2196F3] font-black">{selectedSessionA.orp.orp_score.toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between text-[#999]">
+                  <span>Consistency</span>
+                  <span className="text-white">{selectedSessionA.orp.consistency_score.toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between text-[#999]">
+                  <span>Speed</span>
+                  <span className="text-white">{selectedSessionA.orp.speed_score.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SESSION B STATS */}
+          {selectedSessionB && selectedSessionB.orp && (
+            <div className="bg-[#1a1a1c] border border-[#E53935]/30 rounded p-3 space-y-2">
+              <div className="text-[9px] font-black text-[#555] uppercase">Session B</div>
+              <div className="space-y-1 font-mono text-[9px]">
+                <div className="flex justify-between text-[#999]">
+                  <span>ORP Score</span>
+                  <span className="text-[#E53935] font-black">{selectedSessionB.orp.orp_score.toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between text-[#999]">
+                  <span>Consistency</span>
+                  <span className="text-white">{selectedSessionB.orp.consistency_score.toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between text-[#999]">
+                  <span>Speed</span>
+                  <span className="text-white">{selectedSessionB.orp.speed_score.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* MAIN DESKTOP */}
+      <div className="flex-1 flex flex-col p-[25px] gap-[25px] overflow-hidden">
+
+        {/* COLD START NOTICE */}
+        {!hasHistoricalSessions && (
+          <div className="bg-[#121214] border border-[#FFC400] border-opacity-50 rounded p-4 flex items-center gap-3">
+            <span className="text-lg">⚙️</span>
+            <div className="flex-1">
+              <p className="text-[11px] font-black text-[#FFC400] uppercase tracking-[1px]">
+                [CALIBRATING] — Awaiting Historical Data
+              </p>
+              <p className="text-[9px] text-[#999] mt-1 font-mono">
+                Complete your first session to establish a performance baseline.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ORP DELTA COMPARISON */}
         {delta && (
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-              ◆ ORP Delta Analysis (B - A)
-            </h2>
+          <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+            <div className="p-4 bg-white/[0.02] border-b border-white/5">
+              <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ ORP Delta Analysis (B - A)</span>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-apex-dark rounded p-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">ORP Score Delta</p>
-                <div className={`text-3xl font-bold ${getDeltaColor(delta.orpDelta)}`}>
-                  <span className="mr-2">{getDeltaArrow(delta.orpDelta)}</span>
-                  {Math.abs(delta.orpDelta).toFixed(1)}%
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  {delta.orpDelta > 0
-                    ? 'Improvement detected'
-                    : delta.orpDelta < 0
-                      ? 'Performance degradation'
-                      : 'No change'}
-                </p>
-              </div>
-
-              <div className="bg-apex-dark rounded p-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Consistency Delta</p>
-                <div className={`text-3xl font-bold ${getDeltaColor(delta.consistencyDelta)}`}>
-                  <span className="mr-2">{getDeltaArrow(delta.consistencyDelta)}</span>
-                  {Math.abs(delta.consistencyDelta).toFixed(1)}%
+            <div className="grid grid-cols-4 gap-3 p-5">
+              <div className="bg-black rounded p-3 border border-white/5">
+                <p className="text-[9px] text-[#555] uppercase font-black">ORP Score</p>
+                <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.orpDelta)}`}>
+                  <span>{getDeltaArrow(delta.orpDelta)}</span>
+                  <span className="ml-1">{Math.abs(delta.orpDelta).toFixed(1)}%</span>
                 </div>
               </div>
 
-              <div className="bg-apex-dark rounded p-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Speed Delta</p>
-                <div className={`text-3xl font-bold ${getDeltaColor(delta.speedDelta)}`}>
-                  <span className="mr-2">{getDeltaArrow(delta.speedDelta)}</span>
-                  {Math.abs(delta.speedDelta).toFixed(1)}%
+              <div className="bg-black rounded p-3 border border-white/5">
+                <p className="text-[9px] text-[#555] uppercase font-black">Consistency</p>
+                <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.consistencyDelta)}`}>
+                  <span>{getDeltaArrow(delta.consistencyDelta)}</span>
+                  <span className="ml-1">{Math.abs(delta.consistencyDelta).toFixed(1)}%</span>
                 </div>
               </div>
 
-              <div className="bg-apex-dark rounded p-4">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">Fade Factor Delta</p>
-                <div className={`text-3xl font-bold ${getDeltaColor(delta.fadeDelta)}`}>
-                  <span className="mr-2">{getDeltaArrow(delta.fadeDelta)}</span>
-                  {Math.abs(delta.fadeDelta * 100).toFixed(1)}%
+              <div className="bg-black rounded p-3 border border-white/5">
+                <p className="text-[9px] text-[#555] uppercase font-black">Speed</p>
+                <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.speedDelta)}`}>
+                  <span>{getDeltaArrow(delta.speedDelta)}</span>
+                  <span className="ml-1">{Math.abs(delta.speedDelta).toFixed(1)}%</span>
+                </div>
+              </div>
+
+              <div className="bg-black rounded p-3 border border-white/5">
+                <p className="text-[9px] text-[#555] uppercase font-black">Fade Factor</p>
+                <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.fadeDelta)}`}>
+                  <span>{getDeltaArrow(delta.fadeDelta)}</span>
+                  <span className="ml-1">{Math.abs(delta.fadeDelta * 100).toFixed(1)}%</span>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* SETUP CHANGE ANALYSIS */}
+        {/* METRIC COMPARISON TABLE */}
         {selectedSessionA && selectedSessionB && selectedSessionA.orp && selectedSessionB.orp && (
-          <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-              ◆ ORP Metric Comparison
-            </h2>
+          <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden flex-1 min-h-0">
+            <div className="p-4 bg-white/[0.02] border-b border-white/5 shrink-0">
+              <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ ORP Metric Comparison</span>
+            </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm font-mono">
-                <thead>
-                  <tr className="border-b border-apex-border">
-                    <th className="text-left px-4 py-2 text-xs text-gray-400 uppercase">
-                      Metric
-                    </th>
-                    <th className="text-left px-4 py-2 text-xs text-gray-400 uppercase">
-                      Session A
-                    </th>
-                    <th className="text-left px-4 py-2 text-xs text-gray-400 uppercase">
-                      Session B
-                    </th>
-                    <th className="text-left px-4 py-2 text-xs text-gray-400 uppercase">
-                      Change
-                    </th>
+            <div className="flex-1 overflow-auto">
+              <table className="w-full border-collapse font-mono text-[9px]">
+                <thead className="sticky top-0 bg-[#1a1a1c] z-10">
+                  <tr>
+                    {['Metric', 'Session A', 'Session B', 'Change'].map(header => (
+                      <th key={header} className="text-left p-3 text-[9px] font-extrabold uppercase text-[#555] border-b border-[#E53935]">
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -330,18 +276,18 @@ export default function PerformanceAudit() {
                     const changed = valueA !== valueB;
 
                     return (
-                      <tr key={metric.key} className="border-b border-apex-border border-opacity-30">
-                        <td className="px-4 py-2 text-gray-300">{metric.name}</td>
-                        <td className="px-4 py-2 text-gray-400">
+                      <tr key={metric.key} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                        <td className="p-3 text-[#999]">{metric.name}</td>
+                        <td className="p-3 text-[#999]">
                           {typeof valueA === 'number' ? metric.format(valueA) : '—'}
                         </td>
-                        <td className="px-4 py-2 text-gray-400">
+                        <td className="p-3 text-[#999]">
                           {typeof valueB === 'number' ? metric.format(valueB) : '—'}
                         </td>
-                        <td className="px-4 py-2">
+                        <td className="p-3">
                           <span
                             className={
-                              changed ? 'text-apex-green font-semibold' : 'text-gray-500'
+                              changed ? 'text-[#2196F3] font-black' : 'text-[#555]'
                             }
                           >
                             {changed ? '⚡ Changed' : '—'}
@@ -355,42 +301,6 @@ export default function PerformanceAudit() {
             </div>
           </div>
         )}
-
-        {/* SESSION HISTORY */}
-        <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
-            ◆ Recent Sessions
-          </h2>
-
-          <div className="space-y-2">
-            {sessionsWithORP.slice(0, 10).map((session) => (
-              <div
-                key={session.sessionId}
-                className="bg-apex-dark rounded p-3 flex items-center justify-between hover:bg-opacity-80 transition-colors cursor-pointer"
-              >
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-200">{session.eventName}</p>
-                  <p className="text-xs text-gray-500 font-mono">{session.createdAt}</p>
-                </div>
-
-                <div className="text-right font-mono">
-                  {session.orp && (
-                    <>
-                      <p className="text-sm text-apex-green font-bold">
-                        {session.orp.orp_score.toFixed(1)}%
-                      </p>
-                      <p className="text-xs text-gray-400">ORP</p>
-                    </>
-                  )}
-                </div>
-
-                <div className="ml-4 px-3 py-1 rounded text-xs font-semibold uppercase tracking-wide bg-gray-800 text-gray-300">
-                  {session.sessionType}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

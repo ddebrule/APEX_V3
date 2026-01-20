@@ -13,7 +13,7 @@ const config: Config = {
           dark: '#0A0A0B',
           surface: '#141416',
           green: '#00E676',
-          red: '#FF5252',
+          red: '#E53935',
           blue: '#2979FF',
           border: 'rgba(255, 255, 255, 0.05)',
         },
