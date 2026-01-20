@@ -176,7 +176,7 @@ export default function RaceControl() {
         )}
 
         {/* ORP DISPLAY */}
-        {currentORP && (
+        {currentORP ? (
           <div className="bg-apex-surface border border-apex-border rounded-lg p-6 space-y-4">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-300">
               ◆ ORP Score
@@ -202,6 +202,18 @@ export default function RaceControl() {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        ) : (
+          <div className="bg-apex-surface border border-gray-600 border-opacity-50 rounded-lg p-6 flex items-center gap-3">
+            <span className="text-lg">⏳</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                ORP Score — Awaiting Telemetry
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Scrape LiveRC to calculate performance metrics
+              </p>
             </div>
           </div>
         )}

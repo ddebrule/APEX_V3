@@ -54,6 +54,15 @@ export default function TheVault() {
 
     setIsSearching(true);
 
+    // Cold Start Fallback: Show baseline knowledge when no historical sessions exist
+    if (isColdStart) {
+      // Simulate search latency
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setLibrarianResults(baselineKnowledge);
+      setIsSearching(false);
+      return;
+    }
+
     // Mock Librarian search (in production, use OpenAI embeddings + vector search)
     const mockResults: LibrarianResult[] = [
       {
@@ -97,6 +106,34 @@ export default function TheVault() {
     ? (archivedSessions.reduce((sum, s) => sum + s.finalORP, 0) / archivedSessions.length).toFixed(1)
     : 0;
 
+  // Cold Start Detection: No archived sessions yet
+  const isColdStart = totalSessionsArchived === 0;
+
+  // Baseline racing knowledge for cold start fallback
+  const baselineKnowledge: LibrarianResult[] = [
+    {
+      eventDate: 'General Knowledge',
+      symptom: 'Loose/Oversteer on entry',
+      fix: 'Reduce front anti-roll bar stiffness or increase front spring rate',
+      orpImprovement: 0,
+      confidence: 1.0,
+    },
+    {
+      eventDate: 'General Knowledge',
+      symptom: 'Understeer/Push on exit',
+      fix: 'Increase rear anti-roll bar stiffness or adjust camber',
+      orpImprovement: 0,
+      confidence: 1.0,
+    },
+    {
+      eventDate: 'General Knowledge',
+      symptom: 'Tire degradation/Inconsistency',
+      fix: 'Check tire pressures, adjust tire compound, or reduce tire wear with camber changes',
+      orpImprovement: 0,
+      confidence: 0.95,
+    },
+  ];
+
   return (
     <div className="w-full h-full bg-apex-dark text-white overflow-auto">
       <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -109,6 +146,21 @@ export default function TheVault() {
             Session history, Librarian AI, and institutional memory
           </p>
         </div>
+
+        {/* COLD START NOTICE */}
+        {isColdStart && (
+          <div className="bg-apex-surface border border-blue-600 border-opacity-50 rounded-lg p-4 flex items-center gap-3">
+            <span className="text-lg">📚</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-blue-400 uppercase tracking-wide">
+                [BUILDING VAULT] — First Session Initialization
+              </p>
+              <p className="text-xs text-gray-300 mt-1">
+                Your first session will establish the foundation for institutional memory. Until then, the Librarian uses general racing knowledge as reference material.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* STATISTICS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -165,7 +217,7 @@ export default function TheVault() {
           {librarianResults.length > 0 && (
             <div className="space-y-3 mt-4">
               <p className="text-xs font-semibold text-gray-400 uppercase">
-                📚 Found {librarianResults.length} similar cases
+                📚 {isColdStart ? `Baseline Knowledge (${librarianResults.length} reference points)` : `Found ${librarianResults.length} similar cases`}
               </p>
               {librarianResults.map((result, idx) => (
                 <div key={idx} className="bg-apex-dark rounded p-4 border border-apex-border border-opacity-30">

@@ -734,6 +734,7 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
   /**
    * Generate Debrief system prompt from sessionContext
    * Injects ORP telemetry, setup context, and racer scribe feedback
+   * COLD START: Detects first-run and injects SESSION_MANIFEST: FIRST_RUN marker
    */
   generateDebriefSystemPrompt: () => {
     const state = get();
@@ -742,9 +743,14 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
     const { sessionContext } = state;
     const setupJson = JSON.stringify(sessionContext.applied_setup_snapshot, null, 2);
 
+    // Cold Start Detection: Check if this is the first session (no prior history)
+    const isFirstRun = state.sessionSetupChanges.length === 0 && state.conversationLedger.length === 0;
+    const sessionManifest = isFirstRun ? 'SESSION_MANIFEST: FIRST_RUN' : 'SESSION_MANIFEST: ONGOING';
+
     return `
 CRITICAL MISSION: DEBRIEF MODE
 ===============================
+${sessionManifest}
 Telemetry Data: ORP Score: ${sessionContext.orp_score.orp_score}/100, Fade Factor: ${sessionContext.fade_factor !== null ? `${(sessionContext.fade_factor * 100).toFixed(1)}%` : 'N/A'}
 Raw Setup Context:
 ${setupJson}
@@ -755,7 +761,13 @@ INSTRUCTION:
 1. Present the ORP and Fade data as objective terminal reports.
 2. Review the 'Raw Setup Context'—this is a dynamic object. Identify the current values for each category.
 3. Ask one open-ended Socratic question about the car's behavior.
-4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.
+4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.${isFirstRun ? `
+
+BASELINE ESTABLISHMENT (FIRST RUN):
+- Frame all advice as establishing a baseline for future comparison, not as corrective measures.
+- Avoid statements like "improve from last session" - there is no history.
+- Emphasize: "This baseline will help us understand your typical performance range."
+- Encourage consistent methodology: "Let's establish how the car responds with these settings."` : ''}
 `.trim();
   },
 

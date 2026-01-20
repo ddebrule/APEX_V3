@@ -47,6 +47,9 @@ export default function PerformanceAudit() {
 
   const delta = calculateDelta();
 
+  // Cold Start Detection: Check if any sessions exist for comparison
+  const hasHistoricalSessions = sessionsWithORP.length > 0;
+
   const getDeltaColor = (value: number | null) => {
     if (value === null) return 'text-gray-400';
     return value > 0 ? 'text-apex-green' : value < 0 ? 'text-apex-red' : 'text-gray-300';
@@ -69,6 +72,21 @@ export default function PerformanceAudit() {
             Side-by-side ORP comparison and trend analysis
           </p>
         </div>
+
+        {/* COLD START CALIBRATION NOTICE */}
+        {!hasHistoricalSessions && (
+          <div className="bg-apex-surface border border-yellow-600 border-opacity-50 rounded-lg p-4 flex items-center gap-3">
+            <span className="text-lg">⚙️</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-yellow-400 uppercase tracking-wide">
+                [CALIBRATING] — Awaiting Historical Data
+              </p>
+              <p className="text-xs text-gray-300 mt-1">
+                Complete your first session to establish a performance baseline for future comparisons.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* SESSION SELECTION */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
