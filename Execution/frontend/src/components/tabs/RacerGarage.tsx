@@ -166,11 +166,11 @@ export default function RacerGarage() {
 
   const handleOpenSetupModal = () => {
     if (!selectedVehicle) return;
-    const setup = selectedVehicle.baseline_setup as Record<string, string> || {};
+    const setup = selectedVehicle.baseline_setup as Record<string, any>;
     setSetupForm({
-      shocks: setup.shocks || '',
-      diff: setup.diff || '',
-      gearing: setup.gearing || ''
+      shocks: (setup.shock_oil || '') as string,
+      diff: (setup.diff_oil || '') as string,
+      gearing: (setup.gear || '') as string
     });
     setSetupModalOpen(true);
   };
@@ -180,9 +180,9 @@ export default function RacerGarage() {
     try {
       const updated = await updateVehicle(selectedVehicle.id, {
         baseline_setup: {
-          shocks: setupForm.shocks.trim(),
-          diff: setupForm.diff.trim(),
-          gearing: setupForm.gearing.trim()
+          shock_oil: setupForm.shocks.trim(),
+          diff_oil: setupForm.diff.trim(),
+          gear: setupForm.gearing.trim()
         }
       });
       setVehicles(vehicles.map(v => v.id === updated.id ? updated : v));

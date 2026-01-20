@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { RacerProfile, Vehicle, Session, TrackContext } from '@/types/database';
+import { ScrapedTelemetry } from '@/lib/LiveRCScraper';
+import { ORP_Result, calculateORP } from '@/lib/ORPService';
 
 export interface MissionControlState {
   // Selection state
@@ -20,6 +22,12 @@ export interface MissionControlState {
   error: string | null;
   uiScale: number;
 
+  // ===== NEW: LiveRC & ORP Integration =====
+  liveRcUrl: string; // LiveRC event URL (e.g., https://peakview.liverc.com/results/?p=view_event&id=485348)
+  sessionTelemetry: ScrapedTelemetry | null; // Current session lap telemetry
+  currentORP: ORP_Result | null; // Calculated ORP score
+  racerLapsSnapshot: Record<string, any> | null; // Full racerLaps for Top 5 calculation
+
   // Actions
   setSelectedRacer: (racer: RacerProfile | null) => void;
   setSelectedVehicle: (vehicle: Vehicle | null) => void;
@@ -32,6 +40,12 @@ export interface MissionControlState {
   setSessionStatus: (status: 'draft' | 'active') => void;
   setError: (error: string | null) => void;
   setUiScale: (uiScale: number) => void;
+
+  // ===== NEW: LiveRC & ORP Actions =====
+  setLiveRcUrl: (url: string) => void;
+  setSessionTelemetry: (telemetry: ScrapedTelemetry | null) => void;
+  setRacerLapsSnapshot: (racerLaps: Record<string, any> | null) => void;
+  calculateORP: (driverId: string) => void; // Calculate ORP from current telemetry
 
   // Computed
   isReadyToLock: () => boolean;
@@ -53,6 +67,12 @@ export const useMissionControlStore = create<MissionControlState>()(
       error: null,
       uiScale: 100,
 
+      // ===== NEW: LiveRC & ORP State =====
+      liveRcUrl: '',
+      sessionTelemetry: null,
+      currentORP: null,
+      racerLapsSnapshot: null,
+
       setSelectedRacer: (racer) => set({ selectedRacer: racer }),
       setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
       setSelectedSession: (session) => {
@@ -73,6 +93,30 @@ export const useMissionControlStore = create<MissionControlState>()(
       setError: (error) => set({ error }),
       setUiScale: (uiScale) => set({ uiScale: uiScale }),
 
+      // ===== NEW: LiveRC & ORP Actions =====
+      setLiveRcUrl: (url) => set({ liveRcUrl: url }),
+      setSessionTelemetry: (telemetry) => set({ sessionTelemetry: telemetry }),
+      setRacerLapsSnapshot: (racerLaps) => set({ racerLapsSnapshot: racerLaps }),
+      calculateORP: (driverId) => {
+        const { sessionTelemetry, racerLapsSnapshot } = get();
+        if (!sessionTelemetry || !racerLapsSnapshot) {
+          set({ currentORP: null });
+          return;
+        }
+
+        try {
+          const orp = calculateORP({
+            lapTimes: sessionTelemetry.lap_history,
+            racerLaps: racerLapsSnapshot,
+            driverId,
+          });
+          set({ currentORP: orp });
+        } catch (error) {
+          console.error('ORP calculation error:', error);
+          set({ currentORP: null });
+        }
+      },
+
       isReadyToLock: () => {
         const { selectedRacer, selectedVehicle } = get();
         return selectedRacer !== null && selectedVehicle !== null;
@@ -85,6 +129,10 @@ export const useMissionControlStore = create<MissionControlState>()(
         isInitializing: false,
         isLocked: false,
         error: null,
+        liveRcUrl: '',
+        sessionTelemetry: null,
+        currentORP: null,
+        racerLapsSnapshot: null,
       }),
     }),
     {

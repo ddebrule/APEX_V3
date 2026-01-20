@@ -97,9 +97,9 @@ export default function AIAdvisor() {
     ? {
       vehicleId: selectedVehicleData.id,
       vehicleName: `${selectedVehicleData.brand} ${selectedVehicleData.model}`,
-      temperature: selectedVehicleData.baseline_setup?.temperature as number | undefined,
-      condition: (selectedVehicleData.baseline_setup?.condition as string) || 'FRESH CLAY',
-      setupParams: (selectedVehicleData.baseline_setup || {}) as Record<string, string>,
+      temperature: undefined,
+      condition: 'FRESH CLAY',
+      setupParams: (selectedVehicleData.baseline_setup?.shocks || {}) as Record<string, string>,
     }
     : SAMPLE_CONTEXTS['chassis-01'];
 

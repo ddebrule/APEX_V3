@@ -8,6 +8,10 @@ export type RacerProfile = {
   is_default: boolean;
 };
 
+export type VehicleSetup = {
+  [parameter_key: string]: string | number | boolean;
+};
+
 export type Vehicle = {
   id: string;
   profile_id: string;
@@ -17,7 +21,7 @@ export type Vehicle = {
   brand: string;
   model: string;
   transponder?: string;
-  baseline_setup: Record<string, unknown>;
+  baseline_setup: VehicleSetup;
 };
 
 export type VehicleClass = {
@@ -39,8 +43,14 @@ export type Session = {
   event_name: string;
   session_type: SessionType;
   track_context: TrackContext;
-  actual_setup: Record<string, unknown>;
+  actual_setup: VehicleSetup;
   status: SessionStatus;
+};
+
+export type HistoricSession = Session & {
+  final_orp: number;
+  total_laps: number;
+  conversation_summary_vector?: number[];
 };
 
 export type TrackContext = {

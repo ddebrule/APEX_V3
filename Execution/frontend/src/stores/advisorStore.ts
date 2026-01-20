@@ -7,7 +7,7 @@
  */
 
 import { create } from 'zustand';
-import { SetupChange } from '@/types/database';
+import { SetupChange, VehicleSetup } from '@/types/database';
 import { insertSetupChange } from '@/lib/queries';
 import {
   Prescription,
@@ -17,6 +17,8 @@ import {
   getContextWarnings,
   getSessionScenario,
 } from '@/lib/physicsAdvisor';
+import { ScrapedTelemetry } from '@/lib/LiveRCScraper';
+import { ORP_Result } from '@/lib/ORPService';
 
 // ==================== TYPES ====================
 
@@ -48,6 +50,25 @@ export interface ProposalChoice {
   appliedProposalId?: string;               // Reference to chat message ID
 }
 
+// ===== NEW: Debrief & Session Context =====
+
+export interface SessionContext {
+  telemetry: ScrapedTelemetry;              // Lap telemetry from LiveRC scraper
+  orp_score: ORP_Result;                    // Calculated ORP metrics
+  fade_factor: number | null;               // Performance fade percentage
+  current_setup_id: string;                 // Reference to the setup used
+  applied_setup_snapshot: VehicleSetup;     // Deep-clone of full VehicleSetup
+  racer_scribe_feedback?: string;           // High-level notes from Race Control
+}
+
+export interface Message {
+  id: string;
+  role: 'user' | 'ai' | 'system';
+  content: string;
+  timestamp: number;
+  type?: ChatMessageType;
+}
+
 export interface AdvisorState {
   // ===== CONVERSATION STATE (New) =====
   conversationPhase: ConversationPhase;     // State machine: symptom → clarifying → proposal → applied
@@ -75,6 +96,11 @@ export interface AdvisorState {
   isScenarioB: boolean;
   driverConfidence?: number;                // From Mission Control (1-10 scale)
 
+  // ===== NEW: Debrief Mode State =====
+  conversationLedger: Message[];            // Global AI-human dialogue history
+  sessionContext: SessionContext | null;    // Debrief data bridge from RaceControl
+  isDebriefMode: boolean;                   // Debrief mode toggle
+
   // ===== ACTIONS: Chat & Conversation =====
   addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
   submitClarificationResponse: (questionIndex: number, response: string) => void;
@@ -100,6 +126,13 @@ export interface AdvisorState {
   setScenarioB: (isScenarioB: boolean) => void;
   setDriverConfidence: (confidence: number) => void;
   setError: (error: string | null) => void;
+
+  // ===== NEW: Debrief Mode Actions =====
+  loadSessionContext: (context: SessionContext) => void; // Load Debrief data & inject system prompt
+  addToLedger: (message: Message) => void; // Append to global conversation ledger
+  setDebriefMode: (isActive: boolean) => void; // Toggle Debrief mode
+  generateDebriefSystemPrompt: () => string; // Create system prompt from sessionContext
+
   reset: () => void;
 }
 
@@ -125,6 +158,11 @@ const INITIAL_STATE = {
   sessionSetupChanges: [],
   isScenarioB: false,
   driverConfidence: undefined,
+
+  // ===== NEW: Debrief Mode State =====
+  conversationLedger: [],
+  sessionContext: null,
+  isDebriefMode: false,
 };
 
 // ==================== HELPER: Clarifying Questions by Symptom ====================
@@ -644,6 +682,81 @@ export const useAdvisorStore = create<AdvisorState>((set, get) => ({
    */
   setError: (error: string | null) => {
     set({ error });
+  },
+
+  // ===== NEW: Debrief Mode Actions =====
+
+  /**
+   * Load session context and inject Debrief system prompt
+   * Called when "Start Debrief" button is clicked in RaceControl
+   */
+  loadSessionContext: (context: SessionContext) => {
+    const systemPrompt = get().generateDebriefSystemPrompt();
+
+    set({
+      sessionContext: context,
+      isDebriefMode: true,
+      conversationPhase: 'clarifying', // Debrief asks clarifying questions
+      chatMessages: [
+        {
+          id: `msg-${Date.now()}-system`,
+          role: 'system',
+          type: 'ai-guidance',
+          content: systemPrompt,
+          timestamp: Date.now(),
+        },
+      ],
+      clarifyingQuestions: [
+        `ORP dropped from ${context.orp_score.orp_score}% to a lower baseline. How did the car feel during that decline?`,
+        `The Fade Factor shows ${context.fade_factor !== null ? `${(context.fade_factor * 100).toFixed(1)}%` : 'stable'} performance change. What mechanical sensations did you notice?`,
+      ],
+      userResponses: {},
+    });
+  },
+
+  /**
+   * Append message to global conversation ledger
+   * Used for Librarian semantic search and institutional memory
+   */
+  addToLedger: (message: Message) => {
+    set((state) => ({
+      conversationLedger: [...state.conversationLedger, message],
+    }));
+  },
+
+  /**
+   * Toggle Debrief mode on/off
+   */
+  setDebriefMode: (isActive: boolean) => {
+    set({ isDebriefMode: isActive });
+  },
+
+  /**
+   * Generate Debrief system prompt from sessionContext
+   * Injects ORP telemetry, setup context, and racer scribe feedback
+   */
+  generateDebriefSystemPrompt: () => {
+    const state = get();
+    if (!state.sessionContext) return '';
+
+    const { sessionContext } = state;
+    const setupJson = JSON.stringify(sessionContext.applied_setup_snapshot, null, 2);
+
+    return `
+CRITICAL MISSION: DEBRIEF MODE
+===============================
+Telemetry Data: ORP Score: ${sessionContext.orp_score.orp_score}/100, Fade Factor: ${sessionContext.fade_factor !== null ? `${(sessionContext.fade_factor * 100).toFixed(1)}%` : 'N/A'}
+Raw Setup Context:
+${setupJson}
+
+Racer Scribe Notes: "${sessionContext.racer_scribe_feedback || 'No notes provided'}"
+
+INSTRUCTION:
+1. Present the ORP and Fade data as objective terminal reports.
+2. Review the 'Raw Setup Context'—this is a dynamic object. Identify the current values for each category.
+3. Ask one open-ended Socratic question about the car's behavior.
+4. FORBIDDEN: Do not assume a cause. Let the racer articulate the mechanical or focus issue.
+`.trim();
   },
 
   /**

@@ -1,5 +1,10 @@
 # Rebuild Blueprint: A.P.E.X. V3
 
+## THE CORE MISSION: ORP (Optimal Race Pace)
+Every line of code and every UI decision in A.P.E.X. exists for one reason: **To help the racer find and achieve their Optimal Race Pace.**
+- **The Equation:** ORP = (Consistency * 0.6) + (Speed * 0.4).
+- **The Goal:** Maximize podium probability by balancing raw pace with technical and physical consistency.
+
 ## Architecture: The 3-Layer D.O.E.
 1. **/Directives/ (Context & Standards)**
    - Vision, Standards, Persona Prompts.
