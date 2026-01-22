@@ -278,15 +278,15 @@ export default function RacerGarage() {
       <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
         {/* Sidebar Header */}
         <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
-          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Racer Identity</span>
-          <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
+          <span className="text-sm text-[#E53935] font-black uppercase tracking-[2px]">◆ Racer Identity</span>
+          <button className="text-[#E53935] text-sm font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
 
         {/* Profile Content */}
         <div className="p-[30px] flex-1 overflow-y-auto">
           {/* Identity Group */}
           <div className="mb-5 relative">
-            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Registry Name</label>
+            <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Registry Name</label>
 
             {/* RACER SELECTOR */}
             <div
@@ -294,7 +294,7 @@ export default function RacerGarage() {
               className="bg-black border border-white/5 p-3 text-white text-base font-mono rounded w-full cursor-pointer hover:border-[#E53935] transition-colors flex justify-between items-center"
             >
               <span>{selectedRacer?.name || 'SELECT RACER'}</span>
-              <span className="text-[10px] text-[#555]">▼</span>
+              <span className="text-xs text-[#555]">▼</span>
             </div>
 
             {/* DROPDOWN MENU */}
@@ -325,12 +325,12 @@ export default function RacerGarage() {
                         onChange={e => setNewRacerName(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleCreateRacer()}
                       />
-                      <button onClick={handleCreateRacer} className="border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] px-2 py-1">[SAVE]</button>
+                      <button onClick={handleCreateRacer} className="border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-xs px-2 py-1">[SAVE]</button>
                     </div>
                   ) : (
                     <button
                       onClick={() => setIsAddingRacer(true)}
-                      className="w-full text-center border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] py-1.5 rounded"
+                      className="w-full text-center border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-xs py-1.5 rounded"
                     >
                       + Create New Identity
                     </button>
@@ -342,7 +342,7 @@ export default function RacerGarage() {
 
           {/* Sponsor Portfolio */}
           <div className="mb-5">
-            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Sponsor Portfolio</label>
+            <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Sponsor Portfolio</label>
             <div className="flex flex-col gap-2">
               <div className="flex gap-2">
                 <input
@@ -379,7 +379,7 @@ export default function RacerGarage() {
                 </datalist>
                 <button
                   onClick={() => handleAddSponsor({ key: 'Enter' } as React.KeyboardEvent)}
-                  className="border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black px-3 rounded hover:bg-[#FF6B6B] transition-all disabled:opacity-50"
+                  className="border border-[#E53935] bg-[#E53935] text-white text-xs font-black px-3 rounded hover:bg-[#FF6B6B] transition-all disabled:opacity-50"
                   disabled={!selectedRacer || !newSponsor.trim()}
                 >
                   [+]
@@ -390,13 +390,13 @@ export default function RacerGarage() {
                   <span
                     key={idx}
                     onClick={() => handleRemoveSponsor(sponsor)}
-                    className="text-[10px] px-2 py-1 border border-[#E53935] text-[#E53935] font-bold rounded-[3px] cursor-pointer hover:bg-[#E53935] hover:text-white transition-colors group"
+                    className="text-xs px-2 py-1 border border-[#E53935] text-[#E53935] font-bold rounded-[3px] cursor-pointer hover:bg-[#E53935] hover:text-white transition-colors group"
                   >
                     {sponsor} <span className="hidden group-hover:inline ml-1 text-white">x</span>
                   </span>
                 ))}
                 {(!selectedRacer?.sponsors || selectedRacer.sponsors.length === 0) && (
-                  <span className="text-[10px] text-[#444] italic pt-1">No sponsors defined. Add one above.</span>
+                  <span className="text-xs text-[#444] italic pt-1">No sponsors defined. Add one above.</span>
                 )}
               </div>
             </div>
@@ -404,15 +404,15 @@ export default function RacerGarage() {
 
           {/* System Preferences */}
           <div className="mt-10 border-t border-white/5 pt-5">
-            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">System Preferences</label>
+            <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">System Preferences</label>
             <button
               onClick={() => setUiScalingOpen(true)}
-              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] p-2.5 mb-2.5">
+              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-xs p-2.5 mb-2.5">
               UI Scaling (Accessibility)
             </button>
             <button
               onClick={() => setSignalManagerOpen(true)}
-              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-[10px] p-2.5 flex justify-center items-center">
+              className="w-full border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all uppercase font-black tracking-wider text-xs p-2.5 flex justify-center items-center">
               <span>Handling Signals Map</span>
             </button>
           </div>
@@ -425,7 +425,7 @@ export default function RacerGarage() {
         {/* VEHICLE GARAGE (TOP) */}
         <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
           <div className="p-4 bg-white/[0.02] border-b border-white/5">
-            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Active Vehicle Assets</span>
+            <span className="text-sm text-[#E53935] font-black uppercase tracking-[2px]">◆ Active Vehicle Assets</span>
           </div>
 
           <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[15px] p-5">
@@ -443,11 +443,11 @@ export default function RacerGarage() {
                   }`}
               >
                 <div className="text-[18px] font-black text-white uppercase">{vehicle.brand} {vehicle.model}</div>
-                <div className="font-mono text-[10px] text-[#666] mt-[5px] uppercase">
+                <div className="font-mono text-xs text-[#666] mt-[5px] uppercase">
                   {getClassName(vehicle.class_id)} • {vehicle.transponder || 'NO-TX'}
                 </div>
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-[9px] bg-[#E53935] text-white px-1 rounded">SETUP</span>
+                  <span className="text-[11px] bg-[#E53935] text-white px-1 rounded">SETUP</span>
                 </div>
               </div>
             ))}
@@ -458,19 +458,19 @@ export default function RacerGarage() {
                 <input
                   autoFocus
                   placeholder="BRAND (e.g. TEKNO)"
-                  className="bg-black border border-white/10 p-1.5 text-[10px] text-white font-bold"
+                  className="bg-black border border-white/10 p-1.5 text-xs text-white font-bold"
                   value={newVehicle.brand}
                   onChange={e => setNewVehicle({ ...newVehicle, brand: e.target.value })}
                 />
                 <input
                   placeholder="MODEL (e.g. NB48 2.2)"
-                  className="bg-black border border-white/10 p-1.5 text-[10px] text-white font-bold"
+                  className="bg-black border border-white/10 p-1.5 text-xs text-white font-bold"
                   value={newVehicle.model}
                   onChange={e => setNewVehicle({ ...newVehicle, model: e.target.value })}
                 />
                 <div className="flex gap-2">
                   <select
-                    className="bg-black border border-white/10 p-1.5 text-[10px] text-white font-mono flex-1"
+                    className="bg-black border border-white/10 p-1.5 text-xs text-white font-mono flex-1"
                     value={newVehicle.class_id}
                     onChange={e => setNewVehicle({ ...newVehicle, class_id: e.target.value })}
                   >
@@ -482,13 +482,13 @@ export default function RacerGarage() {
                 </div>
                 <input
                   placeholder="TX # (OPTIONAL)"
-                  className="bg-black border border-white/10 p-1.5 text-[10px] text-white font-mono"
+                  className="bg-black border border-white/10 p-1.5 text-xs text-white font-mono"
                   value={newVehicle.transponder}
                   onChange={e => setNewVehicle({ ...newVehicle, transponder: e.target.value })}
                 />
                 <div className="flex gap-2 mt-1">
-                  <button onClick={handleCreateVehicle} className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black uppercase py-1.5 hover:bg-[#FF6B6B] transition-all">SAVE</button>
-                  <button onClick={() => setIsAddingVehicle(false)} className="flex-1 border border-white/10 bg-white/[0.05] text-white text-[10px] font-black uppercase py-1.5 hover:bg-white/[0.1] transition-all">CANCEL</button>
+                  <button onClick={handleCreateVehicle} className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-1.5 hover:bg-[#FF6B6B] transition-all">SAVE</button>
+                  <button onClick={() => setIsAddingVehicle(false)} className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-1.5 hover:bg-white/[0.1] transition-all">CANCEL</button>
                 </div>
               </div>
             ) : (
@@ -496,7 +496,7 @@ export default function RacerGarage() {
                 onClick={() => setIsAddingVehicle(true)}
                 className="bg-[#1a1a1c]/80 backdrop-blur-sm border border-dashed border-[#E53935]/30 p-[18px] rounded flex items-center justify-center opacity-50 hover:opacity-100 hover:border-[#E53935] hover:text-[#E53935] hover:bg-[#E53935]/5 cursor-pointer transition-all min-h-[85px]"
               >
-                <span className="text-[10px] font-black uppercase tracking-widest">[+] ADD NEW ASSET</span>
+                <span className="text-xs font-black uppercase tracking-widest">[+] ADD NEW ASSET</span>
               </div>
             )}
           </div>
@@ -519,16 +519,16 @@ export default function RacerGarage() {
             </div>
 
             <div className="mb-4">
-              <span className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">
+              <span className="text-xs font-extrabold text-[#555] uppercase block mb-2">
                 {selectedVehicle.brand} {selectedVehicle.model}
               </span>
-              <div className="text-[11px] text-[#777] font-mono">Class: {getClassName(selectedVehicle.class_id)}</div>
-              <div className="text-[11px] text-[#777] font-mono">TX: {selectedVehicle.transponder || 'NONE'}</div>
+              <div className="text-sm text-[#777] font-mono">Class: {getClassName(selectedVehicle.class_id)}</div>
+              <div className="text-sm text-[#777] font-mono">TX: {selectedVehicle.transponder || 'NONE'}</div>
             </div>
 
             <div className="border-t border-white/5 pt-4 mt-4 space-y-4">
               <div>
-                <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Shocks Setup</label>
+                <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Shocks Setup</label>
                 <input
                   type="text"
                   value={setupForm.shocks}
@@ -539,7 +539,7 @@ export default function RacerGarage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Diff Setup</label>
+                <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Diff Setup</label>
                 <input
                   type="text"
                   value={setupForm.diff}
@@ -550,7 +550,7 @@ export default function RacerGarage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Gearing</label>
+                <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Gearing</label>
                 <input
                   type="text"
                   value={setupForm.gearing}
@@ -562,10 +562,10 @@ export default function RacerGarage() {
 
               {/* v6.0.1 SCHEMA EXPANSION */}
               <div className="border-t border-white/10 pt-4 mt-4">
-                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">TIRES (Grip Foundation)</span>
+                <span className="text-xs font-black text-[#E53935] uppercase block mb-3">TIRES (Grip Foundation)</span>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tire Compound</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Tire Compound</label>
                     <input
                       type="text"
                       value={setupForm.tire_compound}
@@ -575,7 +575,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tire Insert</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Tire Insert</label>
                     <input
                       type="text"
                       value={setupForm.tire_insert}
@@ -585,7 +585,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Tread Pattern</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Tread Pattern</label>
                     <input
                       type="text"
                       value={setupForm.tread_pattern}
@@ -598,10 +598,10 @@ export default function RacerGarage() {
               </div>
 
               <div className="border-t border-white/10 pt-4">
-                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">GEOMETRY (Cornering Control)</span>
+                <span className="text-xs font-black text-[#E53935] uppercase block mb-3">GEOMETRY (Cornering Control)</span>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Camber</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Camber</label>
                     <input
                       type="text"
                       value={setupForm.camber}
@@ -611,7 +611,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Toe In</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Toe In</label>
                     <input
                       type="text"
                       value={setupForm.toe_in}
@@ -621,7 +621,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Ride Height</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Ride Height</label>
                     <input
                       type="text"
                       value={setupForm.ride_height}
@@ -631,7 +631,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Front Toe Out</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Front Toe Out</label>
                     <input
                       type="text"
                       value={setupForm.front_toe_out}
@@ -644,10 +644,10 @@ export default function RacerGarage() {
               </div>
 
               <div className="border-t border-white/10 pt-4">
-                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">SHOCKS & BARS (Chassis Dynamics)</span>
+                <span className="text-xs font-black text-[#E53935] uppercase block mb-3">SHOCKS & BARS (Chassis Dynamics)</span>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Front Sway Bar (mm)</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Front Sway Bar (mm)</label>
                     <input
                       type="text"
                       value={setupForm.front_sway_bar}
@@ -657,7 +657,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Rear Sway Bar (mm)</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Rear Sway Bar (mm)</label>
                     <input
                       type="text"
                       value={setupForm.rear_sway_bar}
@@ -670,10 +670,10 @@ export default function RacerGarage() {
               </div>
 
               <div className="border-t border-white/10 pt-4">
-                <span className="text-[9px] font-black text-[#E53935] uppercase block mb-3">POWER (Acceleration & Braking)</span>
+                <span className="text-xs font-black text-[#E53935] uppercase block mb-3">POWER (Acceleration & Braking)</span>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Punch (Engine Tuning)</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Punch (Engine Tuning)</label>
                     <input
                       type="text"
                       value={setupForm.punch}
@@ -683,7 +683,7 @@ export default function RacerGarage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-1">Brake</label>
+                    <label className="text-xs font-extrabold text-[#555] uppercase block mb-1">Brake</label>
                     <input
                       type="text"
                       value={setupForm.brake}
@@ -699,13 +699,13 @@ export default function RacerGarage() {
             <div className="flex gap-2 mt-6">
               <button
                 onClick={handleSaveSetup}
-                className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black uppercase py-2 rounded hover:bg-[#FF6B6B] transition-all shadow-[0_4px_10px_rgba(229,57,53,0.3)]"
+                className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-2 rounded hover:bg-[#FF6B6B] transition-all shadow-[0_4px_10px_rgba(229,57,53,0.3)]"
               >
                 SAVE CONFIGURATION
               </button>
               <button
                 onClick={() => setSetupModalOpen(false)}
-                className="flex-1 border border-white/10 bg-white/[0.05] text-white text-[10px] font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
+                className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
               >
                 CLOSE
               </button>
@@ -730,7 +730,7 @@ export default function RacerGarage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-3">Scale Level: {uiScale}%</label>
+                <label className="text-xs font-extrabold text-[#555] uppercase block mb-3">Scale Level: {uiScale}%</label>
                 <input
                   type="range"
                   min="80"
@@ -748,13 +748,13 @@ export default function RacerGarage() {
                 onClick={() => {
                   setUiScalingOpen(false);
                 }}
-                className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black uppercase py-2 rounded hover:bg-[#FF6B6B] transition-all"
+                className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-2 rounded hover:bg-[#FF6B6B] transition-all"
               >
                 APPLY
               </button>
               <button
                 onClick={() => setUiScalingOpen(false)}
-                className="flex-1 border border-white/10 bg-white/[0.05] text-white text-[10px] font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
+                className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
               >
                 CLOSE
               </button>
@@ -778,7 +778,7 @@ export default function RacerGarage() {
             </div>
 
             <div className="bg-black/30 border border-white/5 rounded-lg p-4 mb-4">
-              <div className="text-[10px] font-bold text-[#555] uppercase mb-2">Add New Signal Definition</div>
+              <div className="text-xs font-bold text-[#555] uppercase mb-2">Add New Signal Definition</div>
               <div className="flex flex-col gap-2">
                 <input
                   placeholder="Signal Label (e.g. 'Diff Out')"
@@ -794,7 +794,7 @@ export default function RacerGarage() {
                 />
                 <button
                   onClick={() => handleAddSignal()}
-                  className="border border-[#E53935] bg-[#E53935] text-white text-[10px] font-black uppercase py-1.5 rounded transition-all disabled:opacity-50 hover:bg-[#FF6B6B]"
+                  className="border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-1.5 rounded transition-all disabled:opacity-50 hover:bg-[#FF6B6B]"
                   disabled={!newSignal.label.trim() || !selectedRacer}
                 >
                   [+] Add to Dictionary
@@ -803,16 +803,16 @@ export default function RacerGarage() {
             </div>
 
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
-              <div className="text-[10px] font-bold text-[#555] uppercase">Active Signal Dictionary</div>
+              <div className="text-xs font-bold text-[#555] uppercase">Active Signal Dictionary</div>
               {customSignals.map(sig => (
                 <div key={sig.id} className="p-3 bg-[#111] border border-white/5 rounded flex justify-between items-start group">
                   <div>
                     <div className="text-[#E53935] font-bold text-xs">{sig.label}</div>
-                    <div className="text-[#777] text-[10px] mt-1">{sig.description}</div>
+                    <div className="text-[#777] text-xs mt-1">{sig.description}</div>
                   </div>
                   <button
                     onClick={() => handleDeleteSignal(sig.id)}
-                    className="text-[#444] hover:text-[#E53935] text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-[#444] hover:text-[#E53935] text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     [DELETE]
                   </button>
@@ -822,7 +822,7 @@ export default function RacerGarage() {
 
             <button
               onClick={() => setSignalManagerOpen(false)}
-              className="w-full mt-6 border border-white/10 bg-white/[0.05] text-white text-[10px] font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
+              className="w-full mt-6 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-2 rounded hover:bg-white/[0.1] transition-all"
             >
               CLOSE
             </button>

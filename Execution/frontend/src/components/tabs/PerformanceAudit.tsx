@@ -67,15 +67,15 @@ export default function PerformanceAudit() {
       <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
         {/* Sidebar Header */}
         <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
-          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Session Selector</span>
-          <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
+          <span className="text-sm text-[#E53935] font-black uppercase tracking-[2px]">◆ Session Selector</span>
+          <button className="text-[#E53935] text-sm font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
 
         {/* Session Selection */}
         <div className="p-[30px] flex-1 overflow-y-auto space-y-5">
           {/* SESSION A */}
           <div>
-            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Baseline (A)</label>
+            <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Baseline (A)</label>
             <select
               value={selectedSessionA?.sessionId || ''}
               onChange={(e) => {
@@ -95,7 +95,7 @@ export default function PerformanceAudit() {
 
           {/* SESSION B */}
           <div>
-            <label className="text-[10px] font-extrabold text-[#555] uppercase block mb-2">Current (B)</label>
+            <label className="text-xs font-extrabold text-[#555] uppercase block mb-2">Current (B)</label>
             <select
               value={selectedSessionB?.sessionId || ''}
               onChange={(e) => {
@@ -116,8 +116,8 @@ export default function PerformanceAudit() {
           {/* SESSION A STATS */}
           {selectedSessionA && selectedSessionA.orp && (
             <div className="bg-[#1a1a1c] border border-[#2196F3]/30 rounded p-3 space-y-2">
-              <div className="text-[9px] font-black text-[#555] uppercase">Session A</div>
-              <div className="space-y-1 font-mono text-[9px]">
+              <div className="text-xs font-black text-[#555] uppercase">Session A</div>
+              <div className="space-y-1 font-mono text-xs">
                 <div className="flex justify-between text-[#999]">
                   <span>ORP Score</span>
                   <span className="text-[#2196F3] font-black">{selectedSessionA.orp.orp_score.toFixed(1)}%</span>
@@ -137,8 +137,8 @@ export default function PerformanceAudit() {
           {/* SESSION B STATS */}
           {selectedSessionB && selectedSessionB.orp && (
             <div className="bg-[#1a1a1c] border border-[#E53935]/30 rounded p-3 space-y-2">
-              <div className="text-[9px] font-black text-[#555] uppercase">Session B</div>
-              <div className="space-y-1 font-mono text-[9px]">
+              <div className="text-xs font-black text-[#555] uppercase">Session B</div>
+              <div className="space-y-1 font-mono text-xs">
                 <div className="flex justify-between text-[#999]">
                   <span>ORP Score</span>
                   <span className="text-[#E53935] font-black">{selectedSessionB.orp.orp_score.toFixed(1)}%</span>
@@ -165,10 +165,10 @@ export default function PerformanceAudit() {
           <div className="bg-[#121214] border border-[#FFC400] border-opacity-50 rounded p-4 flex items-center gap-3">
             <span className="text-lg">⚙️</span>
             <div className="flex-1">
-              <p className="text-[11px] font-black text-[#FFC400] uppercase tracking-[1px]">
+              <p className="text-sm font-black text-[#FFC400] uppercase tracking-[1px]">
                 [CALIBRATING] — Awaiting Historical Data
               </p>
-              <p className="text-[9px] text-[#999] mt-1 font-mono">
+              <p className="text-xs text-[#999] mt-1 font-mono">
                 Complete your first session to establish a performance baseline.
               </p>
             </div>
@@ -179,12 +179,12 @@ export default function PerformanceAudit() {
         {delta && (
           <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
             <div className="p-4 bg-white/[0.02] border-b border-white/5">
-              <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ ORP Delta Analysis (B - A)</span>
+              <span className="text-sm text-[#E53935] font-black uppercase tracking-[2px]">◆ ORP Delta Analysis (B - A)</span>
             </div>
 
             <div className="grid grid-cols-4 gap-3 p-5">
               <div className="bg-black rounded p-3 border border-white/5">
-                <p className="text-[9px] text-[#555] uppercase font-black">ORP Score</p>
+                <p className="text-xs text-[#555] uppercase font-black">ORP Score</p>
                 <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.orpDelta)}`}>
                   <span>{getDeltaArrow(delta.orpDelta)}</span>
                   <span className="ml-1">{Math.abs(delta.orpDelta).toFixed(1)}%</span>
@@ -192,7 +192,7 @@ export default function PerformanceAudit() {
               </div>
 
               <div className="bg-black rounded p-3 border border-white/5">
-                <p className="text-[9px] text-[#555] uppercase font-black">Consistency</p>
+                <p className="text-xs text-[#555] uppercase font-black">Consistency</p>
                 <div className={`text-[18px] font-black mt-2 ${getDeltaColor(delta.consistencyDelta)}`}>
                   <span>{getDeltaArrow(delta.consistencyDelta)}</span>
                   <span className="ml-1">{Math.abs(delta.consistencyDelta).toFixed(1)}%</span>

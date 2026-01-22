@@ -127,7 +127,7 @@ export default function AIAdvisor() {
           <div className="flex items-center gap-3">
             <div className="text-2xl font-bold uppercase tracking-tight text-[#E53935]">◆ SETUP_IQ</div>
           </div>
-          <div className="text-[9px] font-mono font-bold uppercase text-[#666]">
+          <div className="text-xs font-mono font-bold uppercase text-[#666]">
             NEURAL_LINK: ACTIVE
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function AIAdvisor() {
         <div className="w-80 bg-apex-surface/30 border-r border-apex-border flex flex-col overflow-y-auto">
           {/* Context Header */}
           <div className="px-5 py-4 border-b border-apex-border bg-black/30">
-            <label className="text-[9px] uppercase font-bold tracking-widest text-#E53935 block mb-3 font-mono">
+            <label className="text-xs uppercase font-bold tracking-widest text-#E53935 block mb-3 font-mono">
               ◆ Select Active Context
             </label>
             <select
@@ -161,20 +161,20 @@ export default function AIAdvisor() {
 
           {/* Telemetry Snapshot */}
           <div className="px-5 py-4 border-b border-apex-border/50">
-            <div className="text-[9px] uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
+            <div className="text-xs uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
               Live Telemetry
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-white/5 p-2 rounded border border-apex-border/30">
-                <div className="text-[8px] text-gray-600 mb-1">AMBIENT</div>
-                <div className="font-mono font-bold text-xs">
+                <div className="text-[11px] text-gray-600 mb-1">AMBIENT</div>
+                <div className="font-mono font-bold text-sm">
                   {context.temperature?.toFixed(1) || '--'}
-                  <span className="text-[8px] text-gray-500 ml-1">°F</span>
+                  <span className="text-[11px] text-gray-500 ml-1">°F</span>
                 </div>
               </div>
               <div className="bg-white/5 p-2 rounded border border-apex-border/30">
-                <div className="text-[8px] text-gray-600 mb-1">CONDITION</div>
-                <div className="font-mono font-bold text-[10px] text-apex-blue">
+                <div className="text-[11px] text-gray-600 mb-1">CONDITION</div>
+                <div className="font-mono font-bold text-sm text-apex-blue">
                   {context.condition || '--'}
                 </div>
               </div>
@@ -183,12 +183,12 @@ export default function AIAdvisor() {
 
           {/* Dynamic Setup Snapshot */}
           <div className="flex-1 px-5 py-4 overflow-y-auto">
-            <div className="text-[9px] uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
+            <div className="text-xs uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
               Dynamic Configuration
             </div>
             <div className="space-y-2">
               {Object.entries(context.setupParams).map(([key, value]) => (
-                <div key={key} className="flex justify-between text-[11px] pb-2 border-b border-apex-border/20">
+                <div key={key} className="flex justify-between text-xs pb-2 border-b border-apex-border/20">
                   <span className="text-gray-500 font-mono">{key}</span>
                   <span className="text-apex-blue font-mono font-bold">{value}</span>
                 </div>
