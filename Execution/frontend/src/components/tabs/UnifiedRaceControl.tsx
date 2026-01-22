@@ -135,8 +135,8 @@ export default function UnifiedRaceControl() {
             {/* Header */}
             <div className="px-6 py-4 border-b border-apex-border">
               <div className="flex items-center gap-2">
-                <span className="text-apex-red font-mono text-xs">◆</span>
-                <h3 className="text-sm uppercase font-bold tracking-widest text-apex-red font-mono">
+                <span className="text-apex-red font-mono text-base">◆</span>
+                <h3 className="text-base uppercase font-bold tracking-widest text-apex-red font-mono">
                   Event Configuration
                 </h3>
               </div>
@@ -146,42 +146,42 @@ export default function UnifiedRaceControl() {
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               {/* Event Name */}
               <div>
-                <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                   Event Name
                 </label>
                 <input
                   type="text"
                   value={config.trackContext.name || ''}
                   onChange={(e) => handleTrackContextChange({ name: e.target.value })}
-                  className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue font-mono"
+                  className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-base font-mono focus:outline-none focus:border-apex-blue"
                   placeholder="SDRC FALL BRAWL"
                 />
               </div>
 
               {/* Track Name */}
               <div>
-                <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                   Track Name
                 </label>
                 <input
                   type="text"
                   value={config.trackContext.surface || ''}
                   onChange={(e) => handleTrackContextChange({ surface: e.target.value })}
-                  className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue font-mono"
+                  className="w-full px-3 py-2 bg-apex-dark border border-apex-border rounded text-white text-base font-mono focus:outline-none focus:border-apex-blue"
                   placeholder="SAN DIEGO RC RACEWAY"
                 />
               </div>
 
               {/* Session Intent */}
               <div>
-                <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                   Session Intent
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {['PRACTICE', 'RACE'].map((intent) => (
                     <button
                       key={intent}
-                      className={`px-2 py-1.5 rounded text-xs font-bold uppercase tracking-widest font-mono transition-all ${
+                      className={`px-2 py-1.5 rounded text-sm font-bold uppercase tracking-widest font-mono transition-all ${
                         config.mainEvents === intent.toLowerCase()
                           ? 'border border-apex-blue bg-apex-blue/10 text-white'
                           : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
@@ -197,7 +197,7 @@ export default function UnifiedRaceControl() {
               <div className="pt-4 border-t border-apex-border/50">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                    <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                       Qualifying Rounds
                     </label>
                     <select
@@ -208,7 +208,7 @@ export default function UnifiedRaceControl() {
                           qualifyingRounds: parseInt(e.target.value),
                         }))
                       }
-                      className="w-full px-2 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue font-mono"
+                      className="w-full px-2 py-2 bg-apex-dark border border-apex-border rounded text-white text-base font-mono focus:outline-none focus:border-apex-blue"
                     >
                       <option value={2}>2 Rounds</option>
                       <option value={3}>3 Rounds</option>
@@ -216,7 +216,7 @@ export default function UnifiedRaceControl() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                    <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                       Main Events
                     </label>
                     <select
@@ -227,7 +227,7 @@ export default function UnifiedRaceControl() {
                           mainEvents: e.target.value as 'single' | 'triple',
                         }))
                       }
-                      className="w-full px-2 py-2 bg-apex-dark border border-apex-border rounded text-white text-sm focus:outline-none focus:border-apex-blue font-mono"
+                      className="w-full px-2 py-2 bg-apex-dark border border-apex-border rounded text-white text-base font-mono focus:outline-none focus:border-apex-blue"
                     >
                       <option value="single">Single Main</option>
                       <option value="triple">Triple Mains</option>
@@ -238,14 +238,14 @@ export default function UnifiedRaceControl() {
 
               {/* Class Registry (Simplified Vehicle Selector) */}
               <div className="pt-4 border-t border-apex-border/50">
-                <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                   Active Vehicle
                 </label>
                 <div className="bg-[#0a0a0b] border border-apex-border rounded p-3">
-                  <div className="text-sm font-bold text-white">
+                  <div className="text-base font-bold text-white">
                     {selectedVehicle?.brand} {selectedVehicle?.model}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1 font-mono">
+                  <div className="text-base text-gray-500 mt-1 font-mono">
                     TX: {selectedVehicle?.transponder || 'NONE'}
                   </div>
                 </div>
@@ -257,7 +257,7 @@ export default function UnifiedRaceControl() {
               <button
                 onClick={handleCommitAndStart}
                 disabled={isSubmitting || !selectedVehicle}
-                className={`w-full py-3 font-bold uppercase tracking-widest text-sm font-mono transition-all rounded ${
+                className={`w-full py-3 font-bold uppercase tracking-widest text-base font-mono transition-all rounded ${
                   isSubmitting || !selectedVehicle
                     ? 'bg-apex-red/30 text-apex-red/60 cursor-not-allowed'
                     : 'bg-apex-red text-white hover:bg-apex-red/90 shadow-lg shadow-apex-red/30'
@@ -272,17 +272,17 @@ export default function UnifiedRaceControl() {
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
             {/* Weather Ticker */}
             <GlassCard>
-              <div className="px-6 py-3 flex gap-8 items-center font-mono text-sm">
+              <div className="px-6 py-3 flex gap-8 items-center font-mono text-base">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-apex-green rounded-full shadow-lg shadow-apex-green"></div>
-                  <span className="text-xs uppercase font-bold text-gray-600">Live Atmos Sync:</span>
+                  <span className="text-sm uppercase font-bold text-gray-600">Live Atmos Sync:</span>
                 </div>
                 <div>
-                  <span className="text-xs uppercase font-bold text-gray-600">Ambient:</span>
+                  <span className="text-sm uppercase font-bold text-gray-600">Ambient:</span>
                   <span className="text-white ml-2 font-bold">74.2°F</span>
                 </div>
                 <div className="ml-auto">
-                  <span className="text-xs uppercase font-bold text-gray-600">Source:</span>
+                  <span className="text-sm uppercase font-bold text-gray-600">Source:</span>
                   <span className="text-white ml-2 font-bold">OPENWEATHERMAP</span>
                 </div>
               </div>
@@ -300,20 +300,20 @@ export default function UnifiedRaceControl() {
             {/* Baseline Selector */}
             <GlassCard>
               <div className="flex items-center gap-2 mb-4 border-b border-apex-blue/20 pb-3 px-4 pt-4">
-                <span className="text-apex-blue font-mono text-xs">◆</span>
+                <span className="text-apex-blue font-mono text-sm">◆</span>
                 <h2 className="text-sm font-bold tracking-widest text-apex-blue font-mono uppercase">
                   Mechanical Baseline Selector
                 </h2>
               </div>
               <div className="px-4 pb-4">
-                <label className="text-xs uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
+                <label className="text-sm uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
                   Initial Setup
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {['Master Baseline', 'Last Session'].map((option) => (
                     <button
                       key={option}
-                      className="px-3 py-2 rounded text-xs font-bold uppercase tracking-widest font-mono border border-apex-blue bg-apex-blue/10 text-white hover:bg-apex-blue/20 transition-all"
+                      className="px-3 py-2 rounded text-sm font-bold uppercase tracking-widest font-mono border border-apex-blue bg-apex-blue/10 text-white hover:bg-apex-blue/20 transition-all"
                     >
                       {option}
                     </button>
@@ -332,7 +332,7 @@ export default function UnifiedRaceControl() {
             </div>
 
             {/* Footer */}
-            <div className="pt-6 border-t border-apex-border text-center text-xs text-gray-600 font-mono">
+            <div className="pt-6 border-t border-apex-border text-center text-sm text-gray-600 font-mono">
               <p>A.P.E.X. V3.1 // UNIFIED_RACE_CONTROL // [ MODE: SETUP ]</p>
             </div>
           </div>
@@ -352,7 +352,7 @@ export default function UnifiedRaceControl() {
           {/* Header */}
           <div className="px-6 py-4 border-b border-apex-border">
             <div className="flex items-center gap-2">
-              <span className="text-apex-red font-mono text-xs">◆</span>
+              <span className="text-apex-red font-mono text-sm">◆</span>
               <h3 className="text-sm uppercase font-bold tracking-widest text-apex-red font-mono">
                 Race Registry
               </h3>
@@ -366,17 +366,17 @@ export default function UnifiedRaceControl() {
               <div className="text-sm font-bold text-white mb-2">
                 {selectedVehicle?.brand} {selectedVehicle?.model}
               </div>
-              <div className="text-xs text-gray-500 font-mono">
+              <div className="text-sm text-gray-500 font-mono">
                 TX: {selectedVehicle?.transponder || 'NONE'}
               </div>
             </div>
 
             {/* Registry Logic Info */}
             <div className="bg-apex-red/5 border border-dashed border-apex-red/30 rounded p-3 mt-6">
-              <div className="text-xs font-bold text-apex-red/70 uppercase tracking-widest mb-2">
+              <div className="text-sm font-bold text-apex-red/70 uppercase tracking-widest mb-2">
                 ◆ Registry Logic
               </div>
-              <div className="text-xs text-gray-500 leading-relaxed">
+              <div className="text-sm text-gray-500 leading-relaxed">
                 Only assigned vehicles are active. Session is locked and read-only during active racing.
               </div>
             </div>
@@ -403,7 +403,7 @@ export default function UnifiedRaceControl() {
                 <GlassCard>
                   <div className="px-4 pt-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-apex-red font-mono text-xs">◆</span>
+                      <span className="text-apex-red font-mono text-sm">◆</span>
                       <h3 className="text-sm font-bold tracking-widest text-apex-red font-mono uppercase">
                         Operational Signals
                       </h3>
@@ -422,7 +422,7 @@ export default function UnifiedRaceControl() {
                 <GlassCard>
                   <div className="px-4 pt-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-apex-red font-mono text-xs">◆</span>
+                      <span className="text-apex-red font-mono text-sm">◆</span>
                       <h3 className="text-sm font-bold tracking-widest text-apex-red font-mono uppercase">
                         Performance Analytics
                       </h3>
@@ -448,12 +448,12 @@ export default function UnifiedRaceControl() {
                 <div className="px-4 pt-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-apex-red font-mono text-xs">◆</span>
+                      <span className="text-apex-red font-mono text-sm">◆</span>
                       <h3 className="text-sm font-bold tracking-widest text-apex-red font-mono uppercase">
                         Track Context Matrix
                       </h3>
                     </div>
-                    <div className="text-xs text-gray-600 font-mono space-x-6">
+                    <div className="text-sm text-gray-600 font-mono space-x-6">
                       <span>TRACK_TEMP: 102.4°F</span>
                       <span>HUMIDITY: 12.4%</span>
                     </div>
@@ -480,7 +480,7 @@ export default function UnifiedRaceControl() {
               <GlassCard className="flex-1">
                 <div className="px-4 pt-4 pb-3 border-b border-apex-border flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <span className="text-apex-red font-mono text-xs">◆</span>
+                    <span className="text-apex-red font-mono text-sm">◆</span>
                     <h3 className="text-sm font-bold tracking-widest text-apex-red font-mono uppercase">
                       Active Fleet Matrix
                     </h3>
@@ -501,7 +501,7 @@ export default function UnifiedRaceControl() {
             <GlassCard className="flex flex-col overflow-hidden">
               <div className="px-4 pt-4 pb-3 border-b border-apex-border">
                 <div className="flex items-center gap-2">
-                  <span className="text-apex-red font-mono text-xs">◆</span>
+                  <span className="text-apex-red font-mono text-sm">◆</span>
                   <h3 className="text-sm font-bold tracking-widest text-apex-red font-mono uppercase">
                     Tactical Hub
                   </h3>
@@ -512,7 +512,7 @@ export default function UnifiedRaceControl() {
                 {/* Institutional Memory */}
                 <div>
                   <div className="text-[11px] font-bold uppercase text-gray-600 mb-2">Institutional Memory</div>
-                  <div className="text-xs text-gray-400 italic leading-relaxed">
+                  <div className="text-sm text-gray-400 italic leading-relaxed">
                     {/* TODO: Phase 6 - Semantic search across past session notes */}
                     &ldquo;SDRC Fall Brawl note: Center diff overheating caused handling fade after 8min.&rdquo;
                   </div>
@@ -530,7 +530,7 @@ export default function UnifiedRaceControl() {
                       }))
                     }
                     placeholder="CAPTURING REAL-TIME THOUGHTS..."
-                    className="flex-1 bg-black/50 border border-apex-border rounded p-3 text-white text-xs font-mono focus:outline-none focus:border-apex-blue resize-none"
+                    className="flex-1 bg-black/50 border border-apex-border rounded p-3 text-white text-sm font-mono focus:outline-none focus:border-apex-blue resize-none"
                   />
                 </div>
               </div>

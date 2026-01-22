@@ -127,7 +127,7 @@ export default function AIAdvisor() {
           <div className="flex items-center gap-3">
             <div className="text-2xl font-bold uppercase tracking-tight text-[#E53935]">◆ SETUP_IQ</div>
           </div>
-          <div className="text-xs font-mono font-bold uppercase text-[#666]">
+          <div className="text-sm font-mono font-bold uppercase text-[#666]">
             NEURAL_LINK: ACTIVE
           </div>
         </div>
@@ -139,14 +139,14 @@ export default function AIAdvisor() {
         <div className="w-80 bg-apex-surface/30 border-r border-apex-border flex flex-col overflow-y-auto">
           {/* Context Header */}
           <div className="px-5 py-4 border-b border-apex-border bg-black/30">
-            <label className="text-xs uppercase font-bold tracking-widest text-#E53935 block mb-3 font-mono">
+            <label className="text-sm uppercase font-bold tracking-widest text-#E53935 block mb-3 font-mono">
               ◆ Select Active Context
             </label>
             <select
               value={selectedContext}
               onChange={(e) => handleContextChange(e.target.value)}
               disabled={isFetching || vehicles.length === 0}
-              className="w-full px-3 py-2 bg-apex-dark border border-#E53935 rounded text-white text-xs font-mono font-bold focus:outline-none focus:border-#E53935/80 disabled:opacity-50"
+              className="w-full px-3 py-2 bg-apex-dark border border-#E53935 rounded text-white text-base font-mono font-bold focus:outline-none focus:border-#E53935/80 disabled:opacity-50"
             >
               <option value="">
                 {isFetching ? 'Loading vehicles...' : vehicles.length === 0 ? 'No vehicles' : 'Select vehicle'}
@@ -161,20 +161,20 @@ export default function AIAdvisor() {
 
           {/* Telemetry Snapshot */}
           <div className="px-5 py-4 border-b border-apex-border/50">
-            <div className="text-xs uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
+            <div className="text-sm uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
               Live Telemetry
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-white/5 p-2 rounded border border-apex-border/30">
-                <div className="text-[11px] text-gray-600 mb-1">AMBIENT</div>
-                <div className="font-mono font-bold text-sm">
+                <div className="text-sm text-gray-600 mb-1">AMBIENT</div>
+                <div className="font-mono font-bold text-base">
                   {context.temperature?.toFixed(1) || '--'}
-                  <span className="text-[11px] text-gray-500 ml-1">°F</span>
+                  <span className="text-sm text-gray-500 ml-1">°F</span>
                 </div>
               </div>
               <div className="bg-white/5 p-2 rounded border border-apex-border/30">
-                <div className="text-[11px] text-gray-600 mb-1">CONDITION</div>
-                <div className="font-mono font-bold text-sm text-apex-blue">
+                <div className="text-sm text-gray-600 mb-1">CONDITION</div>
+                <div className="font-mono font-bold text-base text-apex-blue">
                   {context.condition || '--'}
                 </div>
               </div>
@@ -183,12 +183,12 @@ export default function AIAdvisor() {
 
           {/* Dynamic Setup Snapshot */}
           <div className="flex-1 px-5 py-4 overflow-y-auto">
-            <div className="text-xs uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
+            <div className="text-sm uppercase font-bold tracking-widest text-gray-600 mb-3 font-mono">
               Dynamic Configuration
             </div>
             <div className="space-y-2">
               {Object.entries(context.setupParams).map(([key, value]) => (
-                <div key={key} className="flex justify-between text-xs pb-2 border-b border-apex-border/20">
+                <div key={key} className="flex justify-between text-base pb-2 border-b border-apex-border/20">
                   <span className="text-gray-500 font-mono">{key}</span>
                   <span className="text-apex-blue font-mono font-bold">{value}</span>
                 </div>
@@ -205,8 +205,8 @@ export default function AIAdvisor() {
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
                   <div className="text-3xl mb-4 text-#E53935 font-mono">◆</div>
-                  <p className="text-gray-400 text-sm mb-2">Welcome to Neural Link</p>
-                  <p className="text-gray-600 text-xs font-mono">
+                  <p className="text-gray-400 text-base mb-2">Welcome to Neural Link</p>
+                  <p className="text-gray-600 text-base font-mono">
                     Ask about setup optimization, tire strategy, or race tactics
                   </p>
                 </div>
@@ -237,12 +237,12 @@ export default function AIAdvisor() {
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask AI about setup, strategy, or diagnostics..."
                 disabled={isLoading}
-                className="flex-1 bg-transparent border-none text-white text-sm px-3 py-2 focus:outline-none placeholder-gray-600 font-mono"
+                className="flex-1 bg-transparent border-none text-white text-base px-3 py-2 focus:outline-none placeholder-gray-600 font-mono"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={isLoading || !userInput.trim()}
-                className="px-4 py-2 bg-[#E53935] text-white font-bold text-xs uppercase rounded hover:bg-[#FF6B6B] disabled:opacity-50 transition-all shadow-[0_0_10px_rgba(229,57,53,0.3)] hover:shadow-[0_0_15px_rgba(229,57,53,0.5)]"
+                className="px-4 py-2 bg-[#E53935] text-white font-bold text-base uppercase rounded hover:bg-[#FF6B6B] disabled:opacity-50 transition-all shadow-[0_0_10px_rgba(229,57,53,0.3)] hover:shadow-[0_0_15px_rgba(229,57,53,0.5)]"
               >
                 {isLoading ? '⟳' : '🎤'}
               </button>
