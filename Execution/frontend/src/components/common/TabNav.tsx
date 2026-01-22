@@ -15,8 +15,8 @@ type Tab = 'garage' | 'strategy' | 'control' | 'advisor' | 'audit' | 'vault';
 const TABS: { id: Tab; label: string; icon: string; disabledWhen?: (isSessionActive: boolean) => boolean }[] = [
   { id: 'garage', label: 'RACER GARAGE', icon: '🏠' },
   { id: 'strategy', label: 'RACE STRATEGY', icon: '📋' },
-  { id: 'control', label: 'RACE CONTROL', icon: '⚡', disabledWhen: (active) => !active },
   { id: 'advisor', label: 'SETUP_IQ', icon: '🤖' },
+  { id: 'control', label: 'RACE CONTROL', icon: '⚡', disabledWhen: (active) => !active },
   { id: 'audit', label: 'DATA & ANALYSIS', icon: '📊' },
   { id: 'vault', label: 'THE VAULT', icon: '📚' },
 ];

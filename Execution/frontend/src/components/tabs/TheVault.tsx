@@ -305,6 +305,41 @@ export default function TheVault() {
                 </div>
               </div>
 
+              {/* MONOSPACED SESSION DETAILS TABLE */}
+              <div className="bg-black border border-white/10 rounded p-4 font-mono text-[10px] overflow-x-auto">
+                <div className="text-[9px] font-black text-[#555] uppercase mb-3 tracking-widest">Session Metadata</div>
+                <div className="space-y-2 text-[#999]">
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">EVENT</span>
+                    <span>{selectedArchive.eventName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">TYPE</span>
+                    <span>{selectedArchive.sessionType.toUpperCase()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">ORP_SCORE</span>
+                    <span>{selectedArchive.finalORP.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">LAP_COUNT</span>
+                    <span>{selectedArchive.totalLaps}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">RECORDED_AT</span>
+                    <span>{selectedArchive.createdAt}</span>
+                  </div>
+                  {selectedArchive.improvement !== null && (
+                    <div className="flex justify-between">
+                      <span className="text-[#E53935]">IMPROVEMENT</span>
+                      <span className={selectedArchive.improvement > 0 ? 'text-[#4CAF50]' : 'text-[#FF6B6B]'}>
+                        {selectedArchive.improvement > 0 ? '+' : ''}{selectedArchive.improvement.toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-[9px] font-black text-[#555] uppercase mb-2">Reported Symptoms</p>

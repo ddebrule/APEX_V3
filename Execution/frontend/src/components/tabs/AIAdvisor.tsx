@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import { useChatMessages } from '@/stores/advisorStore';
 import ChatMessage from '@/components/advisor/ChatMessage';
+import LiveClipboard from '@/components/tabs/LiveClipboard';
 import { getVehiclesByProfileId } from '@/lib/queries';
 
 interface ContextData {
@@ -43,12 +44,6 @@ const SAMPLE_CONTEXTS: Record<string, ContextData> = {
   },
 };
 
-const TACTICAL_DIRECTIVES = [
-  { title: '"Loose Rear End"', desc: 'Oversteer on entry/exit.' },
-  { title: '"Push / Understeer"', desc: 'Front end washing out.' },
-  { title: '"Bottoms Out"', desc: 'Chassis slap on landing/G-out.' },
-  { title: '"Lacks Forward Drive"', desc: 'Spinning wheels on power.' },
-];
 
 export default function AIAdvisor() {
   const { selectedVehicle, selectedRacer } = useMissionControlStore();
@@ -123,9 +118,6 @@ export default function AIAdvisor() {
     setSelectedContext(contextKey);
   };
 
-  const handleTacticalDirective = (directive: string) => {
-    setUserInput(`Ask about: ${directive}`);
-  };
 
   return (
     <div className="w-full h-screen bg-apex-dark text-white flex flex-col overflow-hidden">
@@ -258,47 +250,16 @@ export default function AIAdvisor() {
           </div>
         </div>
 
-        {/* RIGHT RAIL: Tactical Directives */}
-        <div className="w-72 bg-apex-surface/30 border-l border-apex-border flex flex-col p-5 overflow-y-auto">
-          <div className="text-[9px] uppercase font-bold tracking-widest text-apex-green mb-4 font-mono">
-            ◆ Tactical Directives
-          </div>
-
-          <div className="space-y-2">
-            {TACTICAL_DIRECTIVES.map((directive) => (
-              <button
-                key={directive.title}
-                onClick={() => handleTacticalDirective(directive.title)}
-                className="w-full text-left px-3 py-2 bg-gray-900/50 border border-apex-border rounded hover:border-apex-blue hover:bg-apex-blue/5 transition-all group"
-              >
-                <div className="text-[11px] font-bold text-white group-hover:text-apex-blue transition-colors">
-                  {directive.title}
-                </div>
-                <div className="text-[9px] text-gray-600 group-hover:text-gray-400 transition-colors">
-                  {directive.desc}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Custom Prompt */}
-          <div className="mt-4 pt-4 border-t border-apex-border/50">
-            <input
-              type="text"
-              placeholder="Custom directive..."
-              className="w-full px-3 py-2 bg-black/30 border border-dashed border-apex-border rounded text-[10px] text-gray-500 font-mono focus:outline-none focus:text-white placeholder-gray-700"
-            />
-          </div>
-
-          {/* Status */}
-          <div className="mt-auto pt-4 border-t border-apex-border/50">
-            <div className="flex items-center gap-2 text-[9px] font-mono text-gray-600">
-              <div className="w-2 h-2 rounded-full bg-[#E53935] animate-pulse" />
-              <span>NEURAL_LINK</span>
-            </div>
-            <div className="text-[8px] text-gray-700 mt-1">Connected to context</div>
-          </div>
-        </div>
+        {/* RIGHT RAIL: LiveClipboard */}
+        <LiveClipboard
+          vehicleId={context.vehicleId}
+          sessionId={''}
+          watchPoints={[
+            'Tire spin-up on clay (first 3 laps)',
+            'Mid-corner push (adjust front sway -0.2mm if present)',
+            'Landing chatter (soften front oil -50 CST if present)'
+          ]}
+        />
       </div>
     </div>
   );

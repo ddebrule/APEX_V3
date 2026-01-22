@@ -30,6 +30,9 @@ export type ProposalStatus = 'suggested' | 'applied' | 'reverted';
 export interface ChatMessage {
   id: string;                               // UUID for temporal ordering
   role: 'user' | 'ai' | 'system';          // Message origin
+  // SINGLE VOICE PROTOCOL: 'ai' role represents AI Engineer voice only.
+  // System messages are filtered from UI via useChatMessages() hook.
+  // Internal persona dialogue (Strategist, Analyst, Spotter, Librarian) MUST use role='system'.
   type: ChatMessageType;                    // Message classification
   content: string;                          // Text content
   timestamp: number;                        // Unix timestamp
@@ -864,9 +867,19 @@ export const useCanApplyProposal = () => {
 /**
  * Get all messages for chat display (sorted by timestamp)
  */
+/**
+ * Single Voice Protocol: Filter chat messages to show only AI Engineer voice
+ * Hides system role outputs and internal dialogue (Strategist, Analyst, Spotter, Librarian)
+ */
 export const useChatMessages = () => {
   const { chatMessages } = useAdvisorStore();
-  return [...chatMessages].sort((a, b) => a.timestamp - b.timestamp);
+
+  // Filter: Only show 'user' and 'ai' roles (hide 'system')
+  const filtered = [...chatMessages]
+    .filter(msg => msg.role === 'user' || msg.role === 'ai')
+    .sort((a, b) => a.timestamp - b.timestamp);
+
+  return filtered;
 };
 
 /**
