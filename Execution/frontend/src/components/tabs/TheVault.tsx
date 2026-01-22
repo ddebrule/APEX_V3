@@ -137,34 +137,75 @@ export default function TheVault() {
   return (
     <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
 
-      {/* PINNED SIDEBAR (SESSION HISTORY) */}
+      {/* PINNED SIDEBAR (LIBRARIAN AI) */}
       <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
         {/* Sidebar Header */}
         <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
-          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Session History</span>
+          <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Librarian AI</span>
           <button className="text-[#E53935] text-[10px] font-black uppercase tracking-widest">[ PINNED ]</button>
         </div>
 
-        {/* Session List */}
-        <div className="p-[30px] flex-1 overflow-y-auto space-y-3">
-          {archivedSessions.length === 0 ? (
-            <div className="text-[10px] text-[#555] italic">No sessions archived yet.</div>
-          ) : (
-            archivedSessions.map((session) => (
-              <div
-                key={session.sessionId}
-                onClick={() => setSelectedArchive(session)}
-                className={`p-3 border rounded cursor-pointer transition-all relative group ${
-                  selectedArchive?.sessionId === session.sessionId
-                    ? 'bg-[#E53935]/5 border-[#E53935] border-l-4 shadow-[0_0_20px_rgba(229,57,53,0.1)]'
-                    : 'bg-[#1a1a1c]/80 backdrop-blur-sm border-white/10 hover:border-[#E53935]/50 transition-all duration-300'
-                }`}
-              >
-                <div className="text-[11px] font-bold text-white uppercase">{session.eventName}</div>
-                <div className="font-mono text-[9px] text-[#666] mt-[3px] uppercase">{session.sessionType}</div>
-                <div className="text-[10px] text-[#E53935] font-black mt-[5px]">{session.finalORP.toFixed(1)}% ORP</div>
-              </div>
-            ))
+        {/* Librarian AI Search */}
+        <div className="p-5 space-y-4 flex flex-col flex-1 overflow-hidden">
+          <p className="text-[9px] text-[#666] font-mono">Search historical sessions for similar mechanical issues and solutions</p>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleLibrarianSearch()}
+              placeholder="e.g., 'loose on mid-corner' or 'bouncy suspension'"
+              className="flex-1 bg-black border border-white/5 p-2 text-[9px] text-white font-mono rounded focus:outline-none focus:border-[#E53935]"
+            />
+            <button
+              onClick={handleLibrarianSearch}
+              disabled={isSearching || !searchQuery.trim()}
+              className={`px-4 py-2 text-[9px] font-black uppercase rounded tracking-widest transition-all ${
+                isSearching || !searchQuery.trim()
+                  ? 'bg-[#333] text-[#666] cursor-not-allowed opacity-50'
+                  : 'border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white'
+              }`}
+            >
+              {isSearching ? '⟳' : '🔍'}
+            </button>
+          </div>
+
+          {librarianResults.length > 0 && (
+            <div className="space-y-3 flex-1 overflow-y-auto">
+              <p className="text-[9px] font-black text-[#555] uppercase">
+                📚 {isColdStart ? `Baseline Knowledge (${librarianResults.length} refs)` : `Found ${librarianResults.length} cases`}
+              </p>
+              {librarianResults.map((result, idx) => (
+                <div key={idx} className="bg-black rounded p-3 border border-white/5">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-[9px] font-mono text-[#999]">{result.eventDate}</p>
+                      <p className="text-[8px] text-[#666] mt-1">Symptom: {result.symptom}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[9px] font-black text-[#E53935]">
+                        +{result.orpImprovement.toFixed(1)}%
+                      </p>
+                      <p className="text-[8px] text-[#666] mt-1">
+                        {(result.confidence * 100).toFixed(0)}% conf
+                      </p>
+                    </div>
+                  </div>
+
+                  <p className="text-[9px] text-[#999] bg-[#0a0a0b] rounded p-2 mb-2 font-mono">
+                    ✓ {result.fix}
+                  </p>
+
+                  <button
+                    onClick={() => handlePushToAdvisor(result)}
+                    className="w-full px-2 py-1 text-[8px] font-black uppercase rounded border border-[#E53935] text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all tracking-widest"
+                  >
+                    → Push
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
@@ -205,76 +246,6 @@ export default function TheVault() {
             <p className="text-[9px] text-[#555] uppercase font-black tracking-widest">Ledger</p>
             <p className="text-[24px] font-black text-[#E53935] mt-2">{conversationLedger.length}</p>
             <p className="text-[9px] text-[#666] mt-2 font-mono">messages recorded</p>
-          </div>
-        </div>
-
-        {/* LIBRARIAN AI SEARCH */}
-        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
-          <div className="p-4 bg-white/[0.02] border-b border-white/5">
-            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Librarian AI: Semantic Search</span>
-          </div>
-
-          <div className="p-5 space-y-4">
-            <p className="text-[9px] text-[#666] font-mono">Search historical sessions for similar mechanical issues and solutions</p>
-
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleLibrarianSearch()}
-                placeholder="e.g., 'loose on mid-corner' or 'bouncy suspension'"
-                className="flex-1 bg-black border border-white/5 p-2 text-[9px] text-white font-mono rounded focus:outline-none focus:border-[#E53935]"
-              />
-              <button
-                onClick={handleLibrarianSearch}
-                disabled={isSearching || !searchQuery.trim()}
-                className={`px-4 py-2 text-[9px] font-black uppercase rounded tracking-widest transition-all ${
-                  isSearching || !searchQuery.trim()
-                    ? 'bg-[#333] text-[#666] cursor-not-allowed opacity-50'
-                    : 'border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white'
-                }`}
-              >
-                {isSearching ? '⟳' : '🔍'}
-              </button>
-            </div>
-
-            {librarianResults.length > 0 && (
-              <div className="space-y-3 mt-4 max-h-[300px] overflow-y-auto">
-                <p className="text-[9px] font-black text-[#555] uppercase">
-                  📚 {isColdStart ? `Baseline Knowledge (${librarianResults.length} refs)` : `Found ${librarianResults.length} cases`}
-                </p>
-                {librarianResults.map((result, idx) => (
-                  <div key={idx} className="bg-black rounded p-3 border border-white/5">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="text-[9px] font-mono text-[#999]">{result.eventDate}</p>
-                        <p className="text-[8px] text-[#666] mt-1">Symptom: {result.symptom}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[9px] font-black text-[#E53935]">
-                          +{result.orpImprovement.toFixed(1)}%
-                        </p>
-                        <p className="text-[8px] text-[#666] mt-1">
-                          {(result.confidence * 100).toFixed(0)}% conf
-                        </p>
-                      </div>
-                    </div>
-
-                    <p className="text-[9px] text-[#999] bg-[#0a0a0b] rounded p-2 mb-2 font-mono">
-                      ✓ {result.fix}
-                    </p>
-
-                    <button
-                      onClick={() => handlePushToAdvisor(result)}
-                      className="w-full px-2 py-1 text-[8px] font-black uppercase rounded border border-[#E53935] text-[#E53935] hover:bg-[#E53935] hover:text-white transition-all tracking-widest"
-                    >
-                      → Push
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
 
@@ -393,6 +364,44 @@ export default function TheVault() {
               ))
             ) : (
               <p className="text-[9px] text-[#555] italic font-mono">No conversations recorded yet</p>
+            )}
+          </div>
+        </div>
+
+        {/* SESSION HISTORY */}
+        <div className="bg-[#121214] border border-white/5 rounded flex flex-col overflow-hidden shrink-0">
+          <div className="p-4 bg-white/[0.02] border-b border-white/5">
+            <span className="text-[10px] text-[#E53935] font-black uppercase tracking-[2px]">◆ Session History</span>
+          </div>
+
+          <div className="p-5 max-h-[400px] overflow-y-auto">
+            {archivedSessions.length === 0 ? (
+              <div className="text-[10px] text-[#555] italic">No sessions archived yet.</div>
+            ) : (
+              <div className="grid grid-cols-1 gap-3">
+                {archivedSessions.map((session) => (
+                  <div
+                    key={session.sessionId}
+                    onClick={() => setSelectedArchive(session)}
+                    className={`p-3 border rounded cursor-pointer transition-all relative group ${
+                      selectedArchive?.sessionId === session.sessionId
+                        ? 'bg-[#E53935]/5 border-[#E53935] border-l-4 shadow-[0_0_20px_rgba(229,57,53,0.1)]'
+                        : 'bg-[#1a1a1c]/80 backdrop-blur-sm border-white/10 hover:border-[#E53935]/50 transition-all duration-300'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="text-[11px] font-bold text-white uppercase">{session.eventName}</div>
+                        <div className="font-mono text-[9px] text-[#666] mt-[3px] uppercase">{session.sessionType}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-[#E53935] font-black">{session.finalORP.toFixed(1)}% ORP</div>
+                        <div className="text-[9px] text-[#666] font-mono mt-1">{session.totalLaps} laps</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
