@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import { useAdvisorStore } from '@/stores/advisorStore';
 import { ORP_Result } from '@/lib/ORPService';
+import { supabase } from '@/lib/supabase';
 
 interface ArchivedSession {
   sessionId: string;
@@ -56,43 +57,59 @@ export default function TheVault() {
 
     // Cold Start Fallback: Show baseline knowledge when no historical sessions exist
     if (isColdStart) {
-      // Simulate search latency
       await new Promise((resolve) => setTimeout(resolve, 500));
       setLibrarianResults(baselineKnowledge);
       setIsSearching(false);
       return;
     }
 
-    // Mock Librarian search (in production, use OpenAI embeddings + vector search)
-    const mockResults: LibrarianResult[] = [
-      {
-        eventDate: '2026-01-15',
-        symptom: 'Loose on mid-corner',
-        fix: 'Increased front sway bar stiffness by 0.5mm',
-        orpImprovement: 8.5,
-        confidence: 0.92,
-      },
-      {
-        eventDate: '2026-01-10',
-        symptom: 'Bouncy on high-speed turns',
-        fix: 'Adjusted shock compression settings',
-        orpImprovement: 6.2,
-        confidence: 0.87,
-      },
-      {
-        eventDate: '2026-01-05',
-        symptom: 'Poor traction on acceleration',
-        fix: 'Changed tire compound to softer blend',
-        orpImprovement: 5.8,
-        confidence: 0.79,
-      },
-    ];
+    try {
+      // Get Supabase session token for API authentication
+      const { data: { session } } = await supabase.auth.getSession();
 
-    // Simulate search latency
-    await new Promise((resolve) => setTimeout(resolve, 800));
+      if (!session) {
+        console.error('[Librarian] No active session');
+        // Fallback to baseline knowledge on auth failure
+        setLibrarianResults(baselineKnowledge);
+        setIsSearching(false);
+        return;
+      }
 
-    setLibrarianResults(mockResults);
-    setIsSearching(false);
+      // Call vector search API
+      const response = await fetch('/api/librarian/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          query: searchQuery.trim(),
+          match_threshold: 0.5,
+          match_count: 10,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Handle empty results - fallback to baseline knowledge
+      if (!data.results || data.results.length === 0) {
+        console.warn('[Librarian] No matches found, using baseline knowledge');
+        setLibrarianResults(baselineKnowledge);
+      } else {
+        setLibrarianResults(data.results);
+      }
+
+    } catch (error) {
+      console.error('[Librarian] Search failed:', error);
+      // Graceful fallback to baseline knowledge on any error
+      setLibrarianResults(baselineKnowledge);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handlePushToAdvisor = (result: LibrarianResult) => {
