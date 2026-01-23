@@ -19,7 +19,7 @@ const TABS: { id: Tab; label: string; icon: string; disabledWhen?: (isSessionAct
   { id: 'garage', label: 'RACER GARAGE', icon: '🏠' },
   { id: 'strategy', label: 'RACE STRATEGY', icon: '📋' },
   { id: 'advisor', label: 'SETUP_IQ', icon: '🤖' },
-  { id: 'control', label: 'RACE CONTROL', icon: '⚡', disabledWhen: (active) => !active },
+  { id: 'control', label: 'RACE CONTROL', icon: '⚡' },
   { id: 'audit', label: 'DATA & ANALYSIS', icon: '📊' },
   { id: 'vault', label: 'THE VAULT', icon: '📚' },
 ];

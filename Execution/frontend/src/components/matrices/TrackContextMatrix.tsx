@@ -24,11 +24,15 @@ export default function TrackContextMatrix({
     (initialContext.name?.toLowerCase().includes('small') ? 'small' :
       initialContext.name?.toLowerCase().includes('large') ? 'large' : 'medium') as ScaleOption
   );
-  const [grip, setGrip] = useState<GripLevel>('med');
+  const [grip, setGrip] = useState<GripLevel>(
+    (initialContext.traction as GripLevel) || 'med'
+  );
   const [material, setMaterial] = useState<SurfaceMaterial>(
     (initialContext.surface?.toLowerCase().includes('clay') ? 'clay' : 'hard_packed') as SurfaceMaterial
   );
-  const [condition, setCondition] = useState<SurfaceCondition>('damp_fresh');
+  const [condition, setCondition] = useState<SurfaceCondition>(
+    (initialContext.condition as SurfaceCondition) || 'damp_fresh'
+  );
 
   const handleScaleChange = (newScale: ScaleOption) => {
     setScale(newScale);
@@ -37,7 +41,7 @@ export default function TrackContextMatrix({
 
   const handleGripChange = (newGrip: GripLevel) => {
     setGrip(newGrip);
-    // Could emit to parent if needed
+    onContextChange({ traction: newGrip });
   };
 
   const handleMaterialChange = (newMaterial: SurfaceMaterial) => {
@@ -47,7 +51,7 @@ export default function TrackContextMatrix({
 
   const handleConditionChange = (newCondition: SurfaceCondition) => {
     setCondition(newCondition);
-    // Could emit to parent if needed
+    onContextChange({ condition: newCondition });
   };
 
   return (
@@ -74,8 +78,8 @@ export default function TrackContextMatrix({
                   onClick={() => handleScaleChange(s)}
                   disabled={!isEditable}
                   className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${scale === s
-                      ? 'border border-apex-blue bg-apex-blue/10 text-white'
-                      : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
+                    ? 'border border-apex-blue bg-apex-blue/10 text-white'
+                    : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
                     } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {s}
@@ -96,8 +100,8 @@ export default function TrackContextMatrix({
                   onClick={() => handleGripChange(g)}
                   disabled={!isEditable}
                   className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${grip === g
-                      ? 'border border-apex-blue bg-apex-blue/10 text-white'
-                      : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
+                    ? 'border border-apex-blue bg-apex-blue/10 text-white'
+                    : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
                     } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {g}
@@ -121,8 +125,8 @@ export default function TrackContextMatrix({
                   onClick={() => handleMaterialChange(m)}
                   disabled={!isEditable}
                   className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${material === m
-                      ? 'border border-apex-blue bg-apex-blue/10 text-white'
-                      : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
+                    ? 'border border-apex-blue bg-apex-blue/10 text-white'
+                    : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
                     } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {m.replace('_', ' ')}
@@ -143,8 +147,8 @@ export default function TrackContextMatrix({
                   onClick={() => handleConditionChange(c)}
                   disabled={!isEditable}
                   className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${condition === c
-                      ? 'border border-apex-blue bg-apex-blue/10 text-white'
-                      : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
+                    ? 'border border-apex-blue bg-apex-blue/10 text-white'
+                    : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
                     } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {c.replace('_', ' / ')}

@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import GlassCard from '@/components/common/GlassCard';
+import TacticalHeader from '@/components/common/TacticalHeader';
 import TrackContextMatrix from '@/components/matrices/TrackContextMatrix';
 import VehicleTechnicalMatrix from '@/components/matrices/VehicleTechnicalMatrix';
 import TrackIntelligence from '@/components/sections/TrackIntelligence';
@@ -20,6 +22,7 @@ interface SessionConfig {
 }
 
 export default function UnifiedRaceControl() {
+  const router = useRouter();
   const {
     selectedSession,
     selectedVehicle,
@@ -112,13 +115,39 @@ export default function UnifiedRaceControl() {
     [selectedVehicle]
   );
 
-  if (!selectedSession) {
+  // STANDBY VIEW: Show when no session or session is not active
+  if (!selectedSession || selectedSession.status !== 'active') {
     return (
-      <div className="w-full h-full bg-apex-dark text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-gray-400 mb-4">No session selected</div>
-          <div className="text-sm text-gray-500">Create a new session from Racer Garage</div>
-        </div>
+      <div className="w-full h-full bg-apex-dark text-white flex items-center justify-center p-8">
+        <GlassCard>
+          <div className="flex flex-col items-center justify-center p-12 space-y-6">
+            {/* Icon */}
+            <div className="text-6xl opacity-30">⚡</div>
+
+            {/* Message */}
+            <div className="text-center space-y-2">
+              <div className="text-xl font-bold uppercase tracking-widest text-apex-red font-mono">
+                NO ACTIVE SESSION DETECTED
+              </div>
+              <div className="text-sm text-gray-500">
+                Configure and activate a session to access Race Control
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+              onClick={() => {
+                const params = new URLSearchParams(window.location.search);
+                params.set('tab', 'strategy');
+                window.history.replaceState(null, '', `?${params.toString()}`);
+                router.refresh();
+              }}
+              className="px-8 py-3 bg-apex-blue text-white font-bold uppercase tracking-widest text-sm font-mono rounded hover:bg-apex-blue/90 transition-all shadow-lg shadow-apex-blue/30"
+            >
+              CONFIGURE STRATEGY
+            </button>
+          </div>
+        </GlassCard>
       </div>
     );
   }
@@ -398,6 +427,9 @@ export default function UnifiedRaceControl() {
           <div className="grid grid-cols-[1fr_380px] gap-6 h-full">
             {/* CENTER STACK */}
             <div className="flex flex-col gap-6 overflow-y-auto pr-2">
+              {/* Tactical Header */}
+              <TacticalHeader session={selectedSession} />
+
               {/* Operational Signals Row */}
               <div className="grid grid-cols-[1.2fr_1fr] gap-6">
                 <GlassCard>

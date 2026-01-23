@@ -70,6 +70,7 @@ export type TrackContext = {
   qual_length?: number;
   main_length?: number;
   anticipated_temp?: number;
+  condition?: string;
   race_classes?: RaceClassMapping[];
 };
 
