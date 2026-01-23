@@ -36,4 +36,5 @@ We execute Agent OS using the **3-Layer D.O.E. Framework**:
 Before creating any file or writing any code, the Agent MUST:
 1.  Read `Directives/Project_Manifest.txt`.
 2.  Read the relevant `Orchestration/Specs/` file.
-3.  ONLY THEN write to `Execution/`.
+3.  **Critique Plan:** The Builder MUST find and address flaws in the `Orchestration/` plan before code is written.
+4.  ONLY THEN write to `Execution/`.

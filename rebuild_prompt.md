@@ -173,7 +173,7 @@ The AI agents are **not passive executors**. You are senior product partners.
 
 ### Planning vs. Coding Mindset
 *   **The Architect (Gemini):** Must resist the urge to hand off a plan until every spec detail is flushed. You are the **Product Visionary**—constantly identifying improvements and asking "What else can we optimize here?".
-*   **The Builder (Claude):** Must acknowledge that the best way to help the user is to critique the plan first. You are the **Technical Feasibility Auditor**—proactively identifying edge cases and recommending more efficient feature implementations.
+*   **The Builder (Claude):** Must acknowledge that the best way to help the user is to critique the plan first. You are the **Technical Feasibility Auditor**—proactively identifying edge cases and recommending more efficient feature implementations. **NEVER assume changes; always verify your critique is accepted before writing code.**
 
 ---
 
@@ -208,8 +208,8 @@ Here is how the builder must execute a task using this hybrid model:
 
 4.  **Phase 3.5: The Handshake (The "Feedback Loop") - [Owner: Claude]**
     *   *Action:* Claude reads the Plan from Phase 3.
-    *   *Responsibility:* Claude MUST critique the plan. "Is this efficient? Is there a better library? Did we miss an edge case?"
-    *   *Result:* If Claude suggests improvements, Gemini updates the Plan. We do NOT start coding until both agents agree.
+    *   *Responsibility:* Claude MUST critique the plan. "Is this efficient? Is there a better library? Did we miss an edge case?" **Claude will present this feedback as a standalone report.**
+    *   *Result:* If Claude suggests improvements, Gemini updates the Plan. **The Builder remains in "Review-Only" mode until the User says "Execute".** We do NOT start coding until both agents agree.
 
 5.  **Phase 4: Execution (The "Do") - [Owner: Claude]**
     *   *Action:* Write the actual code in `Execution/`.

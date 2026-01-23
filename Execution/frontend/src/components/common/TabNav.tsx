@@ -84,7 +84,7 @@ export default function TabNav() {
       {profile && (
         <div className="bg-apex-surface bg-opacity-30 border-b border-apex-border px-6 py-2 flex justify-between items-center">
           <div className="text-sm text-neutral-400">
-            Welcome, <span className="text-white font-semibold">{profile.racer_name}</span>
+            Welcome, <span className="text-white font-semibold">{profile.name}</span>
           </div>
           <button
             onClick={handleSignOut}

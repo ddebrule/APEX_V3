@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 export interface RacerProfile {
   id: string;
   auth_user_id: string;
-  racer_name: string;
+  name: string;
   email: string;
   created_at: string;
   updated_at: string;
@@ -61,7 +61,7 @@ export async function createOrGetProfile(
       .from('racer_profiles')
       .insert({
         auth_user_id: authUserId,
-        racer_name: racerName,
+        name: racerName,
         email: email,
       })
       .select()
@@ -69,7 +69,8 @@ export async function createOrGetProfile(
 
     if (insertError) {
       console.error('[Auth] Error creating profile:', insertError);
-      throw insertError;
+      console.error('[Auth] Insert error details:', JSON.stringify(insertError, null, 2));
+      throw new Error(`Database error: ${insertError.message} (${insertError.code})`);
     }
 
     console.log('[Auth] Profile created:', newProfile.id);

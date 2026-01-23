@@ -43,13 +43,22 @@ export default function LoginPage() {
       }
 
       // ======================================================================
-      // 2. Create or Get Profile
+      // 2. Wait for session to be fully established
       // ======================================================================
+      // Small delay to ensure cookies are written and session is available
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // ======================================================================
+      // 3. Create or Get Profile
+      // ======================================================================
+      console.log('[Login] Creating/fetching profile for user:', authData.user.id);
       const profile = await createOrGetProfile(authData.user.id, email.trim());
 
       if (!profile) {
-        throw new Error('Failed to create or retrieve profile');
+        throw new Error('Failed to create or retrieve profile. Check browser console for details.');
       }
+
+      console.log('[Login] Profile ready:', profile.id);
 
       // ======================================================================
       // 3. Redirect to Home
