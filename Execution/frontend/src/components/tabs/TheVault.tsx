@@ -16,6 +16,16 @@ interface ArchivedSession {
   improvement: number | null; // Percentage improvement vs previous
   symptoms: string[];
   fixes: string[];
+  trackContext?: {
+    event_date?: string;
+    track_name?: string;
+    location?: string;
+    num_quals?: number;
+    qual_length?: number;
+    main_length?: number;
+    anticipated_temp?: number;
+    race_classes?: Array<{ className: string; vehicleId: string }>;
+  };
 }
 
 interface LibrarianResult {
@@ -179,11 +189,10 @@ export default function TheVault() {
             <button
               onClick={handleLibrarianSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className={`px-4 py-2 text-sm font-black uppercase rounded tracking-widest transition-all ${
-                isSearching || !searchQuery.trim()
+              className={`px-4 py-2 text-sm font-black uppercase rounded tracking-widest transition-all ${isSearching || !searchQuery.trim()
                   ? 'bg-[#333] text-[#666] cursor-not-allowed opacity-50'
                   : 'border border-[#E53935] bg-[#E53935]/10 text-[#E53935] hover:bg-[#E53935] hover:text-white'
-              }`}
+                }`}
             >
               {isSearching ? '⟳' : '🔍'}
             </button>
@@ -307,6 +316,21 @@ export default function TheVault() {
                     <span>{selectedArchive.sessionType.toUpperCase()}</span>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-[#E53935]">DATE</span>
+                    {/* @ts-ignore - Mock data may not have full track context yet */}
+                    <span>{selectedArchive.trackContext?.event_date || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">TRACK</span>
+                    {/* @ts-ignore - Mock data may not have full track context yet */}
+                    <span>{selectedArchive.trackContext?.track_name || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">LOCATION</span>
+                    {/* @ts-ignore - Mock data may not have full track context yet */}
+                    <span>{selectedArchive.trackContext?.location || 'N/A'}</span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-[#E53935]">ORP_SCORE</span>
                     <span>{selectedArchive.finalORP.toFixed(1)}%</span>
                   </div>
@@ -314,6 +338,31 @@ export default function TheVault() {
                     <span className="text-[#E53935]">LAP_COUNT</span>
                     <span>{selectedArchive.totalLaps}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">RACE_STRUCTURE</span>
+                    {/* @ts-ignore - Mock data may not have full track context yet */}
+                    <span>
+                      {selectedArchive.trackContext?.num_quals || 0}Q × {selectedArchive.trackContext?.qual_length || 0}min /
+                      {selectedArchive.trackContext?.main_length || 0}min Main
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#E53935]">ANTICIPATED_TEMP</span>
+                    {/* @ts-ignore - Mock data may not have full track context yet */}
+                    <span>{selectedArchive.trackContext?.anticipated_temp || 'N/A'}°F</span>
+                  </div>
+                  {selectedArchive.trackContext?.race_classes && selectedArchive.trackContext.race_classes.length > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-[#E53935]">ASSIGNED_CLASSES</span>
+                      <div className="text-right">
+                        {selectedArchive.trackContext.race_classes.map((rc, idx) => (
+                          <div key={idx} className="text-[#999]">
+                            {rc.className || 'Unnamed'}: Vehicle #{rc.vehicleId.slice(0, 8)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-[#E53935]">RECORDED_AT</span>
                     <span>{selectedArchive.createdAt}</span>
@@ -401,11 +450,10 @@ export default function TheVault() {
                   <div
                     key={session.sessionId}
                     onClick={() => setSelectedArchive(session)}
-                    className={`p-3 border rounded cursor-pointer transition-all relative group ${
-                      selectedArchive?.sessionId === session.sessionId
+                    className={`p-3 border rounded cursor-pointer transition-all relative group ${selectedArchive?.sessionId === session.sessionId
                         ? 'bg-[#E53935]/5 border-[#E53935] border-l-4 shadow-[0_0_20px_rgba(229,57,53,0.1)]'
                         : 'bg-[#1a1a1c]/80 backdrop-blur-sm border-white/10 hover:border-[#E53935]/50 transition-all duration-300'
-                    }`}
+                      }`}
                   >
                     <div className="flex justify-between items-start">
                       <div>

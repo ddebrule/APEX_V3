@@ -6,7 +6,7 @@ import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesBy
 import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
 
 export default function RacerGarage() {
-  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale } = useMissionControlStore();
+  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale, refreshVehicles } = useMissionControlStore();
 
   // Data State
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -284,6 +284,9 @@ export default function RacerGarage() {
       setVehicles([created, ...vehicles]);
       setIsAddingVehicle(false);
       setNewVehicle({ brand: '', model: '', transponder: '', class_id: '' });
+
+      // Refresh the global vehicle store so other tabs see the new vehicle
+      await refreshVehicles();
     } catch (err: any) {
       console.error('Failed to create vehicle', err);
       alert(`Failed to create vehicle: ${err.message || 'Unknown error'}`);

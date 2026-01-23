@@ -6,7 +6,7 @@
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- 2. ENUMS
-CREATE TYPE session_type_enum AS ENUM ('practice', 'qualifier', 'main');
+CREATE TYPE session_type_enum AS ENUM ('practice', 'race');
 CREATE TYPE change_status_enum AS ENUM ('pending', 'accepted', 'denied', 'reversed');
 CREATE TYPE session_status_enum AS ENUM ('draft', 'active', 'archived');
 

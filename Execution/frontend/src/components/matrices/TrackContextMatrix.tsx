@@ -22,16 +22,13 @@ export default function TrackContextMatrix({
 }: TrackContextMatrixProps) {
   const [scale, setScale] = useState<ScaleOption>(
     (initialContext.name?.toLowerCase().includes('small') ? 'small' :
-     initialContext.name?.toLowerCase().includes('large') ? 'large' : 'medium') as ScaleOption
+      initialContext.name?.toLowerCase().includes('large') ? 'large' : 'medium') as ScaleOption
   );
   const [grip, setGrip] = useState<GripLevel>('med');
   const [material, setMaterial] = useState<SurfaceMaterial>(
     (initialContext.surface?.toLowerCase().includes('clay') ? 'clay' : 'hard_packed') as SurfaceMaterial
   );
   const [condition, setCondition] = useState<SurfaceCondition>('damp_fresh');
-  const [temperature, setTemperature] = useState<string>(
-    initialContext.temperature?.toString() || ''
-  );
 
   const handleScaleChange = (newScale: ScaleOption) => {
     setScale(newScale);
@@ -51,11 +48,6 @@ export default function TrackContextMatrix({
   const handleConditionChange = (newCondition: SurfaceCondition) => {
     setCondition(newCondition);
     // Could emit to parent if needed
-  };
-
-  const handleTemperatureChange = (value: string) => {
-    setTemperature(value);
-    onContextChange({ temperature: value ? parseFloat(value) : null });
   };
 
   return (
@@ -81,11 +73,10 @@ export default function TrackContextMatrix({
                   key={s}
                   onClick={() => handleScaleChange(s)}
                   disabled={!isEditable}
-                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${
-                    scale === s
+                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${scale === s
                       ? 'border border-apex-blue bg-apex-blue/10 text-white'
                       : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
-                  } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {s}
                 </button>
@@ -104,11 +95,10 @@ export default function TrackContextMatrix({
                   key={g}
                   onClick={() => handleGripChange(g)}
                   disabled={!isEditable}
-                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${
-                    grip === g
+                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all ${grip === g
                       ? 'border border-apex-blue bg-apex-blue/10 text-white'
                       : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
-                  } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {g}
                 </button>
@@ -130,11 +120,10 @@ export default function TrackContextMatrix({
                   key={m}
                   onClick={() => handleMaterialChange(m)}
                   disabled={!isEditable}
-                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${
-                    material === m
+                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${material === m
                       ? 'border border-apex-blue bg-apex-blue/10 text-white'
                       : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
-                  } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {m.replace('_', ' ')}
                 </button>
@@ -153,11 +142,10 @@ export default function TrackContextMatrix({
                   key={c}
                   onClick={() => handleConditionChange(c)}
                   disabled={!isEditable}
-                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${
-                    condition === c
+                  className={`px-2 py-1.5 rounded text-[9px] font-bold uppercase tracking-widest font-mono transition-all text-center ${condition === c
                       ? 'border border-apex-blue bg-apex-blue/10 text-white'
                       : 'border border-gray-600 bg-gray-900 text-gray-400 hover:border-apex-blue/50'
-                  } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    } ${!isEditable ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {c.replace('_', ' / ')}
                 </button>
@@ -166,25 +154,6 @@ export default function TrackContextMatrix({
           </div>
         </div>
 
-        {/* Row 3: Temperature */}
-        <div>
-          <label className="text-[9px] uppercase font-bold tracking-widest text-gray-600 block mb-2 font-mono">
-            Manual Track Temp (°F)
-          </label>
-          <input
-            type="number"
-            value={temperature}
-            onChange={(e) => handleTemperatureChange(e.target.value)}
-            disabled={!isEditable}
-            placeholder="ENTER MEASURED TEMP..."
-            className={`w-full px-3 py-2 bg-apex-dark border border-gray-700 rounded text-white text-sm focus:outline-none focus:border-apex-blue font-mono transition-all ${
-              !isEditable ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          />
-          <p className="text-[8px] text-gray-500 italic mt-1 font-mono">
-            * Manual input overrides ambient temp for tire logic
-          </p>
-        </div>
       </div>
     </GlassCard>
   );

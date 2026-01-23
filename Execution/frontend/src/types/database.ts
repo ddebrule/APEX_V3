@@ -1,3 +1,8 @@
+export type RaceClassMapping = {
+  className: string;
+  vehicleId: string;
+};
+
 export type RacerProfile = {
   id: string;
   created_at: string;
@@ -31,7 +36,7 @@ export type VehicleClass = {
   created_at: string;
 };
 
-export type SessionType = 'practice' | 'qualifier' | 'main';
+export type SessionType = 'practice' | 'race';
 export type SessionStatus = 'draft' | 'active' | 'archived';
 
 export type Session = {
@@ -58,6 +63,14 @@ export type TrackContext = {
   surface: string;
   traction: string;
   temperature?: number | null;
+  event_date?: string;
+  track_name?: string;
+  location?: string;
+  num_quals?: number;
+  qual_length?: number;
+  main_length?: number;
+  anticipated_temp?: number;
+  race_classes?: RaceClassMapping[];
 };
 
 export type ChangeStatus = 'pending' | 'accepted' | 'denied' | 'reversed';
