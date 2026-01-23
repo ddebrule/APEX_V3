@@ -50,6 +50,14 @@ export default function RacerGarage() {
   const [newSignal, setNewSignal] = useState({ label: '', description: '' });
   const [isLoadingSignals, setIsLoadingSignals] = useState(false);
 
+  // Identity Editing State
+  const [isEditingIdentity, setIsEditingIdentity] = useState(false);
+  const [editIdentityForm, setEditIdentityForm] = useState({ name: '', email: '' });
+
+  // Sponsor Editing State
+  const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
+  const [editingSponsorValue, setEditingSponsorValue] = useState('');
+
   // Initial Data Load
   useEffect(() => {
     const loadRacers = async () => {
@@ -97,6 +105,40 @@ export default function RacerGarage() {
     };
     loadSignals();
   }, [selectedRacer]);
+
+  // --- HANDLERS: IDENTITY EDITING ---
+  const handleStartEditIdentity = () => {
+    if (!selectedRacer) return;
+    setEditIdentityForm({
+      name: selectedRacer.name,
+      email: selectedRacer.email || ''
+    });
+    setIsEditingIdentity(true);
+  };
+
+  const handleSaveIdentity = async () => {
+    if (!selectedRacer || !editIdentityForm.name.trim()) {
+      alert('Name cannot be empty');
+      return;
+    }
+    try {
+      const updatedProfile = await updateRacerProfile(selectedRacer.id, {
+        name: editIdentityForm.name.trim(),
+        email: editIdentityForm.email.trim() || undefined
+      });
+      setSelectedRacer(updatedProfile);
+      setAllRacers(allRacers.map(r => r.id === updatedProfile.id ? updatedProfile : r));
+      setIsEditingIdentity(false);
+    } catch (err: any) {
+      console.error('Failed to update identity', err);
+      alert(`Failed to update identity: ${err.message || 'Unknown error'}`);
+    }
+  };
+
+  const handleCancelEditIdentity = () => {
+    setIsEditingIdentity(false);
+    setEditIdentityForm({ name: '', email: '' });
+  };
 
   // --- HANDLERS: RACER IDENTITY ---
   const handleCreateRacer = async () => {
@@ -148,6 +190,31 @@ export default function RacerGarage() {
       console.error('Failed to remove sponsor', err);
       alert(`Failed to remove sponsor: ${err.message || 'Unknown error'}`);
     }
+  };
+
+  const handleStartEditSponsor = (idx: number, sponsor: string) => {
+    setEditingSponsorIdx(idx);
+    setEditingSponsorValue(sponsor);
+  };
+
+  const handleSaveSponsorEdit = async () => {
+    if (!selectedRacer || editingSponsorIdx === null || !editingSponsorValue.trim()) return;
+    const updatedSponsors = [...(selectedRacer.sponsors || [])];
+    updatedSponsors[editingSponsorIdx] = editingSponsorValue.trim();
+    try {
+      const updatedProfile = await updateRacerProfile(selectedRacer.id, { sponsors: updatedSponsors });
+      setSelectedRacer(updatedProfile);
+      setEditingSponsorIdx(null);
+      setEditingSponsorValue('');
+    } catch (err: any) {
+      console.error('Failed to update sponsor', err);
+      alert(`Failed to update sponsor: ${err.message || 'Unknown error'}`);
+    }
+  };
+
+  const handleCancelSponsorEdit = () => {
+    setEditingSponsorIdx(null);
+    setEditingSponsorValue('');
   };
 
   // --- HANDLERS: VEHICLES ---
@@ -275,7 +342,7 @@ export default function RacerGarage() {
     <div className="flex h-full bg-[#121212] text-white font-sans overflow-auto relative">
 
       {/* PINNED SIDEBAR (RACER IDENTITY) */}
-      <div className="w-[380px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
+      <div className="w-[385px] bg-[#0d0d0f] border-r border-white/5 flex flex-col z-50 transition-transform">
         {/* Sidebar Header */}
         <div className="p-4 bg-white/[0.02] border-b border-white/10 flex justify-between items-center">
           <span className="text-base text-[#E53935] font-black uppercase tracking-[2px]">◆ Racer Identity</span>
@@ -286,19 +353,72 @@ export default function RacerGarage() {
         <div className="p-[30px] flex-1 overflow-y-auto">
           {/* Identity Group */}
           <div className="mb-5 relative">
-            <label className="text-sm font-extrabold text-[#555] uppercase block mb-2">Registry Name</label>
-
-            {/* RACER SELECTOR */}
-            <div
-              onClick={() => setIsRacerDropdownOpen(!isRacerDropdownOpen)}
-              className="bg-black border border-white/5 p-3 text-white text-base font-mono rounded w-full cursor-pointer hover:border-[#E53935] transition-colors flex justify-between items-center"
-            >
-              <span>{selectedRacer?.name || 'SELECT RACER'}</span>
-              <span className="text-sm text-[#555]">▼</span>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-extrabold text-[#555] uppercase">Registry Name</label>
+              {selectedRacer && !isEditingIdentity && (
+                <button
+                  onClick={handleStartEditIdentity}
+                  className="text-xs font-black uppercase tracking-wider text-[#E53935] hover:text-white border border-[#E53935] px-2 py-0.5 rounded hover:bg-[#E53935] transition-all"
+                >
+                  [EDIT PROFILE]
+                </button>
+              )}
             </div>
 
+            {/* EDITING MODE */}
+            {isEditingIdentity ? (
+              <div className="space-y-3 bg-black/30 border border-[#E53935] rounded p-3">
+                <div>
+                  <label className="text-xs font-bold text-[#777] uppercase block mb-1">Name</label>
+                  <input
+                    autoFocus
+                    type="text"
+                    value={editIdentityForm.name}
+                    onChange={(e) => setEditIdentityForm({ ...editIdentityForm, name: e.target.value })}
+                    className="w-full bg-black border border-white/10 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+                    placeholder="Racer Name"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[#777] uppercase block mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={editIdentityForm.email}
+                    onChange={(e) => setEditIdentityForm({ ...editIdentityForm, email: e.target.value })}
+                    className="w-full bg-black border border-white/10 p-2 text-white text-sm font-mono rounded focus:outline-none focus:border-[#E53935]"
+                    placeholder="email@example.com"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSaveIdentity}
+                    className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-[#FF6B6B] transition-all"
+                  >
+                    SAVE
+                  </button>
+                  <button
+                    onClick={handleCancelEditIdentity}
+                    className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-white/[0.1] transition-all"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* RACER SELECTOR */}
+                <div
+                  onClick={() => setIsRacerDropdownOpen(!isRacerDropdownOpen)}
+                  className="bg-black border border-white/5 p-3 text-white text-base font-mono rounded w-full cursor-pointer hover:border-[#E53935] transition-colors flex justify-between items-center"
+                >
+                  <span>{selectedRacer?.name || 'SELECT RACER'}</span>
+                  <span className="text-sm text-[#555]">▼</span>
+                </div>
+              </>
+            )}
+
             {/* DROPDOWN MENU */}
-            {isRacerDropdownOpen && (
+            {isRacerDropdownOpen && !isEditingIdentity && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a1c] border border-[#E53935] rounded z-[60] shadow-xl">
                 <div className="max-h-[200px] overflow-y-auto">
                   {allRacers.map(racer => (
@@ -387,13 +507,53 @@ export default function RacerGarage() {
               </div>
               <div className="flex gap-[5px] flex-wrap mt-2 min-h-[40px] content-start">
                 {selectedRacer?.sponsors?.map((sponsor, idx) => (
-                  <span
-                    key={idx}
-                    onClick={() => handleRemoveSponsor(sponsor)}
-                    className="text-sm px-2 py-1 border border-[#E53935] text-[#E53935] font-bold rounded-[3px] cursor-pointer hover:bg-[#E53935] hover:text-white transition-colors group"
-                  >
-                    {sponsor} <span className="hidden group-hover:inline ml-1 text-white">x</span>
-                  </span>
+                  editingSponsorIdx === idx ? (
+                    // EDIT MODE
+                    <div key={idx} className="flex items-center gap-1 bg-black border border-[#E53935] rounded-[3px] px-2 py-1">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={editingSponsorValue}
+                        onChange={(e) => setEditingSponsorValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveSponsorEdit();
+                          if (e.key === 'Escape') handleCancelSponsorEdit();
+                        }}
+                        className="bg-transparent border-none outline-none text-white text-sm font-bold w-[150px]"
+                      />
+                      <button
+                        onClick={handleSaveSponsorEdit}
+                        className="text-green-500 hover:text-green-400 text-xs font-black"
+                        title="Save (Enter)"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        onClick={handleCancelSponsorEdit}
+                        className="text-[#777] hover:text-white text-xs font-black"
+                        title="Cancel (Esc)"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    // VIEW MODE
+                    <span
+                      key={idx}
+                      className="text-sm px-2 py-1 border border-[#E53935] text-[#E53935] font-bold rounded-[3px] cursor-pointer hover:bg-[#E53935] hover:text-white transition-colors group relative"
+                    >
+                      <span onClick={() => handleStartEditSponsor(idx, sponsor)}>{sponsor}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveSponsor(sponsor);
+                        }}
+                        className="ml-2 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )
                 ))}
                 {(!selectedRacer?.sponsors || selectedRacer.sponsors.length === 0) && (
                   <span className="text-sm text-[#444] italic pt-1">No sponsors defined. Add one above.</span>
