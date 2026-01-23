@@ -76,6 +76,18 @@ export async function updateRacerProfile(id: string, updates: Partial<RacerProfi
   return data;
 }
 
+export async function deleteRacerProfile(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('racer_profiles')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting racer profile:', error);
+    throw error;
+  }
+}
+
 // ========== VEHICLES ==========
 
 export async function getVehiclesByProfileId(profileId: string): Promise<Vehicle[]> {

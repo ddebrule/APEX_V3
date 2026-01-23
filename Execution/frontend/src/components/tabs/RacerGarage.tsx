@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
-import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal } from '@/lib/queries';
+import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal, deleteRacerProfile } from '@/lib/queries';
 import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
 
 export default function RacerGarage() {
@@ -138,6 +138,49 @@ export default function RacerGarage() {
   const handleCancelEditIdentity = () => {
     setIsEditingIdentity(false);
     setEditIdentityForm({ name: '', email: '' });
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!selectedRacer) return;
+
+    const confirmDelete = window.confirm(
+      `⚠️ DELETE PROFILE: "${selectedRacer.name}"\n\n` +
+      `This will permanently delete:\n` +
+      `• Profile identity\n` +
+      `• All vehicles\n` +
+      `• All sessions\n` +
+      `• All setup data\n\n` +
+      `This action CANNOT be undone.\n\n` +
+      `Type the profile name to confirm deletion.`
+    );
+
+    if (!confirmDelete) return;
+
+    const typedName = window.prompt(
+      `Type "${selectedRacer.name}" exactly to confirm deletion:`
+    );
+
+    if (typedName !== selectedRacer.name) {
+      alert('Profile name did not match. Deletion cancelled.');
+      return;
+    }
+
+    try {
+      await deleteRacerProfile(selectedRacer.id);
+
+      // Remove from local state
+      setAllRacers(allRacers.filter(r => r.id !== selectedRacer.id));
+
+      // Select first available racer or null
+      const remainingRacers = allRacers.filter(r => r.id !== selectedRacer.id);
+      setSelectedRacer(remainingRacers[0] || null);
+
+      setIsEditingIdentity(false);
+      alert('✓ Profile deleted successfully');
+    } catch (err: any) {
+      console.error('Failed to delete profile', err);
+      alert(`Failed to delete profile: ${err.message || 'Unknown error'}`);
+    }
   };
 
   // --- HANDLERS: RACER IDENTITY ---
@@ -389,18 +432,26 @@ export default function RacerGarage() {
                     placeholder="email@example.com"
                   />
                 </div>
-                <div className="flex gap-2">
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSaveIdentity}
+                      className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-[#FF6B6B] transition-all"
+                    >
+                      SAVE
+                    </button>
+                    <button
+                      onClick={handleCancelEditIdentity}
+                      className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-white/[0.1] transition-all"
+                    >
+                      CANCEL
+                    </button>
+                  </div>
                   <button
-                    onClick={handleSaveIdentity}
-                    className="flex-1 border border-[#E53935] bg-[#E53935] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-[#FF6B6B] transition-all"
+                    onClick={handleDeleteProfile}
+                    className="w-full border border-red-600 bg-red-900/20 text-red-500 text-xs font-black uppercase py-1.5 rounded hover:bg-red-600 hover:text-white transition-all"
                   >
-                    SAVE
-                  </button>
-                  <button
-                    onClick={handleCancelEditIdentity}
-                    className="flex-1 border border-white/10 bg-white/[0.05] text-white text-xs font-black uppercase py-1.5 rounded hover:bg-white/[0.1] transition-all"
-                  >
-                    CANCEL
+                    ⚠ DELETE PROFILE (PERMANENT)
                   </button>
                 </div>
               </div>
