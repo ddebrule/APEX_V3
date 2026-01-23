@@ -10,10 +10,6 @@ import OpenAI from 'openai';
 // Returns: LibrarianResult[] with event metadata
 // ============================================================================
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 interface LibrarianResult {
   eventDate: string;
   symptom: string;
@@ -80,6 +76,11 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Initialize OpenAI client (lazy initialization)
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     let queryEmbedding: number[];
     try {

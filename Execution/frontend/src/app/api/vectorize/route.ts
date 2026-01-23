@@ -9,10 +9,6 @@ import OpenAI from 'openai';
 // Auth: Requires active Supabase session
 // ============================================================================
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(request: NextRequest) {
   try {
     // ========================================================================
@@ -116,6 +112,11 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Initialize OpenAI client (lazy initialization)
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     let embedding: number[];
     try {
