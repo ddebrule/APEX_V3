@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
 import { useAdvisorStore } from '@/stores/advisorStore';
 import { ORP_Result } from '@/lib/ORPService';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
 
 interface ArchivedSession {
   sessionId: string;
@@ -65,6 +65,7 @@ export default function TheVault() {
 
     try {
       // Get Supabase session token for API authentication
+      const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
