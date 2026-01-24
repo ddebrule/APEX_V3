@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
+import { useCreateSession } from '@/hooks/useSessionOperations';
 import TrackContextMatrix from '@/components/matrices/TrackContextMatrix';
 import VehicleTechnicalMatrix from '@/components/matrices/VehicleTechnicalMatrix';
-import { createSession } from '@/lib/queries';
 import type { RaceClassMapping } from '@/types/database';
 
 export default function RaceStrategy() {
@@ -18,6 +18,9 @@ export default function RaceStrategy() {
     setSessionStatus,
     setSelectedVehicle,
   } = useMissionControlStore();
+
+  // TanStack Query: Mutations
+  const createSessionMutation = useCreateSession();
 
   const [eventName, setEventName] = useState('');
   const [sessionType, setSessionType] = useState<'practice' | 'race'>('practice');
@@ -115,8 +118,8 @@ export default function RaceStrategy() {
         race_classes: sessionType === 'race' ? raceClasses as RaceClassMapping[] : undefined,
       };
 
-      // Create session in database
-      const newSession = await createSession({
+      // Create session in database using TanStack Query mutation
+      const newSession = await createSessionMutation.mutateAsync({
         profile_id: selectedRacer.id,
         vehicle_id: selectedVehicle.id,
         event_name: eventName,

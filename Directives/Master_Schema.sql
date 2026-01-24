@@ -96,6 +96,14 @@ CREATE TABLE setup_embeddings (
     embedding VECTOR(1536)
 );
 
+CREATE TABLE handling_signals (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    profile_id UUID REFERENCES racer_profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    label TEXT NOT NULL,
+    description TEXT
+);
+
 -- 8. PERFORMANCE INDEXES (High Severity Fix)
 -- Foreign Key Indexes
 CREATE INDEX idx_vehicles_profile_id ON vehicles(profile_id);
@@ -104,11 +112,18 @@ CREATE INDEX idx_sessions_vehicle_id ON sessions(vehicle_id);
 CREATE INDEX idx_setup_changes_session_id ON setup_changes(session_id);
 CREATE INDEX idx_race_results_session_id ON race_results(session_id);
 CREATE INDEX idx_setup_embeddings_session_id ON setup_embeddings(session_id);
+CREATE INDEX idx_handling_signals_profile_id ON handling_signals(profile_id);
 
 -- Operational Indexes
 CREATE INDEX idx_sessions_status ON sessions(status);
 CREATE INDEX idx_sessions_profile_status ON sessions(profile_id, status);
 CREATE INDEX idx_setup_changes_created_at ON setup_changes(created_at DESC);
+
+-- Vector Search Index (HNSW for semantic search)
+CREATE INDEX setup_embeddings_embedding_idx
+ON setup_embeddings
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
 
 -- 9. SECURITY (Scaffold)
 ALTER TABLE racer_profiles ENABLE ROW LEVEL SECURITY;
@@ -117,6 +132,7 @@ ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE setup_changes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE race_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE setup_embeddings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE handling_signals ENABLE ROW LEVEL SECURITY;
 
 -- 10. AUTOMATIC UPDATED_AT TRIGGER
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -130,3 +146,39 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_racer_profiles_updated_at BEFORE UPDATE ON racer_profiles FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_vehicles_updated_at BEFORE UPDATE ON vehicles FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_sessions_updated_at BEFORE UPDATE ON sessions FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- 11. VECTOR SEARCH RPC (OPTIMIZED)
+-- Semantic search with session metadata enrichment via JOIN
+CREATE OR REPLACE FUNCTION match_setup_embeddings(
+  query_embedding VECTOR(1536),
+  match_threshold FLOAT DEFAULT 0.5,
+  match_count INT DEFAULT 10
+)
+RETURNS TABLE (
+  id UUID,
+  session_id UUID,
+  content TEXT,
+  created_at TIMESTAMPTZ,
+  similarity FLOAT,
+  event_name TEXT,
+  session_created_at TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    se.id,
+    se.session_id,
+    se.content,
+    se.created_at,
+    1 - (se.embedding <=> query_embedding) AS similarity,
+    s.event_name,
+    s.created_at AS session_created_at
+  FROM setup_embeddings se
+  INNER JOIN sessions s ON s.id = se.session_id
+  WHERE 1 - (se.embedding <=> query_embedding) > match_threshold
+  ORDER BY se.embedding <=> query_embedding
+  LIMIT match_count;
+END;
+$$;

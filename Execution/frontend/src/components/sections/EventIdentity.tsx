@@ -3,19 +3,20 @@
 import { useEffect, useState } from 'react';
 import GlassCard from '@/components/common/GlassCard';
 import { useMissionControlStore } from '@/stores/missionControlStore';
-import { getAllRacers, getVehiclesByProfileId, createRacerProfile, createVehicle } from '@/lib/queries';
+import {
+  useRacers,
+  useVehiclesByRacer,
+  useCreateRacer,
+  useCreateVehicle,
+} from '@/hooks/useRacersAndVehicles';
 import type { RacerProfile, Vehicle } from '@/types/database';
 
 export default function EventIdentity() {
   const {
     selectedRacer,
     selectedVehicle,
-    racers,
-    vehicles,
     setSelectedRacer,
     setSelectedVehicle,
-    setRacers,
-    setVehicles,
   } = useMissionControlStore();
 
   const [isAddingRacer, setIsAddingRacer] = useState(false);
@@ -23,38 +24,30 @@ export default function EventIdentity() {
   const [newRacer, setNewRacer] = useState({ name: '', email: '', sponsors: '' });
   const [newVehicle, setNewVehicle] = useState({ brand: '', model: '', transponder: '' });
 
+  // TanStack Query: Fetch racers (cached globally)
+  const { data: racers = [], isLoading: racersLoading } = useRacers();
+
+  // TanStack Query: Fetch vehicles for selected racer (dependent query)
+  const { data: vehicles = [], isLoading: vehiclesLoading } =
+    useVehiclesByRacer(selectedRacer?.id);
+
+  // TanStack Query: Mutations
+  const createRacerMutation = useCreateRacer();
+  const createVehicleMutation = useCreateVehicle();
+
+  // Auto-select first racer on initial load
   useEffect(() => {
-    const loadRacers = async () => {
-      try {
-        const data = await getAllRacers();
-        setRacers(data);
-        if (data.length > 0 && !selectedRacer) {
-          setSelectedRacer(data[0]);
-        }
-      } catch (error) {
-        console.error('Failed to load racers:', error);
-      }
-    };
+    if (racers.length > 0 && !selectedRacer) {
+      setSelectedRacer(racers[0]);
+    }
+  }, [racers, selectedRacer, setSelectedRacer]);
 
-    loadRacers();
-  }, []);
-
+  // Auto-select first vehicle when racer changes
   useEffect(() => {
-    const loadVehicles = async () => {
-      if (!selectedRacer) return;
-      try {
-        const data = await getVehiclesByProfileId(selectedRacer.id);
-        setVehicles(data);
-        if (data.length > 0 && !selectedVehicle) {
-          setSelectedVehicle(data[0]);
-        }
-      } catch (error) {
-        console.error('Failed to load vehicles:', error);
-      }
-    };
-
-    loadVehicles();
-  }, [selectedRacer?.id]);
+    if (vehicles.length > 0 && !selectedVehicle) {
+      setSelectedVehicle(vehicles[0]);
+    }
+  }, [vehicles, selectedVehicle, setSelectedVehicle]);
 
   const handleRacerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const racer = racers.find(r => r.id === e.target.value);
@@ -74,13 +67,13 @@ export default function EventIdentity() {
   const handleSaveRacer = async () => {
     if (!newRacer.name) return;
     try {
-      const racer = await createRacerProfile({
+      const racer = await createRacerMutation.mutateAsync({
         name: newRacer.name,
         email: newRacer.email,
         sponsors: newRacer.sponsors ? newRacer.sponsors.split(',').map(s => s.trim()) : [],
         is_default: racers.length === 0,
       });
-      setRacers([racer, ...racers]);
+      // TanStack Query automatically refetches racers after mutation
       setSelectedRacer(racer);
       setIsAddingRacer(false);
       setNewRacer({ name: '', email: '', sponsors: '' });
@@ -92,12 +85,12 @@ export default function EventIdentity() {
   const handleSaveVehicle = async () => {
     if (!newVehicle.brand || !newVehicle.model || !selectedRacer) return;
     try {
-      const vehicle = await createVehicle({
+      const vehicle = await createVehicleMutation.mutateAsync({
         ...newVehicle,
         profile_id: selectedRacer.id,
         baseline_setup: {},
       });
-      setVehicles([vehicle, ...vehicles]);
+      // TanStack Query automatically refetches vehicles after mutation
       setSelectedVehicle(vehicle);
       setIsAddingVehicle(false);
       setNewVehicle({ brand: '', model: '', transponder: '' });
@@ -189,7 +182,8 @@ export default function EventIdentity() {
               <select
                 value={selectedRacer?.id || ''}
                 onChange={handleRacerChange}
-                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all appearance-none"
+                disabled={racersLoading}
+                className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-red focus:ring-1 focus:ring-apex-red/20 font-mono transition-all appearance-none disabled:opacity-50"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff1744' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -305,7 +299,7 @@ export default function EventIdentity() {
               <select
                 value={selectedVehicle?.id || ''}
                 onChange={handleVehicleChange}
-                disabled={!selectedRacer}
+                disabled={!selectedRacer || vehiclesLoading}
                 className="w-full px-2 py-2 bg-apex-dark border border-apex-border/50 rounded text-white text-xs focus:outline-none focus:border-apex-blue focus:ring-1 focus:ring-apex-blue/20 font-mono transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232979FF' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,

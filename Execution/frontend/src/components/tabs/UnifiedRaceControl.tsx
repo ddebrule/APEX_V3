@@ -3,12 +3,12 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMissionControlStore } from '@/stores/missionControlStore';
+import { useUpdateSession } from '@/hooks/useSessionOperations';
 import GlassCard from '@/components/common/GlassCard';
 import TacticalHeader from '@/components/common/TacticalHeader';
 import TrackContextMatrix from '@/components/matrices/TrackContextMatrix';
 import VehicleTechnicalMatrix from '@/components/matrices/VehicleTechnicalMatrix';
 import TrackIntelligence from '@/components/sections/TrackIntelligence';
-import { updateSession } from '@/lib/queries';
 import type { TrackContext, Vehicle, RaceResult } from '@/types/database';
 
 type RaceMode = 'BLUE' | 'RED';
@@ -30,6 +30,9 @@ export default function UnifiedRaceControl() {
     isLocked,
     setIsLocked,
   } = useMissionControlStore();
+
+  // TanStack Query: Mutations
+  const updateSessionMutation = useUpdateSession();
 
   // Local state
   const [mode, setMode] = useState<RaceMode>('BLUE');
@@ -94,10 +97,13 @@ export default function UnifiedRaceControl() {
 
     setIsSubmitting(true);
     try {
-      // Update session in DB
-      await updateSession(selectedSession.id, {
-        track_context: config.trackContext as TrackContext,
-        status: 'active',
+      // Update session in DB using TanStack Query mutation
+      await updateSessionMutation.mutateAsync({
+        sessionId: selectedSession.id,
+        updates: {
+          track_context: config.trackContext as TrackContext,
+          status: 'active',
+        },
       });
 
       // Update store - this triggers mode change via useEffect

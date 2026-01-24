@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware';
 import type { RacerProfile, Vehicle, Session, TrackContext } from '@/types/database';
 import { ScrapedTelemetry } from '@/lib/LiveRCScraper';
 import { ORP_Result, calculateORP } from '@/lib/ORPService';
-import { getVehiclesByProfileId } from '@/lib/queries';
 
 export interface MissionControlState {
   // Selection state
@@ -36,7 +35,6 @@ export interface MissionControlState {
   setRacers: (racers: RacerProfile[]) => void;
   setVehicles: (vehicles: Vehicle[]) => void;
   setSessions: (sessions: Session[]) => void;
-  refreshVehicles: () => Promise<void>;
   setIsInitializing: (isInitializing: boolean) => void;
   setIsLocked: (isLocked: boolean) => void;
   setSessionStatus: (status: 'draft' | 'active') => void;
@@ -75,20 +73,10 @@ export const useMissionControlStore = create<MissionControlState>()(
       currentORP: null,
       racerLapsSnapshot: null,
 
-      setSelectedRacer: async (racer) => {
+      setSelectedRacer: (racer) => {
         set({ selectedRacer: racer });
-        // Fetch and populate vehicles when racer is selected
-        if (racer) {
-          try {
-            const vehicles = await getVehiclesByProfileId(racer.id);
-            set({ vehicles });
-          } catch (error) {
-            console.error('Failed to fetch vehicles for racer:', error);
-            set({ vehicles: [] });
-          }
-        } else {
-          set({ vehicles: [] });
-        }
+        // Note: Vehicle fetching now handled by TanStack Query (useVehiclesByRacer)
+        // Components will automatically fetch vehicles when racer changes
       },
       setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
       setSelectedSession: (session) => {
@@ -108,18 +96,6 @@ export const useMissionControlStore = create<MissionControlState>()(
       setSessionStatus: (status) => set({ sessionStatus: status, isLocked: status === 'active' }),
       setError: (error) => set({ error }),
       setUiScale: (uiScale) => set({ uiScale: uiScale }),
-
-      refreshVehicles: async () => {
-        const { selectedRacer } = get();
-        if (selectedRacer) {
-          try {
-            const vehicles = await getVehiclesByProfileId(selectedRacer.id);
-            set({ vehicles });
-          } catch (error) {
-            console.error('Failed to refresh vehicles:', error);
-          }
-        }
-      },
 
       // ===== NEW: LiveRC & ORP Actions =====
       setLiveRcUrl: (url) => set({ liveRcUrl: url }),

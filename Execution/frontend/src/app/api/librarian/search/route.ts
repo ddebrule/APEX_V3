@@ -18,22 +18,48 @@ interface LibrarianResult {
   confidence: number;
 }
 
+// ============================================================================
+// SINGLETON PATTERN: OpenAI Client
+// ============================================================================
+let openaiInstance: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openaiInstance) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not configured');
+    }
+    openaiInstance = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openaiInstance;
+}
+
+// ============================================================================
+// SINGLETON PATTERN: Supabase Client
+// ============================================================================
+let supabaseInstance: ReturnType<typeof createClient> | null = null;
+
+function getSupabaseClient() {
+  if (!supabaseInstance) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Supabase configuration missing');
+    }
+
+    supabaseInstance = createClient(supabaseUrl, supabaseKey);
+  }
+  return supabaseInstance;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // ========================================================================
     // 1. Session Authentication
     // ========================================================================
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getSupabaseClient();
 
     // Get session from authorization header
     const authHeader = request.headers.get('authorization');
@@ -70,17 +96,7 @@ export async function POST(request: NextRequest) {
     // ========================================================================
     // 3. Generate Query Embedding
     // ========================================================================
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      );
-    }
-
-    // Initialize OpenAI client (lazy initialization)
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    const openai = getOpenAIClient();
 
     let queryEmbedding: number[];
     try {
@@ -106,16 +122,16 @@ export async function POST(request: NextRequest) {
     }
 
     // ========================================================================
-    // 4. Call Supabase RPC for Vector Search
+    // 4. Call Supabase RPC for Vector Search (WITH SESSION JOIN)
     // ========================================================================
     const { data: matches, error: rpcError } = await supabase.rpc(
-      'match_setup_embeddings',
+      'match_setup_embeddings' as any,
       {
         query_embedding: queryEmbedding,
         match_threshold,
         match_count,
-      }
-    );
+      } as any
+    ) as any;
 
     if (rpcError) {
       console.error('[Librarian Search] RPC error:', rpcError);
@@ -126,7 +142,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle empty results
-    if (!matches || matches.length === 0) {
+    if (!matches || (Array.isArray(matches) && matches.length === 0)) {
       return NextResponse.json(
         { results: [], message: 'No matching results found' },
         { status: 200 }
@@ -134,30 +150,10 @@ export async function POST(request: NextRequest) {
     }
 
     // ========================================================================
-    // 5. Enrich Results with Session Metadata
+    // 5. Transform to LibrarianResult Format
     // ========================================================================
-    const sessionIds = matches.map((m: any) => m.session_id);
-    const { data: sessions, error: sessionError } = await supabase
-      .from('sessions')
-      .select('id, event_name, created_at')
-      .in('id', sessionIds);
-
-    if (sessionError) {
-      console.error('[Librarian Search] Session fetch error:', sessionError);
-      // Continue with partial data instead of failing completely
-    }
-
-    // Create a lookup map for sessions
-    const sessionMap = new Map(
-      sessions?.map((s: any) => [s.id, s]) || []
-    );
-
-    // ========================================================================
-    // 6. Transform to LibrarianResult Format
-    // ========================================================================
-    const results: LibrarianResult[] = matches.map((match: any) => {
-      const session = sessionMap.get(match.session_id);
-
+    // Note: event_name and session_created_at now come from the RPC JOIN
+    const results: LibrarianResult[] = (matches as any[]).map((match: any) => {
       // Parse content (expecting JSON format: {symptom, fix, orpImprovement})
       let parsedContent: any = {};
       try {
@@ -172,8 +168,8 @@ export async function POST(request: NextRequest) {
       }
 
       return {
-        eventDate: session?.created_at
-          ? new Date(session.created_at).toLocaleDateString('en-US', {
+        eventDate: match.session_created_at
+          ? new Date(match.session_created_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
@@ -187,7 +183,7 @@ export async function POST(request: NextRequest) {
     });
 
     // ========================================================================
-    // 7. Success Response
+    // 6. Success Response
     // ========================================================================
     return NextResponse.json(
       {

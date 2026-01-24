@@ -1,17 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useMissionControlStore } from '@/stores/missionControlStore';
-import { getVehiclesByProfileId, createVehicle, updateRacerProfile, getClassesByProfileId, updateVehicle, getAllRacers, createRacerProfile, getHandlingSignalsByProfileId, createHandlingSignal, deleteHandlingSignal, deleteRacerProfile } from '@/lib/queries';
-import type { Vehicle, VehicleClass, RacerProfile, HandlingSignal } from '@/types/database';
+import {
+  useRacers,
+  useVehiclesByRacer,
+  useCreateRacer,
+  useCreateVehicle,
+  useUpdateRacer,
+  useDeleteRacer,
+  useUpdateVehicle,
+  useClassesByRacer,
+  useHandlingSignals,
+  useCreateHandlingSignal,
+  useDeleteHandlingSignal,
+} from '@/hooks/useRacerGarageData';
 
 export default function RacerGarage() {
-  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale, refreshVehicles } = useMissionControlStore();
+  const { selectedRacer, selectedVehicle, setSelectedVehicle, setSelectedRacer, uiScale, setUiScale } = useMissionControlStore();
 
-  // Data State
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [classes, setClasses] = useState<VehicleClass[]>([]);
-  const [allRacers, setAllRacers] = useState<RacerProfile[]>([]);
+  // TanStack Query: Fetch racers (cached globally)
+  const { data: allRacers = [] } = useRacers();
+
+  // TanStack Query: Fetch vehicles, classes, and handling signals for selected racer
+  const { data: vehicles = [] } = useVehiclesByRacer(selectedRacer?.id);
+  const { data: classes = [] } = useClassesByRacer(selectedRacer?.id);
+  const { data: customSignals = [] } = useHandlingSignals(selectedRacer?.id);
+
+  // TanStack Query: Mutations
+  const createRacerMutation = useCreateRacer();
+  const createVehicleMutation = useCreateVehicle();
+  const updateRacerMutation = useUpdateRacer();
+  const deleteRacerMutation = useDeleteRacer();
+  const updateVehicleMutation = useUpdateVehicle();
+  const createHandlingSignalMutation = useCreateHandlingSignal();
+  const deleteHandlingSignalMutation = useDeleteHandlingSignal();
 
   // UI State
   const [isRacerDropdownOpen, setIsRacerDropdownOpen] = useState(false);
@@ -46,9 +69,7 @@ export default function RacerGarage() {
   const [uiScalingOpen, setUiScalingOpen] = useState(false);
 
   const [signalManagerOpen, setSignalManagerOpen] = useState(false);
-  const [customSignals, setCustomSignals] = useState<HandlingSignal[]>([]);
   const [newSignal, setNewSignal] = useState({ label: '', description: '' });
-  const [isLoadingSignals, setIsLoadingSignals] = useState(false);
 
   // Identity Editing State
   const [isEditingIdentity, setIsEditingIdentity] = useState(false);
@@ -57,54 +78,6 @@ export default function RacerGarage() {
   // Sponsor Editing State
   const [editingSponsorIdx, setEditingSponsorIdx] = useState<number | null>(null);
   const [editingSponsorValue, setEditingSponsorValue] = useState('');
-
-  // Initial Data Load
-  useEffect(() => {
-    const loadRacers = async () => {
-      try {
-        const racers = await getAllRacers();
-        setAllRacers(racers);
-      } catch (err) {
-        console.error('Failed to load racers', err);
-      }
-    };
-    loadRacers();
-  }, []);
-
-  // Fetch vehicles and classes when racer changes
-  useEffect(() => {
-    if (!selectedRacer) return;
-    const loadData = async () => {
-      try {
-        const [vData, cData] = await Promise.all([
-          getVehiclesByProfileId(selectedRacer.id),
-          getClassesByProfileId(selectedRacer.id)
-        ]);
-        setVehicles(vData);
-        setClasses(cData);
-      } catch (err) {
-        console.error('Failed to load racer data', err);
-      }
-    };
-    loadData();
-  }, [selectedRacer]);
-
-  // Fetch handling signals when racer changes
-  useEffect(() => {
-    if (!selectedRacer) {
-      setCustomSignals([]);
-      return;
-    }
-    const loadSignals = async () => {
-      try {
-        const signals = await getHandlingSignalsByProfileId(selectedRacer.id);
-        setCustomSignals(signals);
-      } catch (err) {
-        console.error('Failed to load handling signals', err);
-      }
-    };
-    loadSignals();
-  }, [selectedRacer]);
 
   // --- HANDLERS: IDENTITY EDITING ---
   const handleStartEditIdentity = () => {
@@ -122,12 +95,14 @@ export default function RacerGarage() {
       return;
     }
     try {
-      const updatedProfile = await updateRacerProfile(selectedRacer.id, {
-        name: editIdentityForm.name.trim(),
-        email: editIdentityForm.email.trim() || undefined
+      const updatedProfile = await updateRacerMutation.mutateAsync({
+        racerId: selectedRacer.id,
+        updates: {
+          name: editIdentityForm.name.trim(),
+          email: editIdentityForm.email.trim() || undefined
+        }
       });
       setSelectedRacer(updatedProfile);
-      setAllRacers(allRacers.map(r => r.id === updatedProfile.id ? updatedProfile : r));
       setIsEditingIdentity(false);
     } catch (err: any) {
       console.error('Failed to update identity', err);
@@ -166,10 +141,7 @@ export default function RacerGarage() {
     }
 
     try {
-      await deleteRacerProfile(selectedRacer.id);
-
-      // Remove from local state
-      setAllRacers(allRacers.filter(r => r.id !== selectedRacer.id));
+      await deleteRacerMutation.mutateAsync(selectedRacer.id);
 
       // Select first available racer or null
       const remainingRacers = allRacers.filter(r => r.id !== selectedRacer.id);
@@ -190,12 +162,11 @@ export default function RacerGarage() {
       return;
     }
     try {
-      const newRacer = await createRacerProfile({
+      const newRacer = await createRacerMutation.mutateAsync({
         name: newRacerName,
         sponsors: [],
         is_default: false
       });
-      setAllRacers([newRacer, ...allRacers]);
       setSelectedRacer(newRacer);
       setIsAddingRacer(false);
       setNewRacerName('');
@@ -212,7 +183,10 @@ export default function RacerGarage() {
       const sponsorName = sponsorCategory ? `${newSponsor.trim()} (${sponsorCategory})` : newSponsor.trim();
       const updatedSponsors = [...(selectedRacer.sponsors || []), sponsorName];
       try {
-        const updatedProfile = await updateRacerProfile(selectedRacer.id, { sponsors: updatedSponsors });
+        const updatedProfile = await updateRacerMutation.mutateAsync({
+          racerId: selectedRacer.id,
+          updates: { sponsors: updatedSponsors }
+        });
         setSelectedRacer(updatedProfile);
         setNewSponsor('');
         setSponsorCategory('');
@@ -227,7 +201,10 @@ export default function RacerGarage() {
     if (!selectedRacer) return;
     const updatedSponsors = (selectedRacer.sponsors || []).filter(s => s !== sponsorToRemove);
     try {
-      const updatedProfile = await updateRacerProfile(selectedRacer.id, { sponsors: updatedSponsors });
+      const updatedProfile = await updateRacerMutation.mutateAsync({
+        racerId: selectedRacer.id,
+        updates: { sponsors: updatedSponsors }
+      });
       setSelectedRacer(updatedProfile);
     } catch (err: any) {
       console.error('Failed to remove sponsor', err);
@@ -245,7 +222,10 @@ export default function RacerGarage() {
     const updatedSponsors = [...(selectedRacer.sponsors || [])];
     updatedSponsors[editingSponsorIdx] = editingSponsorValue.trim();
     try {
-      const updatedProfile = await updateRacerProfile(selectedRacer.id, { sponsors: updatedSponsors });
+      const updatedProfile = await updateRacerMutation.mutateAsync({
+        racerId: selectedRacer.id,
+        updates: { sponsors: updatedSponsors }
+      });
       setSelectedRacer(updatedProfile);
       setEditingSponsorIdx(null);
       setEditingSponsorValue('');
@@ -273,20 +253,18 @@ export default function RacerGarage() {
     }
 
     try {
-      const created = await createVehicle({
+      await createVehicleMutation.mutateAsync({
         profile_id: selectedRacer.id,
         brand: newVehicle.brand.trim(),
         model: newVehicle.model.trim(),
         transponder: newVehicle.transponder.trim() || undefined,
-        class_id: newVehicle.class_id || undefined,
-        baseline_setup: {}
-      });
-      setVehicles([created, ...vehicles]);
+        baseline_setup: {},
+        ...(newVehicle.class_id && { class_id: newVehicle.class_id })
+      } as any);
       setIsAddingVehicle(false);
       setNewVehicle({ brand: '', model: '', transponder: '', class_id: '' });
 
-      // Refresh the global vehicle store so other tabs see the new vehicle
-      await refreshVehicles();
+      // Note: TanStack Query automatically invalidates vehicle cache after mutation
     } catch (err: any) {
       console.error('Failed to create vehicle', err);
       alert(`Failed to create vehicle: ${err.message || 'Unknown error'}`);
@@ -319,26 +297,28 @@ export default function RacerGarage() {
   const handleSaveSetup = async () => {
     if (!selectedVehicle) return;
     try {
-      const updated = await updateVehicle(selectedVehicle.id, {
-        baseline_setup: {
-          shock_oil: setupForm.shocks.trim(),
-          diff_oil: setupForm.diff.trim(),
-          gear: setupForm.gearing.trim(),
-          // v6.0.1 Schema Fields
-          tire_compound: setupForm.tire_compound.trim(),
-          tire_insert: setupForm.tire_insert.trim(),
-          tread_pattern: setupForm.tread_pattern.trim(),
-          camber: setupForm.camber.trim(),
-          toe_in: setupForm.toe_in.trim(),
-          ride_height: setupForm.ride_height.trim(),
-          front_toe_out: setupForm.front_toe_out.trim(),
-          front_sway_bar: setupForm.front_sway_bar.trim(),
-          rear_sway_bar: setupForm.rear_sway_bar.trim(),
-          punch: setupForm.punch.trim(),
-          brake: setupForm.brake.trim()
+      const updated = await updateVehicleMutation.mutateAsync({
+        vehicleId: selectedVehicle.id,
+        updates: {
+          baseline_setup: {
+            shock_oil: setupForm.shocks.trim(),
+            diff_oil: setupForm.diff.trim(),
+            gear: setupForm.gearing.trim(),
+            // v6.0.1 Schema Fields
+            tire_compound: setupForm.tire_compound.trim(),
+            tire_insert: setupForm.tire_insert.trim(),
+            tread_pattern: setupForm.tread_pattern.trim(),
+            camber: setupForm.camber.trim(),
+            toe_in: setupForm.toe_in.trim(),
+            ride_height: setupForm.ride_height.trim(),
+            front_toe_out: setupForm.front_toe_out.trim(),
+            front_sway_bar: setupForm.front_sway_bar.trim(),
+            rear_sway_bar: setupForm.rear_sway_bar.trim(),
+            punch: setupForm.punch.trim(),
+            brake: setupForm.brake.trim()
+          }
         }
       });
-      setVehicles(vehicles.map(v => v.id === updated.id ? updated : v));
       setSelectedVehicle(updated);
       setSetupModalOpen(false);
     } catch (err: any) {
@@ -354,12 +334,11 @@ export default function RacerGarage() {
       return;
     }
     try {
-      const created = await createHandlingSignal({
+      await createHandlingSignalMutation.mutateAsync({
         profile_id: selectedRacer.id,
         label: newSignal.label.trim(),
         description: newSignal.description.trim() || undefined
       });
-      setCustomSignals([created, ...customSignals]);
       setNewSignal({ label: '', description: '' });
     } catch (err: any) {
       console.error('Failed to add signal', err);
@@ -368,9 +347,12 @@ export default function RacerGarage() {
   };
 
   const handleDeleteSignal = async (id: string) => {
+    if (!selectedRacer) return;
     try {
-      await deleteHandlingSignal(id);
-      setCustomSignals(customSignals.filter(s => s.id !== id));
+      await deleteHandlingSignalMutation.mutateAsync({
+        signalId: id,
+        racerId: selectedRacer.id
+      });
     } catch (err: any) {
       console.error('Failed to delete signal', err);
       alert(`Failed to delete signal: ${err.message || 'Unknown error'}`);
